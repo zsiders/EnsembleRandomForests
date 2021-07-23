@@ -22,6 +22,7 @@ RoxygenNote: 7.1.1
 Imports: doParallel,
     MASS,
     Matrix,
+    RandomFields,
     randomForest,
     raster,
     ROCR
