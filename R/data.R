@@ -2,14 +2,11 @@
 #'
 #' @description A data set one dependent variable and five covariates
 #'
-#' @format A data frame with 100 rows and 6 variables:
+#' @format A list with 3 objects:
 #' \describe{
-#' 	\item{fish}{The number of observations on a given effort unit of a simulated fish species}
-#' 	\item{x1}{The first simulated covariate}
-#'	\item{x2}{The second simulated covariate}
-#' 	\item{x3}{The third simulated covariate}
-#' 	\item{x4}{The fourth simulated covariate}
-#' 	\item{x5}{The fifth simulated covariate}
+#' 	\item{samples}{A data.frame with the sampled locations to be used in the ERF model}
+#' 	\item{betas}{A vector containing the beta coefficients used to generate the log odds}
+#' 	\item{grid}{A raster brick containing the full gridded covariates, log odds, and the probability}
 #' }
-#' @source 
-"exampleData"
+#' @source Generated using the `data_sim()` function
+"simData"
