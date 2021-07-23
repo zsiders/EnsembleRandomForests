@@ -1,0 +1,1104 @@
+rocr <- rocr_ens(predictions, samples)
+rocr
+rocr$tpr
+rocr$tpr@x.values
+rocr$tpr@x.values[[1]]
+rocr$tpr@x.values[[1]] + rocr$tnr@x.values[[1]]
+rocr$tnr@x.values[[1]]
+rocr$tpr@y.values[[1]] + rocr$tnr@y.values[[1]]
+rocr$tpr@y.values[[1]] + rocr$tnr@y.values[[1]]-1
+max(rocr$tpr@y.values[[1]] + rocr$tnr@y.values[[1]]-1)
+rocr_ens <- function(predictions, samples){#
+    #This function generates Receiving Operator Characteristic Cruves and model metrics#
+    #make predictions from ROCR#
+    pred <- ROCR::prediction(predictions, samples)#
+    # TPR/FPR#
+    tpr <- ROCR::performance(pred, "tpr")#
+    # TNR/FNR#
+    tnr <- ROCR::performance(pred, "tnr")#
+    #PHI#
+    phi <- ROCR::performance(pred, "phi")#
+    #ACCURACY#
+    acc <- ROCR::performance(pred, "acc")#
+    #ERROR#
+    err <- ROCR::performance(pred, "err")#
+    #FPR#
+    fpr <- ROCR::performance(pred, "fpr")#
+    #SENSITIVITY#
+    sens <- ROCR::performance(pred, "sens")#
+    #SPECIFICITY#
+    spec <- ROCR::performance(pred, "spec")#
+    #AUC#
+    auc <- ROCR::performance(pred, measure='auc')@y.values[[1]]#
+    tss <- max(tpr@y.values[[1]] + tnr@y.values[[1]]-1)#
+    return(list(tpr=tpr, tnr=tnr, auc=auc, phi=phi, #
+                acc=acc, err=err, fpr=fpr, #
+                sens=sens, spec=spec, tss=tss))#
+}
+rocr <- rocr_ens(predictions, samples)
+rocr$tss
+rocr_ens <- function(predictions, samples){#
+    #This function generates Receiving Operator Characteristic Cruves and model metrics#
+    #make predictions from ROCR#
+    pred <- ROCR::prediction(predictions, samples)#
+    # TPR/FPR#
+    tpr <- ROCR::performance(pred, "tpr")#
+    # TNR/FNR#
+    tnr <- ROCR::performance(pred, "tnr")#
+    #PHI#
+    phi <- ROCR::performance(pred, "phi")#
+    #ACCURACY#
+    acc <- ROCR::performance(pred, "acc")#
+    #ERROR#
+    err <- ROCR::performance(pred, "err")#
+    #FPR#
+    fpr <- ROCR::performance(pred, "fpr")#
+    #SENSITIVITY#
+    sens <- ROCR::performance(pred, "sens")#
+    #SPECIFICITY#
+    spec <- ROCR::performance(pred, "spec")#
+    #AUC#
+    auc <- ROCR::performance(pred, measure='auc')@y.values[[1]]#
+    tss <- max(tpr@y.values[[1]] + tnr@y.values[[1]]-1)#
+    rmse <- sqrt(((predictions-as.integer(as.character(samples)))^2)/length(predictions))#
+    return(list(tpr=tpr, tnr=tnr, auc=auc, phi=phi, #
+                acc=acc, err=err, fpr=fpr, #
+                sens=sens, spec=spec, tss=tss, rmse=rmse))#
+}
+rocr <- rocr_ens(predictions, samples)
+rocr$rmse
+rocr_ens <- function(predictions, samples){#
+    #This function generates Receiving Operator Characteristic Cruves and model metrics#
+    #make predictions from ROCR#
+    pred <- ROCR::prediction(predictions, samples)#
+    # TPR/FPR#
+    tpr <- ROCR::performance(pred, "tpr")#
+    # TNR/FNR#
+    tnr <- ROCR::performance(pred, "tnr")#
+    #PHI#
+    phi <- ROCR::performance(pred, "phi")#
+    #ACCURACY#
+    acc <- ROCR::performance(pred, "acc")#
+    #ERROR#
+    err <- ROCR::performance(pred, "err")#
+    #FPR#
+    fpr <- ROCR::performance(pred, "fpr")#
+    #SENSITIVITY#
+    sens <- ROCR::performance(pred, "sens")#
+    #SPECIFICITY#
+    spec <- ROCR::performance(pred, "spec")#
+    #AUC#
+    auc <- ROCR::performance(pred, measure='auc')@y.values[[1]]#
+    tss <- max(tpr@y.values[[1]] + tnr@y.values[[1]]-1)#
+    rmse <- sqrt(sum((predictions-as.integer(as.character(samples)))^2)/length(predictions))#
+    return(list(tpr=tpr, tnr=tnr, auc=auc, phi=phi, #
+                acc=acc, err=err, fpr=fpr, #
+                sens=sens, spec=spec, tss=tss, rmse=rmse))#
+}
+rocr <- rocr_ens(predictions, samples)
+rocr$rmse
+ncell=100
+ncov=5
+prob_missing=0.97
+unif.bnd=c(10,30)
+mat.var=0.01
+Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates
+Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters
+library(RandomFields)
+model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})
+loc_xy[,paste0("x",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))
+head(loc_xy)
+loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates
+loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))
+head(loc_xy)
+intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        cor2cov <- function(V, sigma) {#
+          V * tcrossprod(sigma)#
+        }#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(xy,2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric
+cov.id <- grep('cov',colnames(loc_xy))
+intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        cor2cov <- function(V, sigma) {#
+          V * tcrossprod(sigma)#
+        }#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric
+corr.mat
+beta.mat <- MASS::mvrnorm(ncov, rep(0,ncov), nearPD(cov.mat)$mat)*7500
+?nearPD
+??nearPD
+beta.mat <- MASS::mvrnorm(ncov, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)*7500
+beta.mat
+ncov
+Matrix::nearPD(cov.mat)$mat
+MASS::mvrnorm(ncov, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)
+MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)
+betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)*7500
+betas
+prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))
+prob <- inv_logit(prob.raw)
+logit <- function(x){#
+    log(x/(1-x))#
+}#
+inv_logit <- function(x){#
+    exp(x)/(exp(x)+1)#
+}
+prob <- inv_logit(prob.raw)
+range(prob.raw)
+range(prob)
+plot(density(prob,from=0,to=1))
+5e4
+samp <- sample(1:nrow(loc_xy), n.samp, replace=TRUE)
+n.samp <- 5e4
+nsamp=5e4
+samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)
+p_xy_df <- loc_xy[samp,]
+p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y, i)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred
+p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred
+nsamp
+p_xy_df <- loc_xy[samp,]
+p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]
+length(prob)
+head(p_xy_df)
+nrow(p_xy_df)
+head(prob)
+prob <- matrix(inv_logit(prob.raw), Dim)
+p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]
+p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)
+p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred
+head(p_xy_df)
+table(p_xy_df$pred)
+table(p_xy_df$obs)
+nsamp <- 1e4
+samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred
+table(p_xy_df$obs)
+setwd("/Users/zach/Dropbox/Projects/EnsembleRandomForests/")
+library(usethis)
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.97, unif.bnd=c(10,30), mat.var=0.01, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        cor2cov <- function(V, sigma) {#
+          V * tcrossprod(sigma)#
+        }#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)*7500#
+    #Calculate probabilities#
+        prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        prob <- matrix(inv_logit(prob.raw), Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+#
+    return(p_xy_df)#
+}
+exampleData <- data_sim()
+str(exampleData)
+head(exampleData)
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.97, unif.bnd=c(10,30), mat.var=0.01, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        cor2cov <- function(V, sigma) {#
+          V * tcrossprod(sigma)#
+        }#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)*7500#
+    #Calculate probabilities#
+        prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        prob <- matrix(inv_logit(prob.raw), Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+    return(p_xy_df)#
+}
+exampleData <- data_sim()
+head(exampleData)
+str(exampleData)
+library(raster)
+r <- raster(prob, nrows=100, ncols=100)
+class(prob)
+r <- raster(prob)
+plot(r)
+library(viridisLite)
+plot(r, col=inferno(100))
+sigma
+Scale
+mat.var=10
+model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})
+loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))
+sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1
+sigma
+cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)
+betas
+plot(raster(loc_xy$cov1,nrows=100,ncol=100))
+plot(raster(matrix(loc_xy$cov1,nrow=100,ncol=100)))
+mat.var <- 20
+model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})
+loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))
+plot(raster(matrix(loc_xy$cov1,nrow=100,ncol=100)))
+mat.var=50
+model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)
+betas
+prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        prob <- matrix(inv_logit(prob.raw), Dim)
+plot(raster(prob))
+betas
+plot(raster(matrix(prob.raw,Dim)))
+mat.var=20
+model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        prob <- matrix(inv_logit(prob.raw), Dim)
+plot(raster(prob))
+plot(raster(matrix(prob.raw,Dim)))
+betas
+mat.var=5
+model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        prob <- matrix(inv_logit(prob.raw), Dim)
+plot(raster(matrix(prob.raw,Dim)))
+plot(raster(prob))
+samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred
+table(p_xy_df$obs)
+prob_missing=0.95
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=5, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        prob <- matrix(inv_logit(prob.raw), Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+    return(p_xy_df)#
+}
+exampleData <- data_sim()
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=5, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+    return(list(samples = p_xy_df,#
+                betas = betas,#
+                grid = loc_xy))#
+}
+simData <- data_sim()
+head(loc_xy)
+loc_arr <- array(loc_xy, dims=c(Dim, ncol(loc_xy)))
+loc_arr <- array(loc_xy, dim=c(Dim, ncol(loc_xy)))
+dim(loc_arr)
+rb <- brick(loc_arr, xmn=1, xmx=ncell, ymn=1, ymx=ncell)
+ncell
+summary(loc_arr)
+loc_arr <- array(as.matrix(loc_xy), dim=c(Dim, ncol(loc_xy)))
+class(loc_arr)
+rb <- brick(loc_arr, xmn=1, xmx=ncell, ymn=1, ymx=ncell)
+rb
+rb <- brick(loc_arr, xmn=0, xmx=ncell, ymn=0, ymx=ncell)
+rb
+plot(rb)
+loc_arr <- brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy))), xmx=ncell, ymax=ncell)
+loc_arr <- brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy))), xmx=ncell, ymx=ncell)
+loc_arr
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=5, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+        loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy))), xmx=ncell, ymx=ncell)#
+    return(list(samples = p_xy_df,#
+                betas = betas,#
+                grid = loc_arr))#
+}
+simData <- data_sim()
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=5, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+        loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy))), xmx=ncell, ymx=ncell)#
+        names(loc_arr) <- colnames(loc_xy)[-c(1:2)]#
+    return(list(samples = p_xy_df,#
+                betas = betas,#
+                grid = loc_arr))#
+}
+simData <- data_sim()
+Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)
+loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy))), xmx=ncell, ymx=ncell)
+loc_ar
+loc_arr
+loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2)), xmx=ncell, ymx=ncell)
+names(loc_arr) <- colnames(loc_xy)[-c(1:2)]
+loc_arr
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=5, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+        loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2)), xmx=ncell, ymx=ncell)#
+        names(loc_arr) <- colnames(loc_xy)[-c(1:2)]#
+    return(list(samples = p_xy_df,#
+                betas = betas,#
+                grid = loc_arr))#
+}
+simData <- data_sim()
+plot(simData$grid$prob)
+plot(simData$grid$prob, col=inferno(100))
+plot(simData$grid$prob, col=inferno(100), zlim=c(0,1))
+plot(simData$grid$prob, col=viridis(100), zlim=c(0,1))
+with(simData$samples, points(x,y,pch=c(1,16)[obs+1]))
+loc_arr <- flip(loc_arr,'x')
+plot(loc_arr$prob, col=viridis(100))
+with(p_xy_df[p_xy_df$obs==1,],points(x,y,pch=16,col='white'))
+loc_arr <- flip(loc_arr,'x')
+loc_arr <- flip(loc_arr,'y')
+plot(loc_arr$prob, col=viridis(100))
+with(p_xy_df[p_xy_df$obs==1,],points(x,y,pch=16,col='white'))
+with(p_xy_df[p_xy_df$obs==1,],points(y,x,pch=16,col='white'))
+loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2)), xmx=ncell, ymx=ncell)
+loc_arr <- t(loc_arr)
+plot(loc_arr$prob, col=viridis(100))
+names(loc_arr) <- colnames(loc_xy)[-c(1:2)]
+plot(loc_arr$prob, col=viridis(100))
+with(p_xy_df[p_xy_df$obs==1,],points(x,y,pch=16,col='white'))
+loc_arr <- flip(loc_arr,'y')
+plot(loc_arr$prob, col=viridis(100))
+loc_arr <- flip(loc_arr,'y')
+loc_arr <- flip(loc_arr,'y')
+plot(loc_arr$prob, col=viridis(100))
+with(p_xy_df[p_xy_df$obs==1,],points(x,y,pch=16,col='white'))
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=5, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+        loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2)), xmx=ncell, ymx=ncell)#
+        loc_arr <- t(loc_arr)#
+        loc_arr <- flip(loc_arr,'y')#
+        names(loc_arr) <- colnames(loc_xy)[-c(1:2)]#
+    return(list(samples = p_xy_df,#
+                betas = betas,#
+                grid = loc_arr))#
+}
+simData <- data_sim()
+str(simData)
+plot(simData$grid$prob, col=viridis(100))
+with(simData$samples[simData$samples$obs==1,], points(x,y,pch=16))
+with(simData$samples[simData$samples$obs==1,], points(x,y,pch=16,col='white'))
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i')
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', bty='n')
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', bty='n', asp=NA)
+with(simData$samples[simData$samples$obs==1,], points(x,y,pch=16,col='white'))
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+with(simData$samples[simData$samples$obs==1,], points(x,y,pch=16,col='white'))
+set.seed(1000)
+simData <- data_sim()
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+rm(list=ls())
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=5, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+        loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2)), xmx=ncell, ymx=ncell)#
+        loc_arr <- t(loc_arr)#
+        loc_arr <- flip(loc_arr,'y')#
+        names(loc_arr) <- colnames(loc_xy)[-c(1:2)]#
+    return(list(samples = p_xy_df,#
+                betas = betas,#
+                grid = loc_arr))#
+}#
+cor2cov <- function(V, sigma) {#
+  V * tcrossprod(sigma)#
+}#
+logit <- function(x){#
+    log(x/(1-x))#
+}#
+inv_logit <- function(x){#
+    exp(x)/(exp(x)+1)#
+}
+simData <- data_sim()
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=5, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(0,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(loc_xy$prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+        loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2)), xmx=ncell, ymx=ncell)#
+        loc_arr <- t(loc_arr)#
+        loc_arr <- flip(loc_arr,'y')#
+        names(loc_arr) <- colnames(loc_xy)[-c(1:2)]#
+    return(list(samples = p_xy_df,#
+                betas = betas,#
+                grid = loc_arr))#
+}
+simData <- data_sim()
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+with(simData$samples[simData$samples$obs==1,], points(x,y,pch=16,col='white'))
+simData <- data_sim()
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+with(simData$samples[simData$samples$obs==1,], points(x,y,pch=16,col='white'))
+simData <- data_sim()
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+with(simData$samples[simData$samples$obs==1,], points(x,y,pch=16,col='white'))
+simData <- data_sim()
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=5, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(-1,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(loc_xy$prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+        loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2)), xmx=ncell, ymx=ncell)#
+        loc_arr <- t(loc_arr)#
+        loc_arr <- flip(loc_arr,'y')#
+        names(loc_arr) <- colnames(loc_xy)[-c(1:2)]#
+    return(list(samples = p_xy_df,#
+                betas = betas,#
+                grid = loc_arr))#
+}
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=5, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    #detrend#
+        loc_xy[,cov.id] <- apply(loc_xy[,cov.id],2,function(x) x-mean(x))#
+    # Define covariance matrix#
+        intercept <- 0#
+        corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+        corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+        diag(corr.mat) <- 1 #diagonal equals 1#
+        # mu <- rnorm(ncov) #means of the multivariate normal#
+        sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+        cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+        cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    #Draw Beta coefficients#
+        betas <- MASS::mvrnorm(1, rep(-1,ncov), Matrix::nearPD(cov.mat)$mat)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(loc_xy$prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+        loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2)), xmx=ncell, ymx=ncell)#
+        loc_arr <- t(loc_arr)#
+        loc_arr <- flip(loc_arr,'y')#
+        names(loc_arr) <- colnames(loc_xy)[-c(1:2)]#
+    return(list(samples = p_xy_df,#
+                betas = betas,#
+                grid = loc_arr))#
+}
+simData <- data_sim()
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+simData <- data_sim()
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+simData <- data_sim()
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+simData <- data_sim()
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+simData <- data_sim(mat.var=10)
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=5, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    #detrend#
+        loc_xy[,cov.id] <- apply(loc_xy[,cov.id],2,function(x) x-mean(x))#
+    # Define covariance matrix#
+    #   intercept <- 0#
+    #   corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+    #   corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+    #   diag(corr.mat) <- 1 #diagonal equals 1#
+    #   # mu <- rnorm(ncov) #means of the multivariate normal#
+    #   sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+    #   cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+    #   cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    # #Draw Beta coefficients#
+    #   betas <- MASS::mvrnorm(1, rep(-1,ncov), Matrix::nearPD(cov.mat)$mat)#
+        betas <- rnorm(5,-1,5)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(loc_xy$prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+        loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2)), xmx=ncell, ymx=ncell)#
+        loc_arr <- t(loc_arr)#
+        loc_arr <- flip(loc_arr,'y')#
+        names(loc_arr) <- colnames(loc_xy)[-c(1:2)]#
+    return(list(samples = p_xy_df,#
+                betas = betas,#
+                grid = loc_arr))#
+}
+simData <- data_sim(mat.var=10)
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+simData <- data_sim(mat.var=5)
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+simData <- data_sim(mat.var=1)
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+simData <- data_sim(mat.var=0.05)
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+with(simData$samples[simData$samples$obs==1,], points(x,y,pch=16,col='white'))
+data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=0.05, nsamp=1e4){#
+    #grid#
+        Dim <- c("n_x"=ncell, "n_y"=ncell) #grid dimensions#
+        loc_xy <- expand.grid("x"=1:Dim['n_x'], "y"=1:Dim['n_y']) #coordinates#
+#
+    # Autocorrelation parameters#
+        Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters#
+    # Matern spatial autocorrelation models#
+        model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})#
+        loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))#
+        cov.id <- grep('cov',colnames(loc_xy))#
+    #detrend#
+        loc_xy[,cov.id] <- apply(loc_xy[,cov.id],2,function(x) x-mean(x))#
+    # Define covariance matrix#
+    #   intercept <- 0#
+    #   corr.mat <- matrix(rbeta(ncov^2,2,2)*2-1, ncov, ncov) #simulate correlations between parameters; 0.25 is mean correlation, 1 is sd, generation occurs in logit space and then is back-transformed#
+    #   corr.mat[lower.tri(corr.mat)] <- t(corr.mat)[lower.tri(corr.mat)] #make symmetric#
+    #   diag(corr.mat) <- 1 #diagonal equals 1#
+    #   # mu <- rnorm(ncov) #means of the multivariate normal#
+    #   sigma <- apply(loc_xy[,cov.id],2,sd) #sd of the multivariate normal between 0 and 1#
+#
+    #   cov.mat <- cor2cov(corr.mat, sigma) #convert correlation matrix to covariance matrix using sd#
+    #   cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric#
+    # #Draw Beta coefficients#
+    #   betas <- MASS::mvrnorm(1, rep(-1,ncov), Matrix::nearPD(cov.mat)$mat)#
+        betas <- rnorm(5,-1,5)#
+    #Calculate probabilities#
+        loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))#
+        loc_xy$prob <- inv_logit(loc_xy$prob.raw)#
+        prob <- matrix(loc_xy$prob, Dim)#
+    #Sample #
+        samp <- sample(1:nrow(loc_xy), nsamp, replace=TRUE)#
+        #extract data at random locations#
+        p_xy_df <- loc_xy[samp,]#
+        #extract probability of presence at random locations#
+        p_xy_df$prob <- prob[cbind(p_xy_df$x, p_xy_df$y)]#
+        #draw process component#
+        p_xy_df$pred <- rbinom(nsamp, 1, p_xy_df$prob)#
+        #draw observation component#
+        p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred#
+    #clean up#
+        rownames(p_xy_df) <- 1:nrow(p_xy_df)#
+        loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2)), xmx=ncell, ymx=ncell)#
+        loc_arr <- t(loc_arr)#
+        loc_arr <- flip(loc_arr,'y')#
+        names(loc_arr) <- colnames(loc_xy)[-c(1:2)]#
+    return(list(samples = p_xy_df,#
+                betas = betas,#
+                grid = loc_arr))#
+}
+simData <- data_sim(mat.var=0.05)
+plot(simData$grid$prob, col=viridis(100), xaxt='n', yaxt='n', yaxs='i', xaxs='i', zlim=c(0,1), asp=NA)
+with(simData$samples[simData$samples$obs==1,], points(x,y,pch=16,col='white'))
+?use_data
+use_data(simData)
+nrow(simData$samples)
+names(simData)
