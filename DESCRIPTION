@@ -1,16 +1,29 @@
 Package: EnsembleRandomForests
-Title: What the Package Does (One Line, Title Case)
+Title: Ensemble Random Forests
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Zachary",
+           family = "Siders",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+           email = "zachary.siders@gmail.com",
+           comment = c(ORCID = "0000-0002-0798-9515"))
+Description: This package implements Ensemble Random Forests from Siders et al.
+    (2020) "Ensemble Random Forests as a tool for modeling rare occurrences" in
+    Endangered Species Research. Functions are provided to execute the ERF model on
+    a dataset, adjust model parameters, as well as summarize and visualize model
+    performance and predictions.
+URL: https://github.com/zsiders/EnsembleRandomForests/
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Imports: doParallel,
+    MASS,
+    Matrix,
+    randomForest,
+    raster,
+    ROCR
+Depends: 
+    R (>= 2.10)
