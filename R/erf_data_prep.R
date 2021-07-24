@@ -13,7 +13,9 @@
 #' @export
 #' 
 erf_data_prep <- function(df, var, covariates, header, duplicate=TRUE){
-	v <- na.omit(cbind(df[,var], df[,c(header,covariates)]))
+	v <- cbind(df[,var], df[,c(header,covariates)])
+	keep <- apply(v,2,function(x)all(!is.na(x)))
+	v <- v[keep]
 	colnames(v)[1] <- var #change the name of the first column to the var name
 	# Handle whether to duplicate or not
 		if(duplicate){
