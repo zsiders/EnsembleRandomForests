@@ -88,11 +88,8 @@
 <div id="r-package-for-ensemble-random-forests" class="section level2">
 <h2 class="hasAnchor">
 <a href="#r-package-for-ensemble-random-forests" class="anchor"></a>R package for Ensemble Random Forests</h2>
-<div id="alternatively-go-to-the-sitehttpszsidersgithubioensemblerandomforests-for-this-package" class="section level3">
-<h3 class="hasAnchor">
-<a href="#alternatively-go-to-the-sitehttpszsidersgithubioensemblerandomforests-for-this-package" class="anchor"></a>Alternatively go to the (site)[<a href="https://zsiders.github.io/EnsembleRandomForests/" class="uri">https://zsiders.github.io/EnsembleRandomForests/</a>] for this package</h3>
+<p><strong>Alternatively go to the <a href="https://zsiders.github.io/EnsembleRandomForests/">site</a> for this package</strong></p>
 <p>This R package implements Ensemble Random Forests from <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/">Siders et al. (2020)</a>. Ensemble Random Forests is exactly as it sounds, an ensemble model built from multiple Random Forests. The theory is that Random Forests perform exceptionally well as machine learning tools for categorical data when the data is <em>balanced</em>, i.e. that the proportion of data in each category is close to equal. There many instances where a <em>balanced</em> dataset occurs and there have been various methods to help the Random Forests model acheive good performance. The motivating example for developing the Ensemble Random Forests model comes from protected species interactions in fisheries, which by design, are often rare or hyper-rare. In this case, many of the costs of the balancing adjustments to Random Forests to tend to outweigh the benefits. Enter Ensemble Random Forests. By using an ensemble of Random Forests, the effects of poorly learning the majority class can be ameliorated to some extent and can facilitate running a Random Forests approach in hyper-rare instances.</p>
-</div>
 <div id="tutorial" class="section level3">
 <h3 class="hasAnchor">
 <a href="#tutorial" class="anchor"></a>Tutorial</h3>
@@ -108,12 +105,13 @@
 <p>The provided dataset is a <code>list</code> object that contains a <code>data.frame</code> of the sampled locations, the beta coefficients of the logistic model used to predict the probability of occurrence, and a <code>raster</code> <code>brick</code> object containing the gridded covariates, log-odds of occurrence, and probabilities of occurrence.</p>
 <div id="the-simulated-covariates" class="section level6">
 <h6>The simulated covariates</h6>
-<p><img src="/man/figures/simulated_covariates_png.png" alt="Simulated covariates"></p>
+<p align="center">
+<img src="/reference/figures/simulated_covariates_png.png" width="80%"></p>
 </div>
 <div id="the-log-odds-and-the-probability-of-occurrence-with-the-observed-presences-white-dots" class="section level6">
 <h6>The log-odds and the probability of occurrence with the observed presences (white dots)</h6>
 <p align="center">
-<img src="/man/figures/simulated_real_png.png" width="80%"></p>
+<img src="/reference/figures/simulated_real_png.png" width="80%"></p>
 </div>
 </div>
 <div id="check-model-performance" class="section level5">
@@ -121,7 +119,7 @@
 <a href="#check-model-performance" class="anchor"></a>Check model performance:</h5>
 We can check model performance using the <code>rocr_ens</code> function. This calculates a battery of performance metrics. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a <code>factor</code>). We can test this on our simulated data.
 <p align="center">
-<img src="/man/figures/simulated_roc_png.png" width="60%"></p>
+<img src="/reference/figures/simulated_roc_png.png" width="60%"></p>
 </div>
 </div>
 </div>
