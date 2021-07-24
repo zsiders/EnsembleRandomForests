@@ -10,3 +10,21 @@ Running ERFs on a given dataset is easy. The function `erf()` will take a given 
 ##### To generate a new dataset:
 Just run `data_sim()` and a new dataset with the default parameters will be generated. The examples in `data_sim()` provide a few code snippets to quickly visualize the simulated dataset. 
 
+##### Or use the provided simulated dataset:
+The provided dataset is a `list` object that contains a `data.frame` of the sampled locations, the beta coefficients of the logistic model used to predict the probability of occurrence, and a `raster` `brick` object containing the gridded covariates, log-odds of occurrence, and probabilities of occurrence. 
+
+###### The simulated covariates
+<p align="center">
+<img src="./misc/simulated_covariates_png.png">
+</p>
+###### The log-odds and the probability of occurrence with the observed presences (white dots)
+<p align="center">
+<img src="./misc/simulated_real_png.png">
+</p>
+
+##### Check model performance:
+We can check model performance using the `rocr_ens` function. This calculates a battery of performance metrics. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a `factor`). We can test this on our simulated data. 
+<p align="center">
+<img src="./misc/simulated_roc_png.png">
+</p>
+
