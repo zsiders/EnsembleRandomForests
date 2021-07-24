@@ -14,18 +14,15 @@ Just run `data_sim()` and a new dataset with the default parameters will be gene
 The provided dataset is a `list` object that contains a `data.frame` of the sampled locations, the beta coefficients of the logistic model used to predict the probability of occurrence, and a `raster` `brick` object containing the gridded covariates, log-odds of occurrence, and probabilities of occurrence. 
 
 ###### The simulated covariates
-<p align="center">
-<img src="reference/figures/simulated_covariates_png.png">
-</p>
+
+![](reference/figures/simulated_covariates_png.png)
 
 ###### The log-odds and the probability of occurrence with the observed presences (white dots)
-<p align="center">
-<img src="reference/figures/simulated_real_png.png" width="80%">
-</p>
+
+![](reference/figures/simulated_real_png.png)
 
 ##### Check model performance:
 We can check model performance using the `rocr_ens` function. This calculates a battery of performance metrics. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a `factor`). We can test this on our simulated data. 
-<p align="center">
-<img src="reference/figures/simulated_roc_png.png" width="60%">
-</p>
+
+![](reference/figures/simulated_roc_png.png)
 
