@@ -1,0 +1,21 @@
+citHeader("To cite EnsembleRandomForests in publications use:")
+
+citEntry(entry = "Article",
+  title        = "Ensemble Random Forests as a tool for modeling rare occurrences",
+  author       = personList(as.person("Zachary A. Siders"),
+                   as.person("Nicholas Ducharme-Barth"),
+                   as.person("Felipe Carvalho"),
+                   as.person("Donald Kobayashi"),
+                   as.person("Summer L. Martin"),
+                   as.person("Jennifer Raynor"),
+                   as.person("Timothy T. Jones"),
+                   as.person("Robert N.M. Ahrens")),
+  journal      = "Endangered Species Research",
+  year         = "2020",
+  volume       = "43",
+  pages        = "183-197",
+  url          = "https://www.int-res.com/abstracts/esr/v43/p183-197/",
+
+  textVersion  =
+  paste("Siders Z.A., Ducharme-Barth N.D., Carvalho F., Kobayashi D., Martin S.L., Raynor J., et al. (2020). Ensemble Random Forests as a tool for modeling rare occurrences. Endangered Species Research 43, 183–197. https://doi.org/10.3354/esr01060")
+)
