@@ -89,34 +89,36 @@
 <h2 class="hasAnchor">
 <a href="#r-package-for-ensemble-random-forests" class="anchor"></a>R package for Ensemble Random Forests</h2>
 <p>This R package implements Ensemble Random Forests from <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/">Siders et al. (2020)</a>. Ensemble Random Forests is exactly as it sounds, an ensemble model built from multiple Random Forests. The theory is that Random Forests perform exceptionally well as machine learning tools for categorical data when the data is <em>balanced</em>, i.e. that the proportion of data in each category is close to equal. There many instances where a <em>balanced</em> dataset occurs and there have been various methods to help the Random Forests model acheive good performance. The motivating example for developing the Ensemble Random Forests model comes from protected species interactions in fisheries, which by design, are often rare or hyper-rare. In this case, many of the costs of the balancing adjustments to Random Forests to tend to outweigh the benefits. Enter Ensemble Random Forests. By using an ensemble of Random Forests, the effects of poorly learning the majority class can be ameliorated to some extent and can facilitate running a Random Forests approach in hyper-rare instances.</p>
-<div id="tutorial" class="section level3">
-<h3 class="hasAnchor">
-<a href="#tutorial" class="anchor"></a>Tutorial</h3>
+</div>
+<div id="tutorial" class="section level2">
+<h2 class="hasAnchor">
+<a href="#tutorial" class="anchor"></a>Tutorial</h2>
 <p>Running ERFs on a given dataset is easy. The function <code><a href="reference/erf.html">erf()</a></code> will take a given dataset in R <code>data.frame</code> format, amend it for modeling using <code><a href="reference/erf_data_prep.html">erf_data_prep()</a></code> and <code><a href="reference/erf_formula_prep.html">erf_formula_prep()</a></code>, run each RF in the ensemble using <code><a href="reference/rf_ens_fn.html">rf_ens_fn()</a></code>, and return a fitted ERF object. This object can then be passed to various output functions: <code>erf_plotter()</code> and … to visualize and summarize.</p>
-<div id="to-generate-a-new-dataset" class="section level5">
-<h5 class="hasAnchor">
-<a href="#to-generate-a-new-dataset" class="anchor"></a>To generate a new dataset:</h5>
+<div id="to-generate-a-new-dataset" class="section level3">
+<h3 class="hasAnchor">
+<a href="#to-generate-a-new-dataset" class="anchor"></a>To generate a new dataset:</h3>
 <p>Just run <code><a href="reference/data_sim.html">data_sim()</a></code> and a new dataset with the default parameters will be generated. The examples in <code><a href="reference/data_sim.html">data_sim()</a></code> provide a few code snippets to quickly visualize the simulated dataset.</p>
 </div>
-<div id="or-use-the-provided-simulated-dataset" class="section level5">
-<h5 class="hasAnchor">
-<a href="#or-use-the-provided-simulated-dataset" class="anchor"></a>Or use the provided simulated dataset:</h5>
+<div id="or-use-the-provided-simulated-dataset" class="section level3">
+<h3 class="hasAnchor">
+<a href="#or-use-the-provided-simulated-dataset" class="anchor"></a>Or use the provided simulated dataset:</h3>
 <p>The provided dataset is a <code>list</code> object that contains a <code>data.frame</code> of the sampled locations, the beta coefficients of the logistic model used to predict the probability of occurrence, and a <code>raster</code> <code>brick</code> object containing the gridded covariates, log-odds of occurrence, and probabilities of occurrence.</p>
-<div id="the-simulated-covariates" class="section level6">
-<h6>The simulated covariates</h6>
+<div id="the-simulated-covariates" class="section level4">
+<h4 class="hasAnchor">
+<a href="#the-simulated-covariates" class="anchor"></a>The simulated covariates</h4>
 <p><img src="reference/figures/simulated_covariates.png"></p>
 </div>
-<div id="the-log-odds-and-the-probability-of-occurrence-with-the-observed-presences-white-dots" class="section level6">
-<h6>The log-odds and the probability of occurrence with the observed presences (white dots)</h6>
+<div id="the-log-odds-and-the-probability-of-occurrence-with-the-observed-presences-white-dots" class="section level4">
+<h4 class="hasAnchor">
+<a href="#the-log-odds-and-the-probability-of-occurrence-with-the-observed-presences-white-dots" class="anchor"></a>The log-odds and the probability of occurrence with the observed presences (white dots)</h4>
 <p><img src="reference/figures/simulated_real.png"></p>
 </div>
 </div>
-<div id="check-model-performance" class="section level5">
-<h5 class="hasAnchor">
-<a href="#check-model-performance" class="anchor"></a>Check model performance:</h5>
+<div id="check-model-performance" class="section level3">
+<h3 class="hasAnchor">
+<a href="#check-model-performance" class="anchor"></a>Check model performance:</h3>
 <p>We can check model performance using the <code>rocr_ens</code> function. This calculates a battery of performance metrics. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a <code>factor</code>). We can test this on our simulated data.</p>
 <p><img src="reference/figures/simulated_roc.png"></p>
-</div>
 </div>
 </div>
 </div>
