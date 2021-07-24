@@ -12,8 +12,118 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library(raster)
+library(viridisLite)
+library(RandomFields)
 ```
 
+## Overview
+Running ERFs on a given dataset is easy. The function `ens_random_forests()` will take a given dataset in R `data.frame` format, amend it for modeling using `erf_data_prep()` and `erf_formula_prep()`, run each RF in the ensemble using `rf_ens_fn()`, and return a fitted ERF object. This object can then be passed to various output functions: `erf_plotter()` and ... to visualize and summarize.
+
+First, we must load the R library.
 ```{r setup}
 library(EnsembleRandomForests)
 ```
+
+## Datasets
+
+### Using the provided simulated dataset
+The provided dataset is a `list` object that contains a `data.frame` of the sampled locations, the beta coefficients of the logistic model used to predict the probability of occurrence, and a `raster` `brick` object containing the gridded covariates, log-odds of occurrence, and probabilities of occurrence. 
+
+```{r sim_data_cov, fig.align='center', fig.height=5, fig.width=7}
+# We can also visualize the covariates
+par(mar=c(0,0.5,2,0.5), oma=c(1,1,1,1))
+layout(matrix(c(1,1,2,2,3,3,0,4,4,5,5,0),2,6,byrow=TRUE))
+r <- range(cellStats(simData$grid[[1:5]],'range'))
+for(i in 1:5){
+  image(simData$grid[[i]], col=inferno(100), zlim = r, xaxt='n', yaxt='n', xlab="", ylab="")
+  title(paste0('Covariate ', i))
+}
+```
+
+We can also see the beta coefficients that produced the probability of presence using the model below:
+$$\begin{equation}
+  log\left[\frac{\hat{P}_{obs=1}}{1-\hat{P}_{obs=1}}\right] = \alpha + \beta_1X_1 + ... +\beta_nX_n
+\end{equation}$$
+```{r sim_data_prob, fig.align='center', fig.height=3, fig.width=6}
+print(round(simData$betas,3))
+
+# We can visualize the log-odds and the probability of presence
+par(mar=c(0,0.5,2,0.5), oma=c(1,1,1,1), mfrow=c(1,2))
+image(simData$grid[[6]], col=inferno(100), xaxt='n', yaxt='n', xlab="", ylab="")
+title("Log-odds")
+image(simData$grid[[7]], col=viridis(100), xaxt='n', yaxt='n', xlab="", ylab="")
+with(simData$samples[simData$samples$obs==1,],
+     points(x,y,pch=16,col='white'))
+title("Probability of Presence")
+```
+
+### Or make your own example dataset
+Just run `data_sim()` and a new dataset with the default parameters will be generated. The examples in `data_sim()` provide a few code snippets to quickly visualize the simulated dataset. 
+```{r sim_new_data}
+set.seed(888)
+newdata <- data_sim()
+
+# We can view the resulting sampled locations
+round(head(newdata$samples,4),3)
+
+# We can also view how many of each observation class we made
+knitr::kable(table(newdata$samples$obs), col.names=c('Obs','Freq'))
+```
+
+```{r sim_new_data_cont, fig.align='center', fig.height=5, fig.width=7}
+# We can also visualize the covariates
+par(mar=c(0,0.5,2,0.5), oma=c(1,1,1,1))
+layout(matrix(c(1,1,2,2,3,3,0,4,4,5,5,0),2,6,byrow=TRUE))
+r <- range(cellStats(newdata$grid[[1:5]],'range'))
+for(i in 1:5){
+  image(newdata$grid[[i]], col=inferno(100), zlim = r, xaxt='n', yaxt='n', xlab="", ylab="")
+  title(paste0('Covariate ', i))
+}
+```
+
+### Check model performance:
+We can check model performance using the `rocr_ens` function. This calculates a battery of performance metrics based on the Receiver Operator Characteristic curve from the `ROCR` package. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a `factor`). We can test this on our simulated data. 
+```{r sim_data_roc, fig.align='center', fig.height=4, fig.width=4}
+# the rocr_ens function takes the predictions (or true probability in this case)
+# as the first argument. The true observations as a factor class are the
+# second argument. 
+roc <- with(simData$samples,rocr_ens(prob, factor(obs,levels=c(0,1))))
+
+# We can visualize the resulting Receiver Operator Characteristic curve
+# and add some of the threshold-free performance metrics (AUC, TSS, RMSE)
+par(mar=c(4,4,1,1))
+plot(roc$fpr@y.values[[1]], roc$tpr@y.values[[1]],
+     xlab = "False Positive Rate (1-Specificity)",
+     ylab = "True Positive Rate (Sensitivity)",
+     type = 'l', lwd=3, las=1)
+text(0.6, 0.2, paste0('AUC = ', round(roc$auc,2)), cex=1.2, adj=c(0,0.5))
+text(0.6, 0.125, paste0('TSS = ', round(roc$tss,2)), cex=1.2, adj=c(0,0.5))
+text(0.6, 0.0525, paste0('RMSE = ', round(roc$rmse,2)), cex=1.2, adj=c(0,0.5))
+```
+
+
+## Running Ensemble Random Forests
+
+### Reviewing the data and formula prep
+We will use our example dataset `simData` to run the ERF model on. Internally, `ens_random_forests` uses the functions `erf_data_prep` and `erf_formula_prep` to convert the data.frame of observations, the dependent variable of interest, and the covariates of interest into the correct format for the ERF model. We will see what these functions do first.
+```{r data_prep}
+erf_data <- erf_data_prep(df = simData$samples, 
+                          var = "obs", #dependent variable
+                          covariates = grep('cov',colnames(simData$samples), value=T),
+                          header = c('prob.raw','prob'), #add'n columsn to include
+                          duplicate = TRUE #flag for duplicate multiple presences
+                          )
+head(erf_data,4)
+```
+As we can see above, the main purpose of `erf_data_prep` is to reorganize the data.frame so that the variable of interest is in the first column. Additionally, a random variable is included to provide a cutoff for variable importance downstream. The *header* argument allows you to tack on additional columns that you want to include in the model prediction data.frame. This is a useful way to add a column of unique IDs for matching predictions and observations should they get scrambled. It is unwise to include all columns in the *header* argument; tacking any extraneous columns to the ERF output is less wasteful of computational resources. The most **impactful** argument in `erf_data_prep` is the *duplicate* argument. This logical flag, when TRUE, copies the covariates for any row that has more than one presence in it. For example, say we have a fishery set a longline with each set equaling an observation (or row) in our data.frame. We are likely to expect that on the 1000's of hooks on this longline that we could catch more than two of the species of interest. The *duplicate* argument handles this instance by copying the multiple presences on an observation. This effectively upweights covariate space where the species occurs multiple times. Alternatively, setting *duplicate* to FALSE can allow a user to model the probability of observing at least one of the dependent variable of interest. Note, this is different than the probability of presence when the observation unit can generate multiple presences per unit effort. Back in our longline example, if we used each individual hook as an observation (or row) then we could expect to only have one presence per hook and setting duplicate to TRUE or FALSE would have no impact on our resulting ERF data.frame. 
+
+Next, let's see what `erf_formula_prep` does.
+```{r formula_prep}
+erf_form <- erf_formula_prep(var = 'obs',
+                             covariates = grep('cov',colnames(simData$samples), value=T)
+                             )
+print(erf_form)
+```
+This function is incredibly simple and mostly called internally to `ens_random_forests`. It simple sets the dependent variable and the covariates up for use in the resulting `randomForests` call. 
+

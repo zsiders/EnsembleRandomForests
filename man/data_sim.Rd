@@ -32,3 +32,15 @@ A list containing the samples, the beta coefficients, and the raster brick
 \description{
 A function to calculate various ROC curve performance metrics given model predictions and the oberved samples
 }
+\examples{
+library(RandomFields)
+library(raster)
+df <- data_sim()
+head(df$samples)
+table(df$samples$obs)
+
+colr <- colorRampPalette(c('dodgerblue4','dodgerblue2','ivory','firebrick2','firebrick4'))
+plot(df$grid$prob, col=colr(100), xaxt='n', yaxt='n', asp=NA)
+with(df$samples[df$samples$obs==1,], points(x,y,pch=16))
+
+}
