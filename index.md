@@ -5,6 +5,7 @@ This R package implements Ensemble Random Forests from [Siders et al. (2020)](ht
 
 ## Tutorial
 
+### Overview
 Running ERFs on a given dataset is easy. The function `erf()` will take a given dataset in R `data.frame` format, amend it for modeling using `erf_data_prep()` and `erf_formula_prep()`, run each RF in the ensemble using `rf_ens_fn()`, and return a fitted ERF object. This object can then be passed to various output functions: `erf_plotter()` and ... to visualize and summarize.
 
 ### To generate a new dataset:
@@ -25,4 +26,7 @@ The provided dataset is a `list` object that contains a `data.frame` of the samp
 We can check model performance using the `rocr_ens` function. This calculates a battery of performance metrics. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a `factor`). We can test this on our simulated data. 
 
 ![](reference/figures/simulated_roc.png)
+
+### Running Ensemble Random Forests on a dataset
+
 

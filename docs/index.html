@@ -93,7 +93,11 @@
 <div id="tutorial" class="section level2">
 <h2 class="hasAnchor">
 <a href="#tutorial" class="anchor"></a>Tutorial</h2>
+<div id="overview" class="section level3">
+<h3 class="hasAnchor">
+<a href="#overview" class="anchor"></a>Overview</h3>
 <p>Running ERFs on a given dataset is easy. The function <code><a href="reference/erf.html">erf()</a></code> will take a given dataset in R <code>data.frame</code> format, amend it for modeling using <code><a href="reference/erf_data_prep.html">erf_data_prep()</a></code> and <code><a href="reference/erf_formula_prep.html">erf_formula_prep()</a></code>, run each RF in the ensemble using <code><a href="reference/rf_ens_fn.html">rf_ens_fn()</a></code>, and return a fitted ERF object. This object can then be passed to various output functions: <code>erf_plotter()</code> and … to visualize and summarize.</p>
+</div>
 <div id="to-generate-a-new-dataset" class="section level3">
 <h3 class="hasAnchor">
 <a href="#to-generate-a-new-dataset" class="anchor"></a>To generate a new dataset:</h3>
@@ -119,6 +123,10 @@
 <a href="#check-model-performance" class="anchor"></a>Check model performance:</h3>
 <p>We can check model performance using the <code>rocr_ens</code> function. This calculates a battery of performance metrics. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a <code>factor</code>). We can test this on our simulated data.</p>
 <p><img src="reference/figures/simulated_roc.png"></p>
+</div>
+<div id="running-ensemble-random-forests-on-a-dataset" class="section level3">
+<h3 class="hasAnchor">
+<a href="#running-ensemble-random-forests-on-a-dataset" class="anchor"></a>Running Ensemble Random Forests on a dataset</h3>
 </div>
 </div>
 </div>
