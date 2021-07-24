@@ -22,16 +22,16 @@ ens_random_forests <- function(df, var, covariates, out.folder=NULL, duplicate=T
 		}
 		form <- erf_formula_prep(var, covariates) #Prepare the model formula
 		v <- erf_data_prep(df, var, covariates, header, duplicate=duplicate)
-		min_split <- min_splitter(v)
+		max_split <- max_splitter(v)
 	
 	# Ensemble Random Forest
 		UseCores <- ifelse(n.forests < cores, n.forests, cores) #use less cores if n.forests < cores
-		UseCores <- ifelse(min_split < 7e3, pmin(UseCores,floor(cores * (1-min_split/7e3))), 2) #use less cores if # of min_split exceeds a certain value (need some RAM available for calcs)
+		UseCores <- ifelse(max_split < 7e3, pmin(UseCores,floor(cores * (1-max_split/7e3))), 2) #use less cores if # of max_split exceeds a certain value (need some RAM available for calcs)
 
 		cl <- makeCluster(UseCores) #make clusters
 		registerDoParallel(cl) #designate cores
 		rf.ens <- foreach(i=1:n.forests, .packages=c('randomForest','ROCR')) %dopar%{
-			rf.ens.fn(v, var, form, min_split)
+			rf.ens.fn(v, var, form, max_split)
 		}
 		stopCluster(cl)
 		

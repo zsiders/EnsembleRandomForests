@@ -127,3 +127,13 @@ print(erf_form)
 ```
 This function is incredibly simple and mostly called internally to `ens_random_forests`. It simple sets the dependent variable and the covariates up for use in the resulting `randomForests` call. 
 
+### Running an ERF
+The main wrapper function users should be interacting with is `ens_random_forests`. Internally, this function firsts prepares the data using `erf_data_prep`, creates a formula using `erf_formula_prep`, and then calls `rf_ens_fn`. This last function is the workhorse that implements each Random Forests in the ensemble. It also implements two bagging steps. The first bagging step divides the dataset into a training and test set (90:10% is default). The proportion of zeroes and ones in the presence observations is retained in this bagging step. The next bagging step implements downsampling. This balances the proportions of zeroes and ones provided to each decision tree in a given Random Forests. For example, let's look at the frequency and proportion of zeroes and ones in our simulated dataset `simData`.
+```{r balancing}
+knitr::kable(table(simData$samples$obs), col.names=c('Obs','Freq'))
+knitr::kable(prop.table(table(newdata$samples$obs)), col.names=c('Obs','Prop.'))
+```
+As we can see our zeroes and ones are unbalanced, we have far more zeroes than ones. In the first bagging step the proportion of zeroes and ones is retained in creating the training/test sets. Then prior to calling the next bagging step, we determine the maximum number of samples in each bag passed to each decision tree in a given Random Forests in the ensemble. We does this with `max_splitter`.
+```{r max_split}
+(max_split <- max_splitter(simData$samples))
+```
