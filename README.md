@@ -14,7 +14,7 @@ devtools::install_github("zsiders/EnsembleRandomForests")
 ```
 
 ## Support
-The initial work for this package was funded by the [Western Pacific Regional Fishery Management Council](https://www.wpcouncil.org), the [National Oceanic and Atmospheric Adminstration Pacific Islands Fisheries Science Center](https://www.fisheries.noaa.gov/about/pacific-islands-fisheries-science-center), and the [National Oceanic and Atmospheric Adminstration Pacific Islands Regional Office](https://www.fisheries.noaa.gov/about/pacific-islands-regional-office)under Award No: NA15NMF4410008 and NA15NMF4410066. Current development and support is under Award No: NA20NMF4410015. 
+The initial work for this package was funded by the [Western Pacific Regional Fishery Management Council](https://www.wpcouncil.org), the [National Oceanic and Atmospheric Adminstration Pacific Islands Fisheries Science Center](https://www.fisheries.noaa.gov/about/pacific-islands-fisheries-science-center), and the [National Oceanic and Atmospheric Adminstration Pacific Islands Regional Office](https://www.fisheries.noaa.gov/about/pacific-islands-regional-office) under Award No: NA15NMF4410008 and NA15NMF4410066. Current development and support is under Award No: NA20NMF4410015. 
 
 Additional simulation code to replicate [Siders et al. (2020)](https://www.int-res.com/abstracts/esr/v43/p183-197/) can be found on [Open Science Framework](https://osf.io/q9wfn/).
 
