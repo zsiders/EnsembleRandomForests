@@ -10,12 +10,13 @@
 #' @export
 #' 
 #' @examples
-#' max_split(simData$samples)
-#' max_split(simData$samples, p=0.6)
+#' data <- erf_data_prep(simData$samples, 'obs', grep('cov', colnames(simData$samples), value=TRUE))
+#' max_split(data)
+#' max_split(data, p=0.6)
 #' 
 max_splitter <- function(v, p=0.89, nmax=1e4){
 	t <- table(v[,1]) #assumes variable of interest is in the first column
 	#p is raised to the power of 2 for the two bagging events
-	min_split <- pmin(nmax,as.numeric(floor(min(t*p^2))))
-	return(min_split)
+	max_split <- pmin(nmax,as.numeric(floor(min(t*p^2))))
+	return(max_split)
 }

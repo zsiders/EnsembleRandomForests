@@ -234,8 +234,49 @@
                              <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">erf_form</span><span class="op">)</span>
 <span class="co">#&gt; obs ~ cov1 + cov2 + cov3 + cov4 + cov5</span>
-<span class="co">#&gt; &lt;environment: 0x7f8ce8a760f0&gt;</span></code></pre></div>
+<span class="co">#&gt; &lt;environment: 0x7fa9d1d7ae48&gt;</span></code></pre></div>
 <p>This function is incredibly simple and mostly called internally to <code>ens_random_forests</code>. It simple sets the dependent variable and the covariates up for use in the resulting <code>randomForests</code> call.</p>
+</div>
+<div id="running-an-erf" class="section level3">
+<h3 class="hasAnchor">
+<a href="#running-an-erf" class="anchor"></a>Running an ERF</h3>
+<p>The main wrapper function users should be interacting with is <code>ens_random_forests</code>. Internally, this function firsts prepares the data using <code>erf_data_prep</code>, creates a formula using <code>erf_formula_prep</code>, and then calls <code>rf_ens_fn</code>. This last function is the workhorse that implements each Random Forests in the ensemble. It also implements two bagging steps. The first bagging step divides the dataset into a training and test set (90:10% is default). The proportion of zeroes and ones in the presence observations is retained in this bagging step. The next bagging step implements downsampling. This balances the proportions of zeroes and ones provided to each decision tree in a given Random Forests. For example, let’s look at the frequency and proportion of zeroes and ones in our simulated dataset <code>simData</code>.</p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Obs</th>
+<th align="right">Freq</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">0</td>
+<td align="right">9819</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="right">181</td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Obs</th>
+<th align="right">Prop.</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">0</td>
+<td align="right">0.9834</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="right">0.0166</td>
+</tr>
+</tbody>
+</table>
+<p>As we can see our zeroes and ones are unbalanced, we have far more zeroes than ones. In the first bagging step the proportion of zeroes and ones is retained in creating the training/test sets. Then prior to calling the next bagging step, we determine the maximum number of samples in each bag passed to each decision tree in a given Random Forests in the ensemble. We do this with <code>max_splitter</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="op">(</span><span class="va">max_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/max_splitter.html">max_splitter</a></span><span class="op">(</span><span class="va">erf_data</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] 143</span></code></pre></div>
 </div>
 </div>
   </div>

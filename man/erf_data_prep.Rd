@@ -4,7 +4,13 @@
 \alias{erf_data_prep}
 \title{Prepare a data.frame for ERF}
 \usage{
-erf_data_prep(df, var, covariates, header, duplicate = TRUE)
+erf_data_prep(
+  df = NULL,
+  var = NULL,
+  covariates = NULL,
+  header = NULL,
+  duplicate = TRUE
+)
 }
 \arguments{
 \item{df}{A data.frame object}
@@ -21,4 +27,9 @@ erf_data_prep(df, var, covariates, header, duplicate = TRUE)
 Prepares a data.frame object for use with the ERF (not needed if using erf())
 
 A data.frame with a new first column of var as a binary factor (duplicated if duplicate=TRUE), the header and covariates columns, and a random variable column
+}
+\examples{
+data <- erf_data_prep(df = simData$samples, var = 'obs', covariates = grep('cov', colnames(simData$samples), value=TRUE), header = c('prob.raw','prob'))
+head(data)
+
 }

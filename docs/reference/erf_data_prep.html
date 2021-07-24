@@ -131,7 +131,13 @@ A data.frame with a new first column of var as a binary factor (duplicated if du
 <p>A data.frame with a new first column of var as a binary factor (duplicated if duplicate=TRUE), the header and covariates columns, and a random variable column</p>
     </div>
 
-    <pre class="usage"><span class='fu'>erf_data_prep</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>var</span>, <span class='va'>covariates</span>, <span class='va'>header</span>, duplicate <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>erf_data_prep</span><span class='op'>(</span>
+  df <span class='op'>=</span> <span class='cn'>NULL</span>,
+  var <span class='op'>=</span> <span class='cn'>NULL</span>,
+  covariates <span class='op'>=</span> <span class='cn'>NULL</span>,
+  header <span class='op'>=</span> <span class='cn'>NULL</span>,
+  duplicate <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,6 +165,24 @@ A data.frame with a new first column of var as a binary factor (duplicated if du
     </table>
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'>erf_data_prep</span><span class='op'>(</span>df <span class='op'>=</span> <span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span>, var <span class='op'>=</span> <span class='st'>'obs'</span>, covariates <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>'cov'</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span>, value<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>, header <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/RandomFields/man/QMath.html'>c</a></span><span class='op'>(</span><span class='st'>'prob.raw'</span>,<span class='st'>'prob'</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/pkg/raster/man/headtail.html'>head</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;   obs   prob.raw      prob        cov1        cov2       cov3        cov4
+#&gt; 1   0 -0.2525018 0.4372078 -0.07158000 -0.27811766  0.5741324  0.01366734
+#&gt; 2   0  2.7156166 0.9379419 -0.12028137  0.26103341 -0.2298234  0.14750795
+#&gt; 3   0  0.5609232 0.6366661  0.12422049  0.09052045 -0.3070963  0.14493653
+#&gt; 4   0  0.2723824 0.5676777 -0.12481261 -0.29583389  0.6282519  0.06067430
+#&gt; 5   0  3.0913999 0.9565366  0.01361460 -0.04989738  0.1600218  0.42189437
+#&gt; 6   0 -2.1467836 0.1046322  0.01842766  0.18300638 -0.3421439 -0.33128857
+#&gt;          cov5     random
+#&gt; 1 -0.15537696 -0.8543624
+#&gt; 2  0.32482174  0.6725291
+#&gt; 3  0.02303010  1.0337192
+#&gt; 4 -0.25240678  0.4702388
+#&gt; 5  0.13166581 -1.4174715
+#&gt; 6  0.07998399  0.9871635</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

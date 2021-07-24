@@ -13,8 +13,7 @@
 #' 
 #' @export
 #' 
-ens_random_forests <- function(df, var, covariates, out.folder=NULL, duplicate=TRUE, 
-	                n.forests=100, cores=parallel::detectCores()-2, save=TRUE){
+ens_random_forests <- function(df, var, covariates, out.folder=NULL, duplicate=TRUE, n.forests=10, cores=parallel::detectCores()-2, save=TRUE){
 	#Prep
 		if(is.null(out.folder)){
 			dir.create('Output/')

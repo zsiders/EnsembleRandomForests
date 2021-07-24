@@ -2,9 +2,9 @@
 % Please edit documentation in R/rf_ens_fn.R
 \name{rf_ens_fn}
 \alias{rf_ens_fn}
-\title{Random Forests model with additional bagging}
+\title{Random Forest model with additional bagging}
 \usage{
-rf_ens_fn(v, var, form, min_split, ntree = 1000, mtry = 5, importance = TRUE)
+rf_ens_fn(v, var, form, max_split, ntree = 1000, mtry = 5, importance = TRUE)
 }
 \arguments{
 \item{v}{A data frame object created by \code{erf_data_prep()} or internally in \code{erf()}}
@@ -13,20 +13,33 @@ rf_ens_fn(v, var, form, min_split, ntree = 1000, mtry = 5, importance = TRUE)
 
 \item{form}{A formula class object specifying the RF model formulation (created by \code{erf_formula_prep()} or internal in \code{erf()})}
 
-\item{min_split}{The minimum number of samples in the RF bagging procedure (created internally by \code{erf()})}
-
 \item{ntree}{The number of decision trees to use in each RF, default is 1000}
 
 \item{mtry}{The number of covariates to try at each node split, default is 5}
 
 \item{importance}{A logical flag for the randomForest model to calculate the variable importance}
+
+\item{min_split}{The minimum number of samples in the RF bagging procedure (created internally by \code{erf()})}
 }
 \value{
 A list containing mod (the randomForest model), preds (the predictions), roc_train (the Receiver Operator Characteristic Curve performance metrics calculated by rocr_ens() on the training set), roc_test (the Receiver Operator Characteristic Curve performance metrics calculated by rocr_ens() on the test set)
 }
 \description{
-Runs a single Random Forests model with an additional bagging layer
+Runs a single Random Forest model with an additional bagging layer and calculates performance metrics
 }
 \examples{
+form <- erf_formula_prep('obs', grep('cov',colnames(simData$samples),value=TRUE))
+data <- erf_data_prep(simData$samples, 'obs', grep('cov', colnames(simData$samples), value=TRUE))
+max_split <- max_splitter(data)
+
+#fit a single RandomForest
+rf_ex <- rf_ens_fn(data, 'obs', form, max_split, ntree=200)
+
+#see the training/test auc value
+rf_ex$roc_train$auc
+rf_ex$roc_test$auc
+
+#see the distribution of predictions
+plot(density(rf_ex$preds[,2],from=0,to=1,adj=2))
 
 }

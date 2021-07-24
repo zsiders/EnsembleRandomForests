@@ -10,7 +10,7 @@ ens_random_forests(
   covariates,
   out.folder = NULL,
   duplicate = TRUE,
-  n.forests = 100,
+  n.forests = 10,
   cores = parallel::detectCores() - 2,
   save = TRUE
 )

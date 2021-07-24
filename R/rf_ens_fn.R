@@ -1,6 +1,6 @@
-#' Random Forests model with additional bagging
+#' Random Forest model with additional bagging
 #' 
-#' @description Runs a single Random Forests model with an additional bagging layer
+#' @description Runs a single Random Forest model with an additional bagging layer and calculates performance metrics
 #' 
 #' @param v A data frame object created by `erf_data_prep()` or internally in `erf()`
 #' @param var A character string specifying the column name to use as the dependent variable
@@ -14,8 +14,21 @@
 #' @export
 #' 
 #' @examples
+#' form <- erf_formula_prep('obs', grep('cov',colnames(simData$samples),value=TRUE))
+#' data <- erf_data_prep(simData$samples, 'obs', grep('cov', colnames(simData$samples), value=TRUE))
+#' max_split <- max_splitter(data)
 #' 
-rf_ens_fn <- function(v, var, form, min_split, ntree=1000, mtry=5, importance=TRUE){
+#' #fit a single RandomForest
+#' rf_ex <- rf_ens_fn(data, 'obs', form, max_split, ntree=200)
+#' 
+#' #see the training/test auc value
+#' rf_ex$roc_train$auc
+#' rf_ex$roc_test$auc
+#' 
+#' #see the distribution of predictions
+#' plot(density(rf_ex$preds[,2],from=0,to=1,adj=2))
+#' 
+rf_ens_fn <- function(v, var, form, max_split, ntree=1000, mtry=5, importance=TRUE){
 	#first bagging
 	zero_sub_ens <- sample(1:nrow(v[v[,var]=="0",]),
 	                       floor(0.9*nrow(v[v[,var]=="0",])))
@@ -28,15 +41,15 @@ rf_ens_fn <- function(v, var, form, min_split, ntree=1000, mtry=5, importance=TR
 
 	#run the RandomForests
 	#second bagging internal in RF
-	mod <- randomForest(form, 
+	mod <- randomForest::randomForest(form, 
 	                    data=train_ens, 
 	                    ntree=1000, 
 	                    mtry=5, 
 	                    importance=TRUE, 
-	                    sampsize=c(min_split,min_split))
+	                    sampsize=c(max_split,max_split))
 
 	#predictions
-	preds <- as.data.frame(predict(mod, 
+	preds <- as.data.frame(randomForest::predict(mod, 
 	                               newdata=v, 
 	                               type='prob'))
 	colnames(preds) <- paste0('P.',colnames(preds))

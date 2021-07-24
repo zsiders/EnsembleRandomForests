@@ -12,8 +12,20 @@
 #' 
 #' @export
 #' 
-erf_data_prep <- function(df, var, covariates, header, duplicate=TRUE){
-	v <- cbind(df[,var], df[,c(header,covariates)])
+#' @examples
+#' data <- erf_data_prep(df = simData$samples, var = 'obs', covariates = grep('cov', colnames(simData$samples), value=TRUE), header = c('prob.raw','prob'))
+#' head(data)
+#' 
+erf_data_prep <- function(df=NULL, var=NULL, covariates=NULL, header=NULL, duplicate=TRUE){
+	if(is.null(df)) stop("Need to supply data.frame")
+	if(is.null(var)) stop("Need to supply variable column")
+	if(is.null(covariates)) stop("Need to supply covariate columns")
+	if(is.null(header)){
+		v <- cbind(df[,var], df[,c(covariates)])
+	}else{
+		v <- cbind(df[,var], df[,c(header,covariates)])
+	}
+	
 	keep <- apply(v,2,function(x)all(!is.na(x)))
 	v <- v[keep]
 	colnames(v)[1] <- var #change the name of the first column to the var name
