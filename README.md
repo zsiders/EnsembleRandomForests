@@ -20,7 +20,7 @@ The provided dataset is a `list` object that contains a `data.frame` of the samp
 
 ###### The log-odds and the probability of occurrence with the observed presences (white dots)
 <p align="center">
-<img src="./misc/simulated_real_png.png">
+<img src="./misc/simulated_real_png.png" width="80%">
 </p>
 
 ##### Check model performance:
