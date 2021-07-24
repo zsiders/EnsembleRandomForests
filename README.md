@@ -15,17 +15,17 @@ The provided dataset is a `list` object that contains a `data.frame` of the samp
 
 ###### The simulated covariates
 <p align="center">
-<img src="./misc/simulated_covariates_png.png">
+<img src="./man/figures/simulated_covariates_png.png">
 </p>
 
 ###### The log-odds and the probability of occurrence with the observed presences (white dots)
 <p align="center">
-<img src="./misc/simulated_real_png.png" width="80%">
+<img src="./man/figures/simulated_real_png.png" width="80%">
 </p>
 
 ##### Check model performance:
 We can check model performance using the `rocr_ens` function. This calculates a battery of performance metrics. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a `factor`). We can test this on our simulated data. 
 <p align="center">
-<img src="./misc/simulated_roc_png.png" width="60%">
+<img src="./man/figures/simulated_roc_png.png" width="60%">
 </p>
 
