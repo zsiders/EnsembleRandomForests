@@ -4,3 +4,6 @@ docs
 .Rapp.history
 inst/doc
 .Rapp.history
+*.history
+.Rbuildignore
+.Rbuildignore

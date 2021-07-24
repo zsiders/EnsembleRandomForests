@@ -1,6 +1,6 @@
 Package: EnsembleRandomForests
 Title: Ensemble Random Forests
-Version: 0.0.0.9000
+Version: 1.0
 Authors@R: 
     person(given = "Zachary",
            family = "Siders",
@@ -13,8 +13,7 @@ Description: This package implements Ensemble Random Forests from Siders et al.
     a dataset, adjust model parameters, as well as summarize and visualize model
     performance and predictions.
 URL: https://github.com/zsiders/EnsembleRandomForests/
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
