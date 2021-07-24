@@ -50,6 +50,18 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/basic-workflow.html">Getting started with ERF</a>
+    </li>
+  </ul>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -86,6 +98,28 @@
 <a href="#to-generate-a-new-dataset" class="anchor"></a>To generate a new dataset:</h5>
 <p>Just run <code><a href="reference/data_sim.html">data_sim()</a></code> and a new dataset with the default parameters will be generated. The examples in <code><a href="reference/data_sim.html">data_sim()</a></code> provide a few code snippets to quickly visualize the simulated dataset.</p>
 </div>
+<div id="or-use-the-provided-simulated-dataset" class="section level5">
+<h5 class="hasAnchor">
+<a href="#or-use-the-provided-simulated-dataset" class="anchor"></a>Or use the provided simulated dataset:</h5>
+<p>The provided dataset is a <code>list</code> object that contains a <code>data.frame</code> of the sampled locations, the beta coefficients of the logistic model used to predict the probability of occurrence, and a <code>raster</code> <code>brick</code> object containing the gridded covariates, log-odds of occurrence, and probabilities of occurrence.</p>
+<div id="the-simulated-covariates" class="section level6">
+<h6>The simulated covariates</h6>
+<p align="center">
+<img src="./misc/simulated_covariates_png.png"></p>
+</div>
+<div id="the-log-odds-and-the-probability-of-occurrence-with-the-observed-presences-white-dots" class="section level6">
+<h6>The log-odds and the probability of occurrence with the observed presences (white dots)</h6>
+<p align="center">
+<img src="./misc/simulated_real_png.png" width="80%"></p>
+</div>
+</div>
+<div id="check-model-performance" class="section level5">
+<h5 class="hasAnchor">
+<a href="#check-model-performance" class="anchor"></a>Check model performance:</h5>
+We can check model performance using the <code>rocr_ens</code> function. This calculates a battery of performance metrics. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a <code>factor</code>). We can test this on our simulated data.
+<p align="center">
+<img src="./misc/simulated_roc_png.png" width="60%"></p>
+</div>
 </div>
 </div>
 </div>
@@ -104,6 +138,12 @@
 <ul class="list-unstyled">
 <li>`use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license</li>
+</ul>
+</div>
+<div class="citation">
+<h2>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html">Citing EnsembleRandomForests</a></li>
 </ul>
 </div>
 <div class="developers">
