@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • EnsembleRandomForests</title>
+<title>Ensemble Random Forests — ens_random_forests • EnsembleRandomForests</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Ensemble Random Forests — ens_random_forests" />
+<meta property="og:description" content="Execute Ensemble Random Forests model on a given dataset" />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -117,84 +118,70 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Ensemble Random Forests</h1>
+    <small class="dont-index">Source: <a href='https://github.com/zsiders/EnsembleRandomForests/blob/master/R/ens_random_forests.R'><code>R/ens_random_forests.R</code></a></small>
+    <div class="hidden name"><code>ens_random_forests.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Execute Ensemble Random Forests model on a given dataset</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>ens_random_forests</span><span class='op'>(</span>
+  <span class='va'>df</span>,
+  <span class='va'>var</span>,
+  <span class='va'>covariates</span>,
+  out.folder <span class='op'>=</span> <span class='cn'>NULL</span>,
+  duplicate <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  n.forests <span class='op'>=</span> <span class='fl'>100</span>,
+  cores <span class='op'>=</span> <span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>2</span>,
+  save <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="data_sim.html">data_sim()</a></code> </p>
-        </td>
-        <td><p>data simulation for ERF example Data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="ens_random_forests.html">ens_random_forests()</a></code> </p>
-        </td>
-        <td><p>Ensemble Random Forests</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="erf_data_prep.html">erf_data_prep()</a></code> </p>
-        </td>
-        <td><p>Prepare a data.frame for ERF</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="erf_formula_prep.html">erf_formula_prep()</a></code> </p>
-        </td>
-        <td><p>Make a formula for ERF use</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="min_splitter.html">min_splitter()</a></code> </p>
-        </td>
-        <td><p>Determines the minimum sample size in the first RF bag</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="rf_ens_fn.html">rf_ens_fn()</a></code> </p>
-        </td>
-        <td><p>Random Forests model with additional bagging</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="rocr_ens.html">rocr_ens()</a></code> </p>
-        </td>
-        <td><p>Receiver Operator Characteristic Curve calculations</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="simData.html">simData</a></code> </p>
-        </td>
-        <td><p>Example dataset for use with ERF</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>df</th>
+      <td><p>A data.frame object</p></td>
+    </tr>
+    <tr>
+      <th>var</th>
+      <td><p>A character string indicating the column name of the data frame that contains the number of interactions for the ERF to model; column should be a numeric column</p></td>
+    </tr>
+    <tr>
+      <th>covariates</th>
+      <td><p>A character vector indicating the column name(s) of the data frame that contain the covariates</p></td>
+    </tr>
+    <tr>
+      <th>out.folder</th>
+      <td><p>A path to the folder to write out too. If NULL then a folder is generated in the working directory</p></td>
+    </tr>
+    <tr>
+      <th>duplicate</th>
+      <td><p>A logical flag that indicates whether to duplicate observations with more than one interaction. Default is TRUE to duplicate all records that interacted with more than one individual (i.e. a fishing set that caught two of the same species)</p></td>
+    </tr>
+    <tr>
+      <th>n.forests</th>
+      <td><p>A numeric value indicating how many Random Forests to generate in the ensemble, default is 100</p></td>
+    </tr>
+    <tr>
+      <th>cores</th>
+      <td><p>A numeric value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.</p></td>
+    </tr>
+    <tr>
+      <th>save</th>
+      <td><p>A logical flag to save the output as an RData object, default is TRUE.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A fitted ERF model as a list object. Contains the model data, the fitted RF models, the ensemble predictions, the ensemble training/test performance, the ROC training/test performance for each RF, and the individual RF predictions.</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
