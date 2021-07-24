@@ -30,8 +30,8 @@ data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), ma
 		Scale <- runif(ncov, unif.bnd[1],unif.bnd[2])*(ncell/100) #scale parameters
 	
 	# Matern spatial autocorrelation models
-		model <- sapply(Scale, function(x) {RMmatern(nu=1, var=mat.var, scale=x)})
-		loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))
+		model <- sapply(Scale, function(x) {RandomFields::RMmatern(nu=1, var=mat.var, scale=x)})
+		loc_xy[,paste0("cov",1:ncov)] <- sapply(model, function(d) array(RandomFields::RFsimulate(model=d, x=loc_xy[,'x'], y=loc_xy[,'y'])@data[,1], dim=Dim))
 		cov.id <- grep('cov',colnames(loc_xy))
 	#detrend
 		loc_xy[,cov.id] <- apply(loc_xy[,cov.id],2,function(x) x-mean(x))
@@ -65,13 +65,14 @@ data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), ma
 		p_xy_df$obs <- rbinom(nsamp, 1, (1-prob_missing)*p_xy_df$prob) * p_xy_df$pred
 	#clean up
 		rownames(p_xy_df) <- 1:nrow(p_xy_df)
-		loc_arr <- raster::brick(array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2)), xmx=ncell, ymx=ncell)
-		loc_arr <- t(loc_arr)
-		loc_arr <- flip(loc_arr,'y')
-		names(loc_arr) <- colnames(loc_xy)[-c(1:2)]
+		loc_arr <- array(as.matrix(loc_xy[,-c(1:2)]), dim=c(Dim, ncol(loc_xy)-2))
+		loc_brick <- raster::brick(loc_arr, xmx=ncell, ymx=ncell)
+		loc_brick <- raster::t(loc_brick)
+		loc_brick <- flip(loc_brick,'y')
+		names(loc_brick) <- colnames(loc_xy)[-c(1:2)]
 	return(list(samples = p_xy_df,
 	            betas = betas,
-	            grid = loc_arr))
+	            grid = loc_brick))
 }
 cor2cov <- function(V, sigma) {
   V * tcrossprod(sigma)
