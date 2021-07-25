@@ -241,7 +241,7 @@
                              <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">erf_form</span><span class="op">)</span>
 <span class="co">#&gt; obs ~ cov1 + cov2 + cov3 + cov4 + cov5</span>
-<span class="co">#&gt; &lt;environment: 0x7f8d6029ac88&gt;</span></code></pre></div>
+<span class="co">#&gt; &lt;environment: 0x7fc0e30e8320&gt;</span></code></pre></div>
 <p>This function is incredibly simple and mostly called internally to <code>ens_random_forests</code>. It simple sets the dependent variable and the covariates up for use in the resulting <code>randomForests</code> call.</p>
 </div>
 <div id="erf-balancing" class="section level3">
@@ -323,18 +323,18 @@
 <span class="co">#&gt; 6   0  0.01842766  0.18300638 -0.3421439 -0.33128857  0.07998399  1.5644587</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.pred</span><span class="op">)</span> <span class="co">#view the model predictions</span>
 <span class="co">#&gt;      P.0    P.1 PRES   resid</span>
-<span class="co">#&gt; 1 0.7211 0.2789    0 -0.2789</span>
-<span class="co">#&gt; 2 0.3884 0.6116    0 -0.6116</span>
-<span class="co">#&gt; 3 0.5816 0.4184    0 -0.4184</span>
-<span class="co">#&gt; 4 0.7323 0.2677    0 -0.2677</span>
-<span class="co">#&gt; 5 0.3380 0.6620    0 -0.6620</span>
-<span class="co">#&gt; 6 0.9925 0.0075    0 -0.0075</span>
+<span class="co">#&gt; 1 0.7224 0.2776    0 -0.2776</span>
+<span class="co">#&gt; 2 0.4182 0.5818    0 -0.5818</span>
+<span class="co">#&gt; 3 0.5759 0.4241    0 -0.4241</span>
+<span class="co">#&gt; 4 0.7379 0.2621    0 -0.2621</span>
+<span class="co">#&gt; 5 0.3483 0.6517    0 -0.6517</span>
+<span class="co">#&gt; 6 0.9923 0.0077    0 -0.0077</span>
 <span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.te.perf</span> <span class="co">#view the test threshold-free performance metrics</span>
 <span class="co">#&gt;     teAUC    teRMSE     teTSS </span>
-<span class="co">#&gt; 0.7916470 0.3900535 0.5505413</span>
+<span class="co">#&gt; 0.7791242 0.3922980 0.5332029</span>
 <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="st">'auc'</span>,<span class="st">'rmse'</span>,<span class="st">'tss'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="co">#view the threshold-free ensemble performance metrics</span>
 <span class="co">#&gt;       auc      rmse       tss </span>
-<span class="co">#&gt; 0.9681441 0.3810938 0.8167343</span></code></pre></div>
+<span class="co">#&gt; 0.9676563 0.3815663 0.8037743</span></code></pre></div>
 <p>As we can see, the ensemble performs better than the mean test predictions. This is advantage of ERF over other RF modifications for extreme class imbalance. <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/">Siders et al. 2020</a> discusses the various performance of these other modifications if you are curious.</p>
 </div>
 <div id="next-steps" class="section level2">

@@ -53,6 +53,6 @@ ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs", covariates=grep("
 head(ens_rf_ex$data) # view the dataset used in the model
 head(ens_rf_ex$ens.pred) #view the model predictions
 ens_rf_ex$mu.te.perf #view the mean test threshold-free performance metrics
-unlist(ens_rf_ex$ens.perf[c('auc','tss','rmse')]) #view the threshold-free ensemble performance metrics
+unlist(ens_rf_ex$ens.perf[c('auc','rmse','tss')]) #view the threshold-free ensemble performance metrics
 
 }
