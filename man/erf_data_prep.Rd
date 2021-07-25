@@ -30,9 +30,9 @@ A data.frame with a new first column of var as a binary factor (duplicated if du
 }
 \examples{
 data <- erf_data_prep(df = simData$samples,
-var = 'obs', 
-covariates = grep('cov', colnames(simData$samples), value=TRUE), 
-header = c('prob.raw','prob'))
+						var = 'obs', 
+						covariates = grep('cov', colnames(simData$samples), value=TRUE), 
+						header = c('prob.raw','prob'))
 head(data)
 
 }
