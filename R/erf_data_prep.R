@@ -13,7 +13,10 @@
 #' @export
 #' 
 #' @examples
-#' data <- erf_data_prep(df = simData$samples, var = 'obs', covariates = grep('cov', colnames(simData$samples), value=TRUE), header = c('prob.raw','prob'))
+#' data <- erf_data_prep(df = simData$samples,
+#' var = 'obs', 
+#' covariates = grep('cov', colnames(simData$samples), value=TRUE), 
+#' header = c('prob.raw','prob'))
 #' head(data)
 #' 
 erf_data_prep <- function(df=NULL, var=NULL, covariates=NULL, header=NULL, duplicate=TRUE){

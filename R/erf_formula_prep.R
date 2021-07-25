@@ -9,6 +9,9 @@
 #' 
 #' @export
 #' 
+#' @examples
+#' erf_formula_prep('death', c('sarlaac','lightsaber','wookie','stormtrooper'))
+#' 
 erf_formula_prep <- function(var, covariates){
 	form <- formula(paste0(var," ~ ",paste(covariates, collapse=" + ")))
 	return(form)

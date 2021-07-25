@@ -2,11 +2,10 @@
 #' 
 #' @description Runs a single Random Forest model with an additional bagging layer and calculates performance metrics
 #' 
-#' @param v A data frame object created by `erf_data_prep()` or internally in `erf()`
-#' @param var A character string specifying the column name to use as the dependent variable
-#' @param form A formula class object specifying the RF model formulation (created by `erf_formula_prep()` or internal in `erf()`)
-#' @param min_split The minimum number of samples in the RF bagging procedure (created internally by `erf()`)
-#' @param ntree The number of decision trees to use in each RF, default is 1000
+#' @param v A data frame object created by `erf_data_prep()` or internally in `ens_random_forests()`
+#' @param form A formula class object specifying the RF model formulation (created by `erf_formula_prep()` or internal in `ens_random_forests()`)
+#' @param max_split The maximum number of samples in the RF bagging procedure (created internally by `ens_random_forests()`)
+#' @param ntree The number of decision trees to use in each RF, default is 100
 #' @param mtry The number of covariates to try at each node split, default is 5
 #' @param importance A logical flag for the randomForest model to calculate the variable importance
 #' 
@@ -19,16 +18,27 @@
 #' max_split <- max_splitter(data)
 #' 
 #' #fit a single RandomForest
-#' rf_ex <- rf_ens_fn(data, 'obs', form, max_split, ntree=200)
+#' rf_ex <- rf_ens_fn(data, form, max_split, ntree=50)
 #' 
 #' #see the training/test auc value
 #' rf_ex$roc_train$auc
 #' rf_ex$roc_test$auc
 #' 
 #' #see the distribution of predictions
-#' plot(density(rf_ex$preds[,2],from=0,to=1,adj=2))
+#' par(mar=c(4,4,1,1))
+#' plot(density(rf_ex$preds[,2],from=0,to=1,adj=2), main="")
 #' 
-rf_ens_fn <- function(v, var, form, max_split, ntree=1000, mtry=5, importance=TRUE){
+rf_ens_fn <- function(v, form, max_split, ntree=100, mtry=5, importance=TRUE){
+	if(missing(v)) stop("Supply a ERF data.frame")
+	if(missing(form)) stop("Supply a model formula")
+	var <- as.character(form)[2]
+	if(missing(max_split)){
+		max_split <- max_splitter(v)
+		warning("max_split not provided, assuming default")
+	}
+	v$rf.ID <- 1:nrow(v)
+	ncovar <- length(strsplit(gsub("[[:punct:]]+\\s","",as.character(form)[3]),"\\s")[[1]])
+	if(mtry >= ncovar) mtry <- ncovar-1 #permutation
 	#first bagging
 	zero_sub_ens <- sample(1:nrow(v[v[,var]=="0",]),
 	                       floor(0.9*nrow(v[v[,var]=="0",])))
@@ -41,23 +51,23 @@ rf_ens_fn <- function(v, var, form, max_split, ntree=1000, mtry=5, importance=TR
 
 	#run the RandomForests
 	#second bagging internal in RF
-	mod <- randomForest::randomForest(form, 
+	mod <- randomForest(form, 
 	                    data=train_ens, 
-	                    ntree=1000, 
-	                    mtry=5, 
+	                    ntree=ntree, 
+	                    mtry=mtry, 
 	                    importance=TRUE, 
 	                    sampsize=c(max_split,max_split))
 
 	#predictions
-	preds <- as.data.frame(randomForest::predict(mod, 
+	preds <- as.data.frame(predict(mod, 
 	                               newdata=v, 
 	                               type='prob'))
 	colnames(preds) <- paste0('P.',colnames(preds))
-	preds$PRES <- v[,dv]
+	preds$PRES <- v[,var]
 	preds$type <- 'train'
-	preds$SetID <- v$SetID
-	preds$type[preds$SetID %in%test_ens$SetID] <- 'test'
-
+	preds$rf.ID <- 1:nrow(v)
+	preds$type[preds$rf.ID %in%test_ens$rf.ID] <- 'test'
+	preds <- preds[,-grep('rf.ID',colnames(preds))]
 	roc_train <- rocr_ens(preds[preds$type=='train',2], preds$PRES[preds$type=='train'])
 	roc_test <- rocr_ens(preds[preds$type=='test',2], preds$PRES[preds$type=='test'])
 

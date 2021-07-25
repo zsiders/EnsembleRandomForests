@@ -95,7 +95,10 @@
 <p>Running ERFs on a given dataset is easy. The function <code><a href="../reference/ens_random_forests.html">ens_random_forests()</a></code> will take a given dataset in R <code>data.frame</code> format, amend it for modeling using <code><a href="../reference/erf_data_prep.html">erf_data_prep()</a></code> and <code><a href="../reference/erf_formula_prep.html">erf_formula_prep()</a></code>, run each RF in the ensemble using <code><a href="../reference/rf_ens_fn.html">rf_ens_fn()</a></code>, and return a fitted ERF object. This object can then be passed to various output functions: <code>erf_plotter()</code> and … to visualize and summarize.</p>
 <p>First, we must load the R library.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/zsiders/EnsembleRandomForests/">EnsembleRandomForests</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/zsiders/EnsembleRandomForests/">EnsembleRandomForests</a></span><span class="op">)</span>
+<span class="co">#&gt; Loading required package: randomForest</span>
+<span class="co">#&gt; randomForest 4.6-14</span>
+<span class="co">#&gt; Type rfNews() to see new features/changes/bug fixes.</span></code></pre></div>
 </div>
 <div id="datasets" class="section level2">
 <h2 class="hasAnchor">
@@ -234,7 +237,7 @@
                              <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">erf_form</span><span class="op">)</span>
 <span class="co">#&gt; obs ~ cov1 + cov2 + cov3 + cov4 + cov5</span>
-<span class="co">#&gt; &lt;environment: 0x7fa9d1d7ae48&gt;</span></code></pre></div>
+<span class="co">#&gt; &lt;environment: 0x7f9b5c2b3cc8&gt;</span></code></pre></div>
 <p>This function is incredibly simple and mostly called internally to <code>ens_random_forests</code>. It simple sets the dependent variable and the covariates up for use in the resulting <code>randomForests</code> call.</p>
 </div>
 <div id="running-an-erf" class="section level3">

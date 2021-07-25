@@ -17,3 +17,7 @@ A formula class object
 \description{
 Takes a column names and makes the RF model formula
 }
+\examples{
+erf_formula_prep('death', c('sarlaac','lightsaber','wookie','stormtrooper'))
+
+}

@@ -11,8 +11,8 @@
 #' 
 #' @examples
 #' data <- erf_data_prep(simData$samples, 'obs', grep('cov', colnames(simData$samples), value=TRUE))
-#' max_split(data)
-#' max_split(data, p=0.6)
+#' max_splitter(data)
+#' max_splitter(data, p=0.6)
 #' 
 max_splitter <- function(v, p=0.89, nmax=1e4){
 	t <- table(v[,1]) #assumes variable of interest is in the first column

@@ -29,7 +29,10 @@ Prepares a data.frame object for use with the ERF (not needed if using erf())
 A data.frame with a new first column of var as a binary factor (duplicated if duplicate=TRUE), the header and covariates columns, and a random variable column
 }
 \examples{
-data <- erf_data_prep(df = simData$samples, var = 'obs', covariates = grep('cov', colnames(simData$samples), value=TRUE), header = c('prob.raw','prob'))
+data <- erf_data_prep(df = simData$samples,
+var = 'obs', 
+covariates = grep('cov', colnames(simData$samples), value=TRUE), 
+header = c('prob.raw','prob'))
 head(data)
 
 }

@@ -22,11 +22,11 @@ Imports: doParallel,
     MASS,
     Matrix,
     RandomFields,
-    randomForest,
     raster,
     ROCR
 Depends: 
-    R (>= 2.10)
+    R (>= 2.10),
+    randomForest
 Suggests: 
     rmarkdown,
     knitr,
