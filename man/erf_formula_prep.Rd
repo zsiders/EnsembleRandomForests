@@ -4,12 +4,14 @@
 \alias{erf_formula_prep}
 \title{Make a formula for ERF use}
 \usage{
-erf_formula_prep(var, covariates)
+erf_formula_prep(var, covariates, add.random = TRUE)
 }
 \arguments{
 \item{var}{A character string indicating the column name of the data frame that contains the number of interactions for the ERF to model; column should be a numeric column}
 
 \item{covariates}{A character vector indicating the column name(s) of the data frame that contain the covariates}
+
+\item{add.random}{A logical flag for adding a random variable named 'random' to the formula; needed for the ERF models}
 }
 \value{
 A formula class object

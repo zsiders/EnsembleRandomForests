@@ -6,12 +6,14 @@
 #' @param out.folder A path to the folder to write out too. If NULL then a folder is generated in the working directory
 #' @param duplicate A logical flag that indicates whether to duplicate observations with more than one interaction. Default is TRUE to duplicate all records that interacted with more than one individual (i.e. a fishing set that caught two of the same species)
 #' @param n.forests A numeric value indicating how many Random Forests to generate in the ensemble, default is 100
+#' @param importance A logical flag for the randomForest model to calculate the variable importance
 #' @param cores A numeric value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.
 #' @param save A logical flag to save the output as an RData object, default is TRUE.
 #' @param ntree The number of decision trees to use in each RF, default is 1000
 #' @param mtry The number of covariates to try at each node split, default is 5
+#' @param var.q The quantiles for the distribution of the variable importance; only exectuted if importance=TRUE
 #' 
-#' @return A fitted ERF model as a list object. Contains the model data, the fitted RF models, the ensemble predictions, the ensemble model performance, the mean training/test performance, the ROC training/test performance for each RF, and the individual RF predictions.
+#' @return A fitted ERF model as a list object. Contains the model data, the fitted RF models, the ensemble predictions, the ensemble model performance, the mean training/test performance, the ROC training/test performance for each RF, the individual RF predictions, and, if importance=TRUE, the variable importance
 #' 
 #' @export
 #' 
@@ -37,7 +39,7 @@
 #' #view the threshold-free ensemble performance metrics
 #' unlist(ens_rf_ex$ens.perf[c('auc','rmse','tss')]) 
 #' 
-ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL, duplicate=TRUE, n.forests=10, cores=parallel::detectCores()-2, save=TRUE, ntree=1000, mtry=5){
+ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL, duplicate=TRUE, n.forests=10, importance=TRUE, cores=parallel::detectCores()-2, save=TRUE, ntree=1000, mtry=5, var.q = c(0.1,0.5,0.9)){
 	#Prep
 		if(missing(df)) stop("Supply a data.frame")
 		if(missing(var)) stop("Supply a variable to model")
@@ -64,11 +66,12 @@ ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL
 			cl <- makeCluster(UseCores) #make clusters
 			registerDoParallel(cl) #designate cores
 			rf.ens <- foreach(i=1:n.forests, .packages=c('randomForest','ROCR')) %dopar%{
-				rf_ens_fn(v, form, max_split, ntree=ntree, mtry=mtry)
+				rf_ens_fn(v, form, max_split, 
+				          ntree=ntree, mtry=mtry, importance=TRUE)
 			}
 			stopCluster(cl)
 		}else{
-			rf.ens <- lapply(1:n.forests, function(i) rf_ens_fn(v, form, max_split, ntree=ntree, mtry=mtry))
+			rf.ens <- lapply(1:n.forests, function(i) rf_ens_fn(v, form, max_split, ntree=ntree, mtry=mtry, importance=TRUE))
 		}
 		
 	# Get all the output from the ensemble
@@ -81,6 +84,16 @@ ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL
 		pred_ens_trTSS <- sapply(rf.ens, function(x) {x$roc_train$tss})
 		pred_ens_teTSS <- sapply(rf.ens, function(x) {x$roc_test$tss})
 		pred_ens_resid <- sapply(rf.ens, function(x) {as.numeric(as.character(x$preds$PRES)) - x$preds$P.1})
+	# Get variable importance
+		if(importance){
+			var_ens <- sapply(rf.ens, function(x) {abs(x$mod$importance[,3]/x$mod$importanceSD[,3])})
+			var_ens_df <- as.data.frame(t(apply(var_ens, 1, quantile, prob=var.q)))
+			colnames(var_ens_df) <- c(paste0('q_',var.q*100))
+			var_ens_df$mu <- rowMeans(var_ens)
+			var_ens_df$sd <- apply(var_ens, 1, sd)
+			var_ens_df$ord <- order(var_ens_df[,2], decreasing=TRUE)
+		}
+		
 
 	# Generate ensemble predictions
 		pred_ens <- data.frame("P.0"=rowMeans(pred_ens_z), 
@@ -106,6 +119,10 @@ ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL
 		             roc_test = lapply(rf.ens, function(x)x$roc_test),
 		             pred = list(p = pred_ens_p,
 		                         resid = pred_ens_resid))
+		if(importance){
+			pack$var.imp <- var_ens_df
+			pack$var.imp.raw <- var_ens
+		}
 		if(save) save(pack, file=paste0(out.folder,"/ERF_",var,".Rdata"))
 
 	return(pack)

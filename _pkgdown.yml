@@ -27,8 +27,9 @@ navbar:
 reference:
 - title: Main functions
   contents:
-  - data_sim
   - ens_random_forests
+  - data_sim
+
 
 - title: Generally internally called
   contents:

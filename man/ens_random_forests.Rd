@@ -12,10 +12,12 @@ ens_random_forests(
   out.folder = NULL,
   duplicate = TRUE,
   n.forests = 10,
+  importance = TRUE,
   cores = parallel::detectCores() - 2,
   save = TRUE,
   ntree = 1000,
-  mtry = 5
+  mtry = 5,
+  var.q = c(0.1, 0.5, 0.9)
 )
 }
 \arguments{
@@ -33,6 +35,8 @@ ens_random_forests(
 
 \item{n.forests}{A numeric value indicating how many Random Forests to generate in the ensemble, default is 100}
 
+\item{importance}{A logical flag for the randomForest model to calculate the variable importance}
+
 \item{cores}{A numeric value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.}
 
 \item{save}{A logical flag to save the output as an RData object, default is TRUE.}
@@ -40,9 +44,11 @@ ens_random_forests(
 \item{ntree}{The number of decision trees to use in each RF, default is 1000}
 
 \item{mtry}{The number of covariates to try at each node split, default is 5}
+
+\item{var.q}{The quantiles for the distribution of the variable importance; only exectuted if importance=TRUE}
 }
 \value{
-A fitted ERF model as a list object. Contains the model data, the fitted RF models, the ensemble predictions, the ensemble model performance, the mean training/test performance, the ROC training/test performance for each RF, and the individual RF predictions.
+A fitted ERF model as a list object. Contains the model data, the fitted RF models, the ensemble predictions, the ensemble model performance, the mean training/test performance, the ROC training/test performance for each RF, the individual RF predictions, and, if importance=TRUE, the variable importance
 }
 \description{
 Execute Ensemble Random Forests model on a given dataset

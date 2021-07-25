@@ -187,8 +187,8 @@
 
 <span class='co'>#see the training/test auc value</span>
 <span class='va'>rf_ex</span><span class='op'>$</span><span class='va'>roc_train</span><span class='op'>$</span><span class='va'>auc</span>
-</div><div class='output co'>#&gt; [1] 0.967305</div><div class='input'><span class='va'>rf_ex</span><span class='op'>$</span><span class='va'>roc_test</span><span class='op'>$</span><span class='va'>auc</span>
-</div><div class='output co'>#&gt; [1] 0.7871422</div><div class='input'>
+</div><div class='output co'>#&gt; [1] 0.9734397</div><div class='input'><span class='va'>rf_ex</span><span class='op'>$</span><span class='va'>roc_test</span><span class='op'>$</span><span class='va'>auc</span>
+</div><div class='output co'>#&gt; [1] 0.7397363</div><div class='input'>
 <span class='co'>#see the distribution of predictions</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mar<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/pkg/RandomFields/man/QMath.html'>c</a></span><span class='op'>(</span><span class='fl'>4</span>,<span class='fl'>4</span>,<span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/pkg/raster/man/plot.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/raster/man/density.html'>density</a></span><span class='op'>(</span><span class='va'>rf_ex</span><span class='op'>$</span><span class='va'>preds</span><span class='op'>[</span>,<span class='fl'>2</span><span class='op'>]</span>,

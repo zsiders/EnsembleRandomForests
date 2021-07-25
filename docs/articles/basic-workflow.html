@@ -240,8 +240,8 @@
                              covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">'cov'</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span><span class="op">)</span>, value<span class="op">=</span><span class="cn">T</span><span class="op">)</span>
                              <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">erf_form</span><span class="op">)</span>
-<span class="co">#&gt; obs ~ cov1 + cov2 + cov3 + cov4 + cov5</span>
-<span class="co">#&gt; &lt;environment: 0x7f9f36228590&gt;</span></code></pre></div>
+<span class="co">#&gt; obs ~ cov1 + cov2 + cov3 + cov4 + cov5 + random</span>
+<span class="co">#&gt; &lt;environment: 0x7fc387d2ab20&gt;</span></code></pre></div>
 <p>This function is incredibly simple and mostly called internally to <code>ens_random_forests</code>. It simple sets the dependent variable and the covariates up for use in the resulting <code>randomForests</code> call.</p>
 </div>
 <div id="erf-balancing" class="section level3">
@@ -293,16 +293,16 @@
 <code class="sourceCode R"><span class="va">rf_ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rf_ens_fn.html">rf_ens_fn</a></span><span class="op">(</span><span class="va">erf_data</span>, <span class="va">erf_form</span>, <span class="va">max_split</span>, ntree<span class="op">=</span><span class="fl">50</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">rf_ex</span><span class="op">$</span><span class="va">preds</span><span class="op">)</span>
 <span class="co">#&gt;    P.0  P.1 PRES  type</span>
-<span class="co">#&gt; 1 0.64 0.36    0 train</span>
-<span class="co">#&gt; 2 0.38 0.62    0 train</span>
-<span class="co">#&gt; 3 0.58 0.42    0 train</span>
-<span class="co">#&gt; 4 0.62 0.38    0 train</span>
-<span class="co">#&gt; 5 0.32 0.68    0 train</span>
-<span class="co">#&gt; 6 0.98 0.02    0 train</span>
+<span class="co">#&gt; 1 0.74 0.26    0 train</span>
+<span class="co">#&gt; 2 0.18 0.82    0 train</span>
+<span class="co">#&gt; 3 0.70 0.30    0 train</span>
+<span class="co">#&gt; 4 0.72 0.28    0 train</span>
+<span class="co">#&gt; 5 0.36 0.64    0 train</span>
+<span class="co">#&gt; 6 1.00 0.00    0 train</span>
 <span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_train</span><span class="op">$</span><span class="va">auc</span> <span class="co">#training AUC</span>
-<span class="co">#&gt; [1] 0.9637209</span>
+<span class="co">#&gt; [1] 0.9726832</span>
 <span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_test</span><span class="op">$</span><span class="va">auc</span> <span class="co">#test AUC</span>
-<span class="co">#&gt; [1] 0.8206399</span>
+<span class="co">#&gt; [1] 0.8322167</span>
 <span class="op">(</span><span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_train</span><span class="op">$</span><span class="va">auc</span> <span class="op">&gt;</span> <span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_test</span><span class="op">$</span><span class="va">auc</span><span class="op">)</span>
 <span class="co">#&gt; [1] TRUE</span></code></pre></div>
 </div>
@@ -314,27 +314,27 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ens_rf_ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ens_random_forests.html">ens_random_forests</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span>, var<span class="op">=</span><span class="st">"obs"</span>, covariates<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"cov"</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span><span class="op">)</span>,value<span class="op">=</span><span class="cn">T</span><span class="op">)</span>, save<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> <span class="co"># view the dataset used in the model</span>
-<span class="co">#&gt;   obs        cov1        cov2       cov3        cov4        cov5     random</span>
-<span class="co">#&gt; 1   0 -0.07158000 -0.27811766  0.5741324  0.01366734 -0.15537696 -1.7708565</span>
-<span class="co">#&gt; 2   0 -0.12028137  0.26103341 -0.2298234  0.14750795  0.32482174  1.1005625</span>
-<span class="co">#&gt; 3   0  0.12422049  0.09052045 -0.3070963  0.14493653  0.02303010 -0.2328163</span>
-<span class="co">#&gt; 4   0 -0.12481261 -0.29583389  0.6282519  0.06067430 -0.25240678 -0.2154190</span>
-<span class="co">#&gt; 5   0  0.01361460 -0.04989738  0.1600218  0.42189437  0.13166581  1.4464436</span>
-<span class="co">#&gt; 6   0  0.01842766  0.18300638 -0.3421439 -0.33128857  0.07998399  1.5644587</span>
+<span class="co">#&gt;   obs        cov1        cov2       cov3        cov4        cov5      random</span>
+<span class="co">#&gt; 1   0 -0.07158000 -0.27811766  0.5741324  0.01366734 -0.15537696 -0.05943421</span>
+<span class="co">#&gt; 2   0 -0.12028137  0.26103341 -0.2298234  0.14750795  0.32482174 -1.10237778</span>
+<span class="co">#&gt; 3   0  0.12422049  0.09052045 -0.3070963  0.14493653  0.02303010  0.15782997</span>
+<span class="co">#&gt; 4   0 -0.12481261 -0.29583389  0.6282519  0.06067430 -0.25240678 -1.24557614</span>
+<span class="co">#&gt; 5   0  0.01361460 -0.04989738  0.1600218  0.42189437  0.13166581 -0.63223943</span>
+<span class="co">#&gt; 6   0  0.01842766  0.18300638 -0.3421439 -0.33128857  0.07998399 -0.84230393</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.pred</span><span class="op">)</span> <span class="co">#view the model predictions</span>
 <span class="co">#&gt;      P.0    P.1 PRES   resid</span>
-<span class="co">#&gt; 1 0.7342 0.2658    0 -0.2658</span>
-<span class="co">#&gt; 2 0.3893 0.6107    0 -0.6107</span>
-<span class="co">#&gt; 3 0.6092 0.3908    0 -0.3908</span>
-<span class="co">#&gt; 4 0.7401 0.2599    0 -0.2599</span>
-<span class="co">#&gt; 5 0.3265 0.6735    0 -0.6735</span>
-<span class="co">#&gt; 6 0.9903 0.0097    0 -0.0097</span>
+<span class="co">#&gt; 1 0.7336 0.2664    0 -0.2664</span>
+<span class="co">#&gt; 2 0.4052 0.5948    0 -0.5948</span>
+<span class="co">#&gt; 3 0.5870 0.4130    0 -0.4130</span>
+<span class="co">#&gt; 4 0.6240 0.3760    0 -0.3760</span>
+<span class="co">#&gt; 5 0.3840 0.6160    0 -0.6160</span>
+<span class="co">#&gt; 6 0.9921 0.0079    0 -0.0079</span>
 <span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.te.perf</span> <span class="co">#view the test threshold-free performance metrics</span>
 <span class="co">#&gt;     teAUC    teRMSE     teTSS </span>
-<span class="co">#&gt; 0.7674965 0.3922646 0.4937667</span>
+<span class="co">#&gt; 0.7962858 0.3889479 0.5392968</span>
 <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="st">'auc'</span>,<span class="st">'rmse'</span>,<span class="st">'tss'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> <span class="co">#view the threshold-free ensemble performance metrics</span>
 <span class="co">#&gt;       auc      rmse       tss </span>
-<span class="co">#&gt; 0.9654101 0.3800429 0.8091230</span></code></pre></div>
+<span class="co">#&gt; 0.9782263 0.3781343 0.8337179</span></code></pre></div>
 <p>As we can see, the ensemble performs better than the mean test predictions. This is advantage of ERF over other RF modifications for extreme class imbalance. <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/">Siders et al. 2020</a> discusses the various performance of these other modifications if you are curious.</p>
 </div>
 <div id="next-steps" class="section level2">
