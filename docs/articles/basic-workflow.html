@@ -204,9 +204,9 @@
 <p><img src="basic-workflow_files/figure-html/sim_data_roc-1.png" width="384" style="display: block; margin: auto;"></p>
 </div>
 </div>
-<div id="running-ensemble-random-forests" class="section level2">
+<div id="background-on-ensemble-random-forests" class="section level2">
 <h2 class="hasAnchor">
-<a href="#running-ensemble-random-forests" class="anchor"></a>Running Ensemble Random Forests</h2>
+<a href="#background-on-ensemble-random-forests" class="anchor"></a>Background on Ensemble Random Forests</h2>
 <div id="reviewing-the-data-and-formula-prep" class="section level3">
 <h3 class="hasAnchor">
 <a href="#reviewing-the-data-and-formula-prep" class="anchor"></a>Reviewing the data and formula prep</h3>
@@ -237,12 +237,12 @@
                              <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">erf_form</span><span class="op">)</span>
 <span class="co">#&gt; obs ~ cov1 + cov2 + cov3 + cov4 + cov5</span>
-<span class="co">#&gt; &lt;environment: 0x7f9b5c2b3cc8&gt;</span></code></pre></div>
+<span class="co">#&gt; &lt;environment: 0x7f83b7d33548&gt;</span></code></pre></div>
 <p>This function is incredibly simple and mostly called internally to <code>ens_random_forests</code>. It simple sets the dependent variable and the covariates up for use in the resulting <code>randomForests</code> call.</p>
 </div>
-<div id="running-an-erf" class="section level3">
+<div id="erf-balancing" class="section level3">
 <h3 class="hasAnchor">
-<a href="#running-an-erf" class="anchor"></a>Running an ERF</h3>
+<a href="#erf-balancing" class="anchor"></a>ERF balancing</h3>
 <p>The main wrapper function users should be interacting with is <code>ens_random_forests</code>. Internally, this function firsts prepares the data using <code>erf_data_prep</code>, creates a formula using <code>erf_formula_prep</code>, and then calls <code>rf_ens_fn</code>. This last function is the workhorse that implements each Random Forests in the ensemble. It also implements two bagging steps. The first bagging step divides the dataset into a training and test set (90:10% is default). The proportion of zeroes and ones in the presence observations is retained in this bagging step. The next bagging step implements downsampling. This balances the proportions of zeroes and ones provided to each decision tree in a given Random Forests. For example, let’s look at the frequency and proportion of zeroes and ones in our simulated dataset <code>simData</code>.</p>
 <table class="table">
 <thead><tr class="header">
@@ -268,11 +268,11 @@
 <tbody>
 <tr class="odd">
 <td align="left">0</td>
-<td align="right">0.9834</td>
+<td align="right">0.9819</td>
 </tr>
 <tr class="even">
 <td align="left">1</td>
-<td align="right">0.0166</td>
+<td align="right">0.0181</td>
 </tr>
 </tbody>
 </table>
@@ -281,6 +281,31 @@
 <code class="sourceCode R"><span class="op">(</span><span class="va">max_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/max_splitter.html">max_splitter</a></span><span class="op">(</span><span class="va">erf_data</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 143</span></code></pre></div>
 </div>
+<div id="running-a-single-rf" class="section level3">
+<h3 class="hasAnchor">
+<a href="#running-a-single-rf" class="anchor"></a>Running a single RF</h3>
+<p>Now that we have prepared our data, formula, and maximum split we can run a single Random Forest. This will be done internally in <code>ens_random_forests</code> multiple times to create the ensemble of Random Forests. Here, a single RF is run but with the double bagging procedure as discussed above. The resulting <code>list</code> has components <em>mod</em>, <em>preds</em>, <em>roc_train</em>, and <em>roc_test</em>. Internally, in <code>ens_random_forests</code> these will be used to calculate the ensemble predictions and performance. On our single RF this will return the <code>randomForest</code> class model, a data.frame of the predictions and observations, the ROC measured performance for the training set, and for the test set. The test set metrics are of more interest than the training set. It is still useful to check that <span class="math inline">\(AUC_{training} &gt; AUC_{test}\)</span> as by random chance the test AUC can be greater even though the overall RF fit poorly. The test was not seen by the RF model so it is a better measure of how the model fits the data. In ERF, we do not typically concern ourselves with out-of-bag performance calculated internally in the <code>randomForest</code> call.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">rf_ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rf_ens_fn.html">rf_ens_fn</a></span><span class="op">(</span><span class="va">erf_data</span>, <span class="va">erf_form</span>, <span class="va">max_split</span>, ntree<span class="op">=</span><span class="fl">50</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">rf_ex</span><span class="op">$</span><span class="va">preds</span><span class="op">)</span>
+<span class="co">#&gt;    P.0  P.1 PRES  type</span>
+<span class="co">#&gt; 1 0.64 0.36    0 train</span>
+<span class="co">#&gt; 2 0.38 0.62    0 train</span>
+<span class="co">#&gt; 3 0.58 0.42    0 train</span>
+<span class="co">#&gt; 4 0.62 0.38    0 train</span>
+<span class="co">#&gt; 5 0.32 0.68    0 train</span>
+<span class="co">#&gt; 6 0.98 0.02    0 train</span>
+<span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_train</span><span class="op">$</span><span class="va">auc</span> <span class="co">#training AUC</span>
+<span class="co">#&gt; [1] 0.9637209</span>
+<span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_test</span><span class="op">$</span><span class="va">auc</span> <span class="co">#test AUC</span>
+<span class="co">#&gt; [1] 0.8206399</span>
+<span class="op">(</span><span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_train</span><span class="op">$</span><span class="va">auc</span> <span class="op">&gt;</span> <span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_test</span><span class="op">$</span><span class="va">auc</span><span class="op">)</span>
+<span class="co">#&gt; [1] TRUE</span></code></pre></div>
+</div>
+</div>
+<div id="running-an-ensemble-random-forests-model" class="section level2">
+<h2 class="hasAnchor">
+<a href="#running-an-ensemble-random-forests-model" class="anchor"></a>Running an Ensemble Random Forests model</h2>
 </div>
   </div>
 
