@@ -215,8 +215,9 @@
 #&gt; 5 0.3286 0.6714    0 -0.6714
 #&gt; 6 0.9910 0.0090    0 -0.0090</div><div class='input'><span class='va'>ens_rf_ex</span><span class='op'>$</span><span class='va'>mu.te.perf</span> <span class='co'>#view the mean test threshold-free performance metrics</span>
 </div><div class='output co'>#&gt;     teAUC    teRMSE     teTSS 
-#&gt; 0.7901946 0.3904004 0.5299979 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='va'>trial</span><span class='op'>$</span><span class='va'>ens.perf</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/pkg/RandomFields/man/QMath.html'>c</a></span><span class='op'>(</span><span class='st'>'auc'</span>,<span class='st'>'tss'</span>,<span class='st'>'rmse'</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span> <span class='co'>#view the threshold-free ensemble performance metrics</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in unlist(trial$ens.perf[c("auc", "tss", "rmse")]): object 'trial' not found</span></div><div class='input'>
+#&gt; 0.7901946 0.3904004 0.5299979 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='va'>ens_rf_ex</span><span class='op'>$</span><span class='va'>ens.perf</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/pkg/RandomFields/man/QMath.html'>c</a></span><span class='op'>(</span><span class='st'>'auc'</span>,<span class='st'>'tss'</span>,<span class='st'>'rmse'</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span> <span class='co'>#view the threshold-free ensemble performance metrics</span>
+</div><div class='output co'>#&gt;       auc       tss      rmse 
+#&gt; 0.9672889 0.8044123 0.3816819 </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
