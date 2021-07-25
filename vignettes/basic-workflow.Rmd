@@ -147,3 +147,15 @@ rf_ex$roc_test$auc #test AUC
 (rf_ex$roc_train$auc > rf_ex$roc_test$auc)
 ```
 ## Running an Ensemble Random Forests model
+Now that we have covered the background, let's run an ERF. This is simple using `ens_random_forests`. 
+```{r erf_ex}
+ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs", covariates=grep("cov",colnames(simData$samples),value=T), save=FALSE)
+head(ens_rf_ex$data) # view the dataset used in the model
+head(ens_rf_ex$ens.pred) #view the model predictions
+ens_rf_ex$mu.te.perf #view the test threshold-free performance metrics
+unlist(ens_rf_ex$ens.perf[c('auc','rmse','tss')]) #view the threshold-free ensemble performance metrics
+```
+As we can see, the ensemble performs better than the mean test predictions. This is advantage of ERF over other RF modifications for extreme class imbalance. [Siders et al. 2020](https://www.int-res.com/abstracts/esr/v43/p183-197/) discusses the various performance of these other modifications if you are curious. 
+
+## Next steps
+Other tutorials will walk you through summarizing and visualing the results as well as discuss the various model performance metrics and their interpretation. 
