@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_sim.R
 \name{data_sim}
 \alias{data_sim}
-\title{data simulation for ERF example Data}
+\title{Data simulation for ERF example Data}
 \usage{
 data_sim(
   ncell = 100,
@@ -36,11 +36,23 @@ A function to calculate various ROC curve performance metrics given model predic
 library(RandomFields)
 library(raster)
 df <- data_sim()
-head(df$samples)
-table(df$samples$obs)
+head(df$samples) #view the data.frame output
+table(df$samples$obs) #frequency of presence/absence
 
-colr <- colorRampPalette(c('dodgerblue4','dodgerblue2','ivory','firebrick2','firebrick4'))
-plot(df$grid$prob, col=colr(100), xaxt='n', yaxt='n', asp=NA)
-with(df$samples[df$samples$obs==1,], points(x,y,pch=16))
+#make a color palette
+colr <- colorRampPalette(
+						c('dodgerblue4',
+							'dodgerblue2',
+							'ivory',
+							'firebrick2',
+							'firebrick4')
+					)
+
+plot(df$grid$prob, 
+			col=colr(100), 
+			xaxt='n', yaxt='n',
+			asp=NA)
+with(df$samples[df$samples$obs==1,], 
+				points(x,y,pch=16))
 
 }

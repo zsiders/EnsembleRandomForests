@@ -49,10 +49,24 @@ Execute Ensemble Random Forests model on a given dataset
 }
 \examples{
 #run an ERF with 10 RFs and 
-ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs", covariates=grep("cov",colnames(simData$samples),value=T), save=FALSE, cores=1)
-head(ens_rf_ex$data) # view the dataset used in the model
-head(ens_rf_ex$ens.pred) #view the model predictions
-ens_rf_ex$mu.te.perf #view the mean test threshold-free performance metrics
-unlist(ens_rf_ex$ens.perf[c('auc','rmse','tss')]) #view the threshold-free ensemble performance metrics
+ens_rf_ex <- ens_random_forests(
+					df=simData$samples, 
+					var="obs", 
+					covariates=grep("cov",
+								colnames(simData$samples),value=T), 
+					save=FALSE, 
+					cores=1)
+
+# view the dataset used in the model
+head(ens_rf_ex$data) 
+
+#view the model predictions
+head(ens_rf_ex$ens.pred) 
+
+#view the mean test threshold-free performance metrics
+ens_rf_ex$mu.te.perf 
+
+#view the threshold-free ensemble performance metrics
+unlist(ens_rf_ex$ens.perf[c('auc','rmse','tss')]) 
 
 }

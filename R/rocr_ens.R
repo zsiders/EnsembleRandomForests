@@ -12,8 +12,9 @@
 #' predictions <- rbeta(100, 4, 4)
 #' samples <- rbinom(100, 1, 0.5)
 #' rocr <- rocr_ens(predictions, samples)
-#' str(rocr)
 #' rocr$auc
+#' str(rocr)
+#' 
 #' 
 rocr_ens <- function(predictions, samples){
 	#This function generates Receiving Operator Characteristic Cruves and model metrics

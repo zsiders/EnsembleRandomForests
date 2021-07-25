@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>data simulation for ERF example Data — data_sim • EnsembleRandomForests</title>
+<title>Data simulation for ERF example Data — data_sim • EnsembleRandomForests</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="data simulation for ERF example Data — data_sim" />
+<meta property="og:title" content="Data simulation for ERF example Data — data_sim" />
 <meta property="og:description" content="A function to calculate various ROC curve performance metrics given model predictions and the oberved samples" />
 
 
@@ -84,12 +84,9 @@
      
   </a>
 </li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    Vignettes
      
     <span class="caret"></span>
   </a>
@@ -98,6 +95,9 @@
       <a href="../articles/basic-workflow.html">Getting started with ERF</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -120,7 +120,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>data simulation for ERF example Data</h1>
+    <h1>Data simulation for ERF example Data</h1>
     <small class="dont-index">Source: <a href='https://github.com/zsiders/EnsembleRandomForests/blob/master/R/data_sim.R'><code>R/data_sim.R</code></a></small>
     <div class="hidden name"><code>data_sim.Rd</code></div>
     </div>
@@ -179,7 +179,7 @@
 #&gt; <span class='message'>    RFoptions</span></div><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://rspatial.org/raster'>raster</a></span><span class='op'>)</span>
 <span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'>data_sim</span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>New output format of RFsimulate: S4 object of class 'RFsp';</span>
-#&gt; <span class='message'>for a bare, but faster array format use 'RFoptions(spConform=FALSE)'.</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/raster/man/headtail.html'>head</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span>
+#&gt; <span class='message'>for a bare, but faster array format use 'RFoptions(spConform=FALSE)'.</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/raster/man/headtail.html'>head</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span> <span class='co'>#view the data.frame output</span>
 </div><div class='output co'>#&gt;    x  y        cov1       cov2        cov3       cov4        cov5  prob.raw
 #&gt; 1 58 48  0.37558221 -0.1533115  0.04587864 -0.3154853 -0.04275012 -2.372310
 #&gt; 2 78 34 -0.19074154 -0.1111051  0.03866082  0.1097316  0.26997805  2.065169
@@ -193,13 +193,25 @@
 #&gt; 3 0.26070604    0   0
 #&gt; 4 0.09338099    0   0
 #&gt; 5 0.75294117    1   0
-#&gt; 6 0.06923180    0   0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>$</span><span class='va'>obs</span><span class='op'>)</span>
+#&gt; 6 0.06923180    0   0</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>$</span><span class='va'>obs</span><span class='op'>)</span> <span class='co'>#frequency of presence/absence</span>
 </div><div class='output co'>#&gt; 
 #&gt;    0    1 
 #&gt; 9811  189 </div><div class='input'>
-<span class='va'>colr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/colorRamp.html'>colorRampPalette</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/RandomFields/man/QMath.html'>c</a></span><span class='op'>(</span><span class='st'>'dodgerblue4'</span>,<span class='st'>'dodgerblue2'</span>,<span class='st'>'ivory'</span>,<span class='st'>'firebrick2'</span>,<span class='st'>'firebrick4'</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/pkg/raster/man/plot.html'>plot</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>grid</span><span class='op'>$</span><span class='va'>prob</span>, col<span class='op'>=</span><span class='fu'>colr</span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>, xaxt<span class='op'>=</span><span class='st'>'n'</span>, yaxt<span class='op'>=</span><span class='st'>'n'</span>, asp<span class='op'>=</span><span class='cn'>NA</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>[</span><span class='va'>df</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>$</span><span class='va'>obs</span><span class='op'>==</span><span class='fl'>1</span>,<span class='op'>]</span>, <span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span><span class='op'>(</span><span class='va'>x</span>,<span class='va'>y</span>,pch<span class='op'>=</span><span class='fl'>16</span><span class='op'>)</span><span class='op'>)</span>
+<span class='co'>#make a color palette</span>
+<span class='va'>colr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/colorRamp.html'>colorRampPalette</a></span><span class='op'>(</span>
+            <span class='fu'><a href='https://rdrr.io/pkg/RandomFields/man/QMath.html'>c</a></span><span class='op'>(</span><span class='st'>'dodgerblue4'</span>,
+              <span class='st'>'dodgerblue2'</span>,
+              <span class='st'>'ivory'</span>,
+              <span class='st'>'firebrick2'</span>,
+              <span class='st'>'firebrick4'</span><span class='op'>)</span>
+          <span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/pkg/raster/man/plot.html'>plot</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>grid</span><span class='op'>$</span><span class='va'>prob</span>, 
+      col<span class='op'>=</span><span class='fu'>colr</span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>, 
+      xaxt<span class='op'>=</span><span class='st'>'n'</span>, yaxt<span class='op'>=</span><span class='st'>'n'</span>,
+      asp<span class='op'>=</span><span class='cn'>NA</span><span class='op'>)</span>
+</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/with.html'>with</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>[</span><span class='va'>df</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>$</span><span class='va'>obs</span><span class='op'>==</span><span class='fl'>1</span>,<span class='op'>]</span>, 
+        <span class='fu'><a href='https://rdrr.io/r/graphics/points.html'>points</a></span><span class='op'>(</span><span class='va'>x</span>,<span class='va'>y</span>,pch<span class='op'>=</span><span class='fl'>16</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='img'><img src='data_sim-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>

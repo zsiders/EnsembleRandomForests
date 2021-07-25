@@ -1,4 +1,4 @@
-#' data simulation for ERF example Data
+#' Data simulation for ERF example Data
 #' 
 #' @description A function to calculate various ROC curve performance metrics given model predictions and the oberved samples
 #' 
@@ -16,12 +16,24 @@
 #' library(RandomFields)
 #' library(raster)
 #' df <- data_sim()
-#' head(df$samples)
-#' table(df$samples$obs)
+#' head(df$samples) #view the data.frame output
+#' table(df$samples$obs) #frequency of presence/absence
 #' 
-#' colr <- colorRampPalette(c('dodgerblue4','dodgerblue2','ivory','firebrick2','firebrick4'))
-#' plot(df$grid$prob, col=colr(100), xaxt='n', yaxt='n', asp=NA)
-#' with(df$samples[df$samples$obs==1,], points(x,y,pch=16))
+#' #make a color palette
+#' colr <- colorRampPalette(
+#' 						c('dodgerblue4',
+#' 							'dodgerblue2',
+#' 							'ivory',
+#' 							'firebrick2',
+#' 							'firebrick4')
+#' 					)
+#' 
+#' plot(df$grid$prob, 
+#' 			col=colr(100), 
+#' 			xaxt='n', yaxt='n',
+#' 			asp=NA)
+#' with(df$samples[df$samples$obs==1,], 
+#' 				points(x,y,pch=16))
 #' 
 data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), mat.var=0.05, nsamp=1e4){
 	#grid

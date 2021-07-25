@@ -1,0 +1,44 @@
+url: https://zsiders.github.io/EnsembleRandomForests/
+
+navbar:
+  structure:
+    left:
+    - home
+    - intro
+    - articles
+    - reference
+    right: github
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/zsiders/EnsembleRandomForests/
+    articles:
+      text: Vignettes
+      menu:
+      - text: Getting started with ERF
+        href: articles/basic-workflow.html
+
+reference:
+- title: Main functions
+  contents:
+  - data_sim
+  - ens_random_forests
+
+- title: Generally internally called
+  contents:
+  - erf_data_prep
+  - erf_formula_prep
+  - max_splitter
+  - rf_ens_fn
+  - rocr_ens
+
+- title: Example data
+  contents:
+  - simData
+

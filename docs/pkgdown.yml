@@ -3,5 +3,8 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   basic-workflow: basic-workflow.html
-last_built: 2021-07-25T01:57Z
+last_built: 2021-07-25T03:47Z
+urls:
+  reference: https://zsiders.github.io/EnsembleRandomForests//reference
+  article: https://zsiders.github.io/EnsembleRandomForests//articles
 

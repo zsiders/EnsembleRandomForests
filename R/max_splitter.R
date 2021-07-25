@@ -10,7 +10,12 @@
 #' @export
 #' 
 #' @examples
-#' data <- erf_data_prep(simData$samples, 'obs', grep('cov', colnames(simData$samples), value=TRUE))
+#' data <- erf_data_prep(
+#' 				df=simData$samples, 
+#' 				var='obs', 
+#' 				covariates=grep('cov', 
+#' 					colnames(simData$samples), value=TRUE)
+#' 			)
 #' max_splitter(data)
 #' max_splitter(data, p=0.6)
 #' 

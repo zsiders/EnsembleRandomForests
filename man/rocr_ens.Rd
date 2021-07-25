@@ -21,7 +21,8 @@ A function to calculate various ROC curve performance metrics given model predic
 predictions <- rbeta(100, 4, 4)
 samples <- rbinom(100, 1, 0.5)
 rocr <- rocr_ens(predictions, samples)
-str(rocr)
 rocr$auc
+str(rocr)
+
 
 }

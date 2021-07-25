@@ -12,7 +12,7 @@ Description: This package implements Ensemble Random Forests from Siders et al.
     Endangered Species Research. Functions are provided to execute the ERF model on
     a dataset, adjust model parameters, as well as summarize and visualize model
     performance and predictions.
-URL: https://github.com/zsiders/EnsembleRandomForests/
+URL: https://github.com/zsiders/EnsembleRandomForests/, https://zsiders.github.io/EnsembleRandomForests/
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
