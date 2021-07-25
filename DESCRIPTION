@@ -18,15 +18,15 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Imports: doParallel,
-    MASS,
+Imports: MASS,
     Matrix,
     RandomFields,
     raster,
     ROCR
 Depends: 
     R (>= 2.10),
-    randomForest
+    randomForest,
+    doParallel
 Suggests: 
     rmarkdown,
     knitr,

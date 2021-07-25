@@ -8,11 +8,14 @@ ens_random_forests(
   df,
   var,
   covariates,
+  header = NULL,
   out.folder = NULL,
   duplicate = TRUE,
   n.forests = 10,
   cores = parallel::detectCores() - 2,
-  save = TRUE
+  save = TRUE,
+  ntree = 1000,
+  mtry = 5
 )
 }
 \arguments{
@@ -21,6 +24,8 @@ ens_random_forests(
 \item{var}{A character string indicating the column name of the data frame that contains the number of interactions for the ERF to model; column should be a numeric column}
 
 \item{covariates}{A character vector indicating the column name(s) of the data frame that contain the covariates}
+
+\item{header}{A character vector indicating the column name(s) of the data frame that contain the additional columns you wish appended to the output}
 
 \item{out.folder}{A path to the folder to write out too. If NULL then a folder is generated in the working directory}
 
@@ -31,10 +36,23 @@ ens_random_forests(
 \item{cores}{A numeric value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.}
 
 \item{save}{A logical flag to save the output as an RData object, default is TRUE.}
+
+\item{ntree}{The number of decision trees to use in each RF, default is 1000}
+
+\item{mtry}{The number of covariates to try at each node split, default is 5}
 }
 \value{
-A fitted ERF model as a list object. Contains the model data, the fitted RF models, the ensemble predictions, the ensemble training/test performance, the ROC training/test performance for each RF, and the individual RF predictions.
+A fitted ERF model as a list object. Contains the model data, the fitted RF models, the ensemble predictions, the ensemble model performance, the mean training/test performance, the ROC training/test performance for each RF, and the individual RF predictions.
 }
 \description{
 Execute Ensemble Random Forests model on a given dataset
+}
+\examples{
+#run an ERF with 10 RFs and 
+ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs", covariates=grep("cov",colnames(simData$samples),value=T), save=FALSE, cores=1)
+head(ens_rf_ex$data) # view the dataset used in the model
+head(ens_rf_ex$ens.pred) #view the model predictions
+ens_rf_ex$mu.te.perf #view the mean test threshold-free performance metrics
+unlist(trial$ens.perf[c('auc','tss','rmse')]) #view the threshold-free ensemble performance metrics
+
 }
