@@ -30,8 +30,10 @@ erf_data_prep <- function(df=NULL, var=NULL, covariates=NULL, header=NULL, dupli
 		v <- cbind(df[,var], df[,c(header,covariates)])
 	}
 	
-	keep <- apply(v,2,function(x)all(!is.na(x)))
-	v <- v[keep]
+	keep <- apply(v,2,function(x)all(is.na(x)))
+	v <- v[,!keep]
+	keep <- apply(v,1,function(x)all(!is.na(x)))
+	v <- v[keep,]
 	colnames(v)[1] <- var #change the name of the first column to the var name
 	# Handle whether to duplicate or not
 		if(duplicate){

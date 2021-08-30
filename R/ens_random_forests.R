@@ -50,7 +50,7 @@ ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL
 			warning("No output folder provided; creating in working directory")
 		}
 		form <- erf_formula_prep(var, covariates) #Prepare the model formula
-		if(is.null(header)){
+		if(!is.null(header)){
 			v <- erf_data_prep(df, var, covariates, header, duplicate=duplicate)
 		}else{
 			v <- erf_data_prep(df, var, covariates, duplicate=duplicate)
