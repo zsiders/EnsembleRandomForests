@@ -29,6 +29,9 @@ reference:
   contents:
   - ens_random_forests
   - data_sim
+  - erf_impt
+  - ALE_fn
+  - plot_ALE
 
 
 - title: Generally internally called

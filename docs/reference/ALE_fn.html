@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Determines the maximum sample size in the second RF bag — max_splitter • EnsembleRandomForests</title>
+<title>Accumulated Local Effects for ERF — ALE_fn • EnsembleRandomForests</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Determines the maximum sample size in the second RF bag — max_splitter" />
-<meta property="og:description" content="Takes a data.frame object determines the maximum split" />
+<meta property="og:title" content="Accumulated Local Effects for ERF — ALE_fn" />
+<meta property="og:description" content="Calculates the Accumulated Local Effects (ALE) from an ERF object" />
 
 
 
@@ -120,43 +120,72 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Determines the maximum sample size in the second RF bag</h1>
-    <small class="dont-index">Source: <a href='https://github.com/zsiders/EnsembleRandomForests/blob/master/R/max_splitter.R'><code>R/max_splitter.R</code></a></small>
-    <div class="hidden name"><code>max_splitter.Rd</code></div>
+    <h1>Accumulated Local Effects for ERF</h1>
+    <small class="dont-index">Source: <a href='https://github.com/zsiders/EnsembleRandomForests/blob/master/R/ALE_fn.R'><code>R/ALE_fn.R</code></a></small>
+    <div class="hidden name"><code>ALE_fn.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Takes a data.frame object determines the maximum split</p>
+    <p>Calculates the Accumulated Local Effects (ALE) from an ERF object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>max_splitter</span><span class='op'>(</span><span class='va'>v</span>, p <span class='op'>=</span> <span class='fl'>0.89</span>, nmax <span class='op'>=</span> <span class='fl'>10000</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ALE_fn</span><span class='op'>(</span>
+  <span class='va'>fit</span>,
+  <span class='va'>var</span>,
+  save <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  out.folder <span class='op'>=</span> <span class='cn'>NULL</span>,
+  cores <span class='op'>=</span> <span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>4</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>v</th>
-      <td><p>A data frame object returned from erf_data_prep()</p></td>
+      <th>fit</th>
+      <td><p>The fitted object returned from calling ens_random_forests()</p></td>
     </tr>
     <tr>
-      <th>p</th>
-      <td><p>A numeric value between (0,1), default is just below 90%</p></td>
+      <th>var</th>
+      <td><p>The name of the response variable</p></td>
     </tr>
     <tr>
-      <th>nmax</th>
-      <td><p>A numeric value &gt; 0 specifying the maximum number of observations per bag, default is 1e4</p></td>
+      <th>save</th>
+      <td><p>A logical flag to save the output as an RData object, default is TRUE.</p></td>
+    </tr>
+    <tr>
+      <th>out.folder</th>
+      <td><p>A path to the folder to write out too. If NULL then a folder is generated in the working directory</p></td>
+    </tr>
+    <tr>
+      <th>cores</th>
+      <td><p>An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A numeric value specifying the maximum split</p>
+    <p>A list that contains the ALEs for each variable, ordered by the mean variable importance</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='erf_data_prep.html'>erf_data_prep</a></span><span class='op'>(</span>df<span class='op'>=</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span>, var<span class='op'>=</span><span class='st'>'obs'</span>, covariates<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>'cov'</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span>, value<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>max_splitter</span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 143</div><div class='input'><span class='fu'>max_splitter</span><span class='op'>(</span><span class='va'>data</span>, p<span class='op'>=</span><span class='fl'>0.6</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 65</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='co'>#run an ERF with 10 RFs and </span>
+<span class='va'>ens_rf_ex</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ens_random_forests.html'>ens_random_forests</a></span><span class='op'>(</span>df<span class='op'>=</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span>, var<span class='op'>=</span><span class='st'>"obs"</span>, covariates<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"cov"</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span>,value<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>, save<span class='op'>=</span><span class='cn'>FALSE</span>, cores<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'>
+<span class='va'>ALEdf</span> <span class='op'>&lt;-</span> <span class='fu'>ALE_fn</span><span class='op'>(</span><span class='va'>ens_rf_ex</span>, save<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>No name of response variable, making one</span></div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>ALEdf</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;            x        f.1        f.2        f.3       f.4       f.5        f.6
+#&gt; 1 -0.4019663 0.02894524 0.08734524 0.08367872 0.2329606 0.1640701 0.02269326
+#&gt; 2 -0.2914307 0.19394524 0.29234524 0.17367872 0.2929606 0.2640701 0.25269326
+#&gt; 3 -0.2597696 0.21394524 0.29734524 0.18367872 0.2929606 0.2740701 0.24269326
+#&gt; 4 -0.2390396 0.19894524 0.22734524 0.18367872 0.2479606 0.2340701 0.19269326
+#&gt; 5 -0.2236097 0.17904474 0.17261887 0.13392747 0.2280601 0.2042194 0.17776789
+#&gt; 6 -0.2065132 0.13404474 0.11261887 0.12392747 0.1730601 0.1742194 0.16276789
+#&gt;          f.7        f.8         f.9      f.10
+#&gt; 1 0.05919643 0.06956431 -0.19536553 0.1470071
+#&gt; 2 0.15419643 0.26956431  0.11463447 0.2420071
+#&gt; 3 0.15419643 0.28456431  0.11963447 0.2470071
+#&gt; 4 0.11919643 0.26456431  0.10463447 0.2270071
+#&gt; 5 0.11919643 0.21978819  0.09965935 0.2071066
+#&gt; 6 0.10419643 0.19978819  0.08965935 0.1571066</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -4,6 +4,9 @@
     <loc>https://zsiders.github.io/EnsembleRandomForests//index.html</loc>
   </url>
   <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/ALE_fn.html</loc>
+  </url>
+  <url>
     <loc>https://zsiders.github.io/EnsembleRandomForests//reference/data_sim.html</loc>
   </url>
   <url>
@@ -16,7 +19,13 @@
     <loc>https://zsiders.github.io/EnsembleRandomForests//reference/erf_formula_prep.html</loc>
   </url>
   <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/erf_impt.html</loc>
+  </url>
+  <url>
     <loc>https://zsiders.github.io/EnsembleRandomForests//reference/max_splitter.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/plot_ALE.html</loc>
   </url>
   <url>
     <loc>https://zsiders.github.io/EnsembleRandomForests//reference/rf_ens_fn.html</loc>

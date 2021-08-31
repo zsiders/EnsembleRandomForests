@@ -40,19 +40,9 @@ head(df$samples) #view the data.frame output
 table(df$samples$obs) #frequency of presence/absence
 
 #make a color palette
-colr <- colorRampPalette(
-						c('dodgerblue4',
-							'dodgerblue2',
-							'ivory',
-							'firebrick2',
-							'firebrick4')
-					)
+colr <- colorRampPalette(c('dodgerblue4','dodgerblue2','ivory','firebrick2','firebrick4'))
 
-plot(df$grid$prob, 
-			col=colr(100), 
-			xaxt='n', yaxt='n',
-			asp=NA)
-with(df$samples[df$samples$obs==1,], 
-				points(x,y,pch=16))
+plot(df$grid$prob, col=colr(100), xaxt='n', yaxt='n', asp=NA)
+with(df$samples[df$samples$obs==1,], points(x,y,pch=16))
 
 }

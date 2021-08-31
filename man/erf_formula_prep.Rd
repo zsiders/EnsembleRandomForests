@@ -20,6 +20,6 @@ A formula class object
 Takes a column names and makes the RF model formula
 }
 \examples{
-erf_formula_prep('death', c('sarlaac','lightsaber','wookie','stormtrooper'))
+erf_formula_prep('death',c('sarlaac','lightsaber','wookie','stormtrooper'))
 
 }

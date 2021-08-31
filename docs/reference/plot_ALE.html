@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Determines the maximum sample size in the second RF bag — max_splitter • EnsembleRandomForests</title>
+<title>Plots Accumulated Local Effects for ERF — plot_ALE • EnsembleRandomForests</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Determines the maximum sample size in the second RF bag — max_splitter" />
-<meta property="og:description" content="Takes a data.frame object determines the maximum split" />
+<meta property="og:title" content="Plots Accumulated Local Effects for ERF — plot_ALE" />
+<meta property="og:description" content="Plots the Accumulated Local Effects (ALE) from an ERF object" />
 
 
 
@@ -120,43 +120,50 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Determines the maximum sample size in the second RF bag</h1>
-    <small class="dont-index">Source: <a href='https://github.com/zsiders/EnsembleRandomForests/blob/master/R/max_splitter.R'><code>R/max_splitter.R</code></a></small>
-    <div class="hidden name"><code>max_splitter.Rd</code></div>
+    <h1>Plots Accumulated Local Effects for ERF</h1>
+    <small class="dont-index">Source: <a href='https://github.com/zsiders/EnsembleRandomForests/blob/master/R/plot_ALE.R'><code>R/plot_ALE.R</code></a></small>
+    <div class="hidden name"><code>plot_ALE.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Takes a data.frame object determines the maximum split</p>
+    <p>Plots the Accumulated Local Effects (ALE) from an ERF object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>max_splitter</span><span class='op'>(</span><span class='va'>v</span>, p <span class='op'>=</span> <span class='fl'>0.89</span>, nmax <span class='op'>=</span> <span class='fl'>10000</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_ALE</span><span class='op'>(</span><span class='va'>ALE</span>, <span class='va'>name</span>, cex.axis <span class='op'>=</span> <span class='fl'>1</span>, cex.lab <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>v</th>
-      <td><p>A data frame object returned from erf_data_prep()</p></td>
+      <th>ALE</th>
+      <td><p>an ALE object for a given variable</p></td>
     </tr>
     <tr>
-      <th>p</th>
-      <td><p>A numeric value between (0,1), default is just below 90%</p></td>
+      <th>name</th>
+      <td><p>the name of the variable</p></td>
     </tr>
     <tr>
-      <th>nmax</th>
-      <td><p>A numeric value &gt; 0 specifying the maximum number of observations per bag, default is 1e4</p></td>
+      <th>cex.axis</th>
+      <td><p>the cex of the axis</p></td>
+    </tr>
+    <tr>
+      <th>cex.lab</th>
+      <td><p>the cex of the labels</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A numeric value specifying the maximum split</p>
+    <p>A plot of the ALEs</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='erf_data_prep.html'>erf_data_prep</a></span><span class='op'>(</span>df<span class='op'>=</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span>, var<span class='op'>=</span><span class='st'>'obs'</span>, covariates<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>'cov'</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span>, value<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>max_splitter</span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 143</div><div class='input'><span class='fu'>max_splitter</span><span class='op'>(</span><span class='va'>data</span>, p<span class='op'>=</span><span class='fl'>0.6</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 65</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='co'>#run an ERF with 10 RFs and </span>
+<span class='va'>ens_rf_ex</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ens_random_forests.html'>ens_random_forests</a></span><span class='op'>(</span>df<span class='op'>=</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span>, var<span class='op'>=</span><span class='st'>"obs"</span>, covariates<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"cov"</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span>,value<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>, save<span class='op'>=</span><span class='cn'>FALSE</span>, cores<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'>
+<span class='va'>ALEdf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ALE_fn.html'>ALE_fn</a></span><span class='op'>(</span><span class='va'>ens_rf_ex</span>, save<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>No name of response variable, making one</span></div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'>
+<span class='fu'>plot_ALE</span><span class='op'>(</span><span class='va'>ALEdf</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
+</div><div class='img'><img src='plot_ALE-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

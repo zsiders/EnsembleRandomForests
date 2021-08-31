@@ -11,7 +11,7 @@
 #' @export
 #' 
 #' @examples
-#' erf_formula_prep('death', c('sarlaac','lightsaber','wookie','stormtrooper'))
+#' erf_formula_prep('death',c('sarlaac','lightsaber','wookie','stormtrooper'))
 #' 
 erf_formula_prep <- function(var, covariates, add.random=TRUE){
 	if(add.random) covariates <- c(covariates, 'random')

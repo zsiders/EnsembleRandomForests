@@ -11,7 +11,7 @@ ens_random_forests(
   header = NULL,
   out.folder = NULL,
   duplicate = TRUE,
-  n.forests = 10,
+  n.forests = 10L,
   importance = TRUE,
   cores = parallel::detectCores() - 2,
   save = TRUE,
@@ -33,11 +33,11 @@ ens_random_forests(
 
 \item{duplicate}{A logical flag that indicates whether to duplicate observations with more than one interaction. Default is TRUE to duplicate all records that interacted with more than one individual (i.e. a fishing set that caught two of the same species)}
 
-\item{n.forests}{A numeric value indicating how many Random Forests to generate in the ensemble, default is 100}
+\item{n.forests}{An integer value indicating how many Random Forests to generate in the ensemble, default is 100}
 
 \item{importance}{A logical flag for the randomForest model to calculate the variable importance}
 
-\item{cores}{A numeric value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.}
+\item{cores}{A integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.}
 
 \item{save}{A logical flag to save the output as an RData object, default is TRUE.}
 
@@ -55,13 +55,7 @@ Execute Ensemble Random Forests model on a given dataset
 }
 \examples{
 #run an ERF with 10 RFs and 
-ens_rf_ex <- ens_random_forests(
-					df=simData$samples, 
-					var="obs", 
-					covariates=grep("cov",
-								colnames(simData$samples),value=T), 
-					save=FALSE, 
-					cores=1)
+ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs",covariates=grep("cov", colnames(simData$samples),value=T), save=FALSE, cores=1)
 
 # view the dataset used in the model
 head(ens_rf_ex$data) 

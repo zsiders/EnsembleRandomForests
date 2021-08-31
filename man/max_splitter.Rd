@@ -20,12 +20,7 @@ A numeric value specifying the maximum split
 Takes a data.frame object determines the maximum split
 }
 \examples{
-data <- erf_data_prep(
-				df=simData$samples, 
-				var='obs', 
-				covariates=grep('cov', 
-					colnames(simData$samples), value=TRUE)
-			)
+data <- erf_data_prep(df=simData$samples, var='obs', covariates=grep('cov', colnames(simData$samples), value=TRUE))
 max_splitter(data)
 max_splitter(data, p=0.6)
 

@@ -13,25 +13,12 @@
 #' @export
 #' 
 #' @examples
-#' form <- erf_formula_prep(
-#' 				var='obs', 
-#' 				covariates=grep('cov',
-#' 					colnames(simData$samples),value=TRUE)
-#' 			)
-#' data <- erf_data_prep(
-#' 				df=simData$samples, 
-#' 				var='obs', 
-#' 				covariate=grep('cov', 
-#' 					colnames(simData$samples), value=TRUE)
-#' 			)
+#' form <- erf_formula_prep(var='obs', covariates=grep('cov',colnames(simData$samples),value=TRUE))
+#' data <- erf_data_prep(df=simData$samples, var='obs', covariate=grep('cov', colnames(simData$samples), value=TRUE))
 #' max_split <- max_splitter(data)
 #' 
 #' #fit a single RandomForest
-#' rf_ex <- rf_ens_fn(
-#' 				v=data, 
-#' 				form=form, 
-#' 				max_split=max_split, 
-#' 				ntree=50)
+#' rf_ex <- rf_ens_fn(v=data, form=form, max_split=max_split, ntree=50)
 #' 
 #' #see the training/test auc value
 #' rf_ex$roc_train$auc
@@ -39,8 +26,7 @@
 #' 
 #' #see the distribution of predictions
 #' par(mar=c(4,4,1,1))
-#' plot(density(rf_ex$preds[,2],
-#' 		from=0,to=1,adj=2), main="", las=1)
+#' plot(density(rf_ex$preds[,2],from=0,to=1,adj=2), main="", las=1)
 #' 
 rf_ens_fn <- function(v, form, max_split, ntree=100, mtry=5, importance=TRUE){
 	if(missing(v)) stop("Supply a ERF data.frame")

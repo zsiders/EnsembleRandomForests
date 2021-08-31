@@ -5,9 +5,9 @@
 #' @inheritParams erf_data_prep
 #' @param out.folder A path to the folder to write out too. If NULL then a folder is generated in the working directory
 #' @param duplicate A logical flag that indicates whether to duplicate observations with more than one interaction. Default is TRUE to duplicate all records that interacted with more than one individual (i.e. a fishing set that caught two of the same species)
-#' @param n.forests A numeric value indicating how many Random Forests to generate in the ensemble, default is 100
+#' @param n.forests An integer value indicating how many Random Forests to generate in the ensemble, default is 100
 #' @param importance A logical flag for the randomForest model to calculate the variable importance
-#' @param cores A numeric value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.
+#' @param cores A integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.
 #' @param save A logical flag to save the output as an RData object, default is TRUE.
 #' @param ntree The number of decision trees to use in each RF, default is 1000
 #' @param mtry The number of covariates to try at each node split, default is 5
@@ -19,13 +19,7 @@
 #' 
 #' @examples
 #' #run an ERF with 10 RFs and 
-#' ens_rf_ex <- ens_random_forests(
-#' 					df=simData$samples, 
-#' 					var="obs", 
-#' 					covariates=grep("cov",
-#' 								colnames(simData$samples),value=T), 
-#' 					save=FALSE, 
-#' 					cores=1)
+#' ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs",covariates=grep("cov", colnames(simData$samples),value=T), save=FALSE, cores=1)
 #' 
 #' # view the dataset used in the model
 #' head(ens_rf_ex$data) 
@@ -39,16 +33,20 @@
 #' #view the threshold-free ensemble performance metrics
 #' unlist(ens_rf_ex$ens.perf[c('auc','rmse','tss')]) 
 #' 
-ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL, duplicate=TRUE, n.forests=10, importance=TRUE, cores=parallel::detectCores()-2, save=TRUE, ntree=1000, mtry=5, var.q = c(0.1,0.5,0.9)){
+ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL, duplicate=TRUE, n.forests=10L, importance=TRUE, cores=parallel::detectCores()-2, save=TRUE, ntree=1000, mtry=5, var.q = c(0.1,0.5,0.9)){
 	#Prep
 		if(missing(df)) stop("Supply a data.frame")
 		if(missing(var)) stop("Supply a variable to model")
 		if(missing(covariates)) stop("Supply covariates to use")
-		if(is.null(out.folder) & save==TRUE){
-			dir.create('Output/')
-			out.folder <- "Output/"
-			warning("No output folder provided; creating in working directory")
+		if(!is.integer(n.forests)){
+			n.forests <- floor(n.forests)
+			message("rounding n.forests to the nearest one")
 		}
+		if(!is.integer(cores)){
+			message("rounding n.forests to the nearest one")
+			cores <- floor(cores)
+		} 
+		
 		form <- erf_formula_prep(var, covariates) #Prepare the model formula
 		if(!is.null(header)){
 			v <- erf_data_prep(df, var, covariates, header, duplicate=duplicate)
@@ -123,7 +121,14 @@ ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL
 			pack$var.imp <- var_ens_df
 			pack$var.imp.raw <- var_ens
 		}
-		if(save) save(pack, file=paste0(out.folder,"/ERF_",var,".Rdata"))
+		if(save){
+			if(is.null(out.folder)){
+				dir.create('Output/')
+				out.folder <- "Output/"
+				warning("No output folder provided; creating in working directory")
+			}
+			save(pack, file=paste0(out.folder,"/ERF_",var,".Rdata"))
+		}
 
 	return(pack)
 }
