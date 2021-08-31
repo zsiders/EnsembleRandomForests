@@ -34,7 +34,8 @@ erf_impt <- function(fit, var.names, pal){
 		                   var.imp.o$mu[i], 
 		                   var.imp.o$sd[i]),
 					to.y = c(0,0.8)+i,
-					probs=c(0.1,0.5,0.9),adj=3)
+					probs=c(0.1,0.5,0.9),adj=3,
+					from=0)
 		
 		med_seq <- seq(min(var.imp.o[,2]),
 		               max(var.imp.o[,2]), 
@@ -73,7 +74,12 @@ den.sc <- function(x,to.x,to.y,from,ret.x=FALSE,probs,...){
 	x <- na.omit(unlist(x))
 
 	if(!missing(from)){
-		d <- density(x, from=from[1],to=from[2],...)
+		if(length(from)>1){
+			d <- density(x, from=from[1],to=from[2],...)
+		}else{
+			d <- density(x, from=from[1],...)
+		}
+		
 	}else{
 		d <- density(x, ...)
 	}
