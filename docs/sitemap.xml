@@ -39,4 +39,10 @@
   <url>
     <loc>https://zsiders.github.io/EnsembleRandomForests//articles/basic-workflow.html</loc>
   </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests//articles/helper-fn.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests//articles/model-perf.html</loc>
+  </url>
 </urlset>

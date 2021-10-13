@@ -1,0 +1,42 @@
+---
+title: "Evaluating model performance"
+output: 
+  rmarkdown::html_vignette:
+    toc: TRUE
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Evaluating model performance}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(EnsembleRandomForests)
+```
+
+### Check model performance:
+We can check model performance using the `rocr_ens` function. This calculates a battery of performance metrics based on the Receiver Operator Characteristic curve from the `ROCR` package. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a `factor`). We can test this on our simulated data. 
+```{r sim_data_roc, fig.align='center', fig.height=4, fig.width=4}
+# the rocr_ens function takes the predictions (or true probability in this case)
+# as the first argument. The true observations as a factor class are the
+# second argument. 
+roc <- with(simData$samples,rocr_ens(prob, factor(obs,levels=c(0,1))))
+
+# We can visualize the resulting Receiver Operator Characteristic curve
+# and add some of the threshold-free performance metrics (AUC, TSS, RMSE)
+par(mar=c(4,4,1,1))
+plot(roc$fpr@y.values[[1]], roc$tpr@y.values[[1]],
+     xlab = "False Positive Rate (1-Specificity)",
+     ylab = "True Positive Rate (Sensitivity)",
+     type = 'l', lwd=3, las=1)
+text(0.6, 0.2, paste0('AUC = ', round(roc$auc,2)), cex=1.2, adj=c(0,0.5))
+text(0.6, 0.125, paste0('TSS = ', round(roc$tss,2)), cex=1.2, adj=c(0,0.5))
+text(0.6, 0.0525, paste0('RMSE = ', round(roc$rmse,2)), cex=1.2, adj=c(0,0.5))
+```

@@ -1,6 +1,9 @@
 ---
 title: "Getting started with ERF"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: TRUE
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{Getting started with ERF}
   %\VignetteEngine{knitr::rmarkdown}
@@ -36,7 +39,8 @@ par(mar=c(0,0.5,2,0.5), oma=c(1,1,1,1))
 layout(matrix(c(1,1,2,2,3,3,0,4,4,5,5,0),2,6,byrow=TRUE))
 r <- range(cellStats(simData$grid[[1:5]],'range'))
 for(i in 1:5){
-  image(simData$grid[[i]], col=inferno(100), zlim = r, xaxt='n', yaxt='n', xlab="", ylab="")
+  image(simData$grid[[i]], col=inferno(100), zlim = r, 
+        xaxt='n', yaxt='n', xlab="", ylab="")
   title(paste0('Covariate ', i))
 }
 ```
@@ -71,91 +75,28 @@ round(head(newdata$samples,4),3)
 knitr::kable(table(newdata$samples$obs), col.names=c('Obs','Freq'))
 ```
 
-```{r sim_new_data_cont, fig.align='center', fig.height=5, fig.width=7}
-# We can also visualize the covariates
-par(mar=c(0,0.5,2,0.5), oma=c(1,1,1,1))
-layout(matrix(c(1,1,2,2,3,3,0,4,4,5,5,0),2,6,byrow=TRUE))
-r <- range(cellStats(newdata$grid[[1:5]],'range'))
-for(i in 1:5){
-  image(newdata$grid[[i]], col=inferno(100), zlim = r, xaxt='n', yaxt='n', xlab="", ylab="")
-  title(paste0('Covariate ', i))
-}
-```
-
-### Check model performance:
-We can check model performance using the `rocr_ens` function. This calculates a battery of performance metrics based on the Receiver Operator Characteristic curve from the `ROCR` package. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a `factor`). We can test this on our simulated data. 
-```{r sim_data_roc, fig.align='center', fig.height=4, fig.width=4}
-# the rocr_ens function takes the predictions (or true probability in this case)
-# as the first argument. The true observations as a factor class are the
-# second argument. 
-roc <- with(simData$samples,rocr_ens(prob, factor(obs,levels=c(0,1))))
-
-# We can visualize the resulting Receiver Operator Characteristic curve
-# and add some of the threshold-free performance metrics (AUC, TSS, RMSE)
-par(mar=c(4,4,1,1))
-plot(roc$fpr@y.values[[1]], roc$tpr@y.values[[1]],
-     xlab = "False Positive Rate (1-Specificity)",
-     ylab = "True Positive Rate (Sensitivity)",
-     type = 'l', lwd=3, las=1)
-text(0.6, 0.2, paste0('AUC = ', round(roc$auc,2)), cex=1.2, adj=c(0,0.5))
-text(0.6, 0.125, paste0('TSS = ', round(roc$tss,2)), cex=1.2, adj=c(0,0.5))
-text(0.6, 0.0525, paste0('RMSE = ', round(roc$rmse,2)), cex=1.2, adj=c(0,0.5))
-```
-
-
-## Background on Ensemble Random Forests
-
-### Reviewing the data and formula prep
-We will use our example dataset `simData` to run the ERF model on. Internally, `ens_random_forests` uses the functions `erf_data_prep` and `erf_formula_prep` to convert the data.frame of observations, the dependent variable of interest, and the covariates of interest into the correct format for the ERF model. We will see what these functions do first.
-```{r data_prep}
-erf_data <- erf_data_prep(df = simData$samples, 
-                          var = "obs", #dependent variable
-                          covariates = grep('cov',colnames(simData$samples), value=T),
-                          header = c('prob.raw','prob'), #add'n columsn to include
-                          duplicate = TRUE #flag for duplicate multiple presences
-                          )
-head(erf_data,4)
-```
-As we can see above, the main purpose of `erf_data_prep` is to reorganize the data.frame so that the variable of interest is in the first column. Additionally, a random variable is included to provide a cutoff for variable importance downstream. The *header* argument allows you to tack on additional columns that you want to include in the model prediction data.frame. This is a useful way to add a column of unique IDs for matching predictions and observations should they get scrambled. It is unwise to include all columns in the *header* argument; tacking any extraneous columns to the ERF output is less wasteful of computational resources. The most **impactful** argument in `erf_data_prep` is the *duplicate* argument. This logical flag, when TRUE, copies the covariates for any row that has more than one presence in it. For example, say we have a fishery set a longline with each set equaling an observation (or row) in our data.frame. We are likely to expect that on the 1000's of hooks on this longline that we could catch more than two of the species of interest. The *duplicate* argument handles this instance by copying the multiple presences on an observation. This effectively upweights covariate space where the species occurs multiple times. Alternatively, setting *duplicate* to FALSE can allow a user to model the probability of observing at least one of the dependent variable of interest. Note, this is different than the probability of presence when the observation unit can generate multiple presences per unit effort. Back in our longline example, if we used each individual hook as an observation (or row) then we could expect to only have one presence per hook and setting duplicate to TRUE or FALSE would have no impact on our resulting ERF data.frame. 
-
-Next, let's see what `erf_formula_prep` does.
-```{r formula_prep}
-erf_form <- erf_formula_prep(var = 'obs',
-                             covariates = grep('cov',colnames(simData$samples), value=T)
-                             )
-print(erf_form)
-```
-This function is incredibly simple and mostly called internally to `ens_random_forests`. It simple sets the dependent variable and the covariates up for use in the resulting `randomForests` call. 
-
-### ERF balancing
-The main wrapper function users should be interacting with is `ens_random_forests`. Internally, this function firsts prepares the data using `erf_data_prep`, creates a formula using `erf_formula_prep`, and then calls `rf_ens_fn`. This last function is the workhorse that implements each Random Forests in the ensemble. It also implements two bagging steps. The first bagging step divides the dataset into a training and test set (90:10% is default). The proportion of zeroes and ones in the presence observations is retained in this bagging step. The next bagging step implements downsampling. This balances the proportions of zeroes and ones provided to each decision tree in a given Random Forests. For example, let's look at the frequency and proportion of zeroes and ones in our simulated dataset `simData`.
-```{r balancing, echo=FALSE}
-knitr::kable(table(simData$samples$obs), col.names=c('Obs','Freq'))
-knitr::kable(prop.table(table(simData$samples$obs)), col.names=c('Obs','Prop.'))
-```
-As we can see our zeroes and ones are unbalanced, we have far more zeroes than ones. In the first bagging step the proportion of zeroes and ones is retained in creating the training/test sets. Then prior to calling the next bagging step, we determine the maximum number of samples in each bag passed to each decision tree in a given Random Forests in the ensemble. We do this with `max_splitter`.
-```{r max_split}
-(max_split <- max_splitter(erf_data))
-```
-### Running a single RF
-Now that we have prepared our data, formula, and maximum split we can run a single Random Forest. This will be done internally in `ens_random_forests` multiple times to create the ensemble of Random Forests. Here, a single RF is run but with the double bagging procedure as discussed above. The resulting `list` has components *mod*, *preds*, *roc_train*, and *roc_test*. Internally, in `ens_random_forests` these will be used to calculate the ensemble predictions and performance. On our single RF this will return the `randomForest` class model, a data.frame of the predictions and observations, the ROC measured performance for the training set, and for the test set. The test set metrics are of more interest than the training set. It is still useful to check that $AUC_{training} > AUC_{test}$ as by random chance the test AUC can be greater even though the overall RF fit poorly. The test was not seen by the RF model so it is a better measure of how the model fits the data. In ERF, we do not typically concern ourselves with out-of-bag performance calculated internally in the `randomForest` call.
-```{r single_RF}
-rf_ex <- rf_ens_fn(erf_data, erf_form, max_split, ntree=50)
-head(rf_ex$preds)
-rf_ex$roc_train$auc #training AUC
-rf_ex$roc_test$auc #test AUC
-(rf_ex$roc_train$auc > rf_ex$roc_test$auc)
-```
 ## Running an Ensemble Random Forests model
 Now that we have covered the background, let's run an ERF. This is simple using `ens_random_forests`. 
 ```{r erf_ex}
-ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs", covariates=grep("cov",colnames(simData$samples),value=T), save=FALSE)
-head(ens_rf_ex$data) # view the dataset used in the model
-head(ens_rf_ex$ens.pred) #view the model predictions
-ens_rf_ex$mu.te.perf #view the test threshold-free performance metrics
-unlist(ens_rf_ex$ens.perf[c('auc','rmse','tss')]) #view the threshold-free ensemble performance metrics
+ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs",
+                                covariates=grep("cov",colnames(simData$samples),value=T), 
+                                save=FALSE)
+
+#view the dataset used in the model
+head(ens_rf_ex$data) 
+
+#view the ensemble model predictions
+head(ens_rf_ex$ens.pred)
+
+#view the threshold-free ensemble performance metrics
+unlist(ens_rf_ex$ens.perf[c('auc','rmse','tss')])
+
+#view the mean test threshold-free performance metrics for each RF
+ens_rf_ex$mu.te.perf
+
+#structure of the individual model predictions
+str(ens_rf_ex$pred)
 ```
+
 As we can see, the ensemble performs better than the mean test predictions. This is advantage of ERF over other RF modifications for extreme class imbalance. [Siders et al. 2020](https://www.int-res.com/abstracts/esr/v43/p183-197/) discusses the various performance of these other modifications if you are curious. 
 
-## Next steps
-Other tutorials will walk you through summarizing and visualing the results as well as discuss the various model performance metrics and their interpretation. 

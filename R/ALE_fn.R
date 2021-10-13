@@ -7,6 +7,7 @@
 #' @param save A logical flag to save the output as an RData object, default is TRUE.
 #' @param out.folder A path to the folder to write out too. If NULL then a folder is generated in the working directory
 #' @param cores An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.
+#' @param quants Either a NULL or two numeric values specifying the lower and upper quantile cutoffs to evaluate the ALE for continuous covariates over.
 #' 
 #' @return A list that contains the ALEs for each variable, ordered by the mean variable importance
 #' 
@@ -19,7 +20,7 @@
 #' ALEdf <- ALE_fn(ens_rf_ex, save=FALSE)
 #' head(ALEdf[[1]])
 #' 
-ALE_fn <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectCores()-4){
+ALE_fn <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectCores()-4, quants=c(0.05,0.95)){
 	if(missing(fit)) stop("Supply fit object")
 	if(missing(var)){
         message("No name of response variable, making one")
@@ -36,7 +37,7 @@ ALE_fn <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectC
 		message("No variable importance calculated in fit object >> running out of order")
 		vi <- attr(fit$model[[1]]$mod$terms,'term.labels')
 	}else{
-		vi  <- rownames(fit$var.imp[fit$var.imp$ord])
+		vi  <- rownames(fit$var.imp)[fit$var.imp$ord]
 	}
 	vi.ind <- match(vi,colnames(fit$data))
 
@@ -64,7 +65,7 @@ ALE_fn <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectC
 	registerDoParallel(cl)
 
 	ALEdf <- foreach(i = 2:ncol(data.df), .packages=c('randomForest'), .export=c("ALEfun.J1","yhat")) %dopar% {
-		ex <- lapply(model, function(x) {ALEfun.J1(data.df, x$mod, yhat, J = i, K=50)})
+		ex <- lapply(model, function(x) {ALEfun.J1(data.df, x$mod, yhat, J = i, K=50, quants=quants)})
 
 		df <- as.data.frame(cbind(ex[[1]]$x.values, sapply(ex,function(x) {x$f.values})))
 		names(df)[1] <- "x"
@@ -85,7 +86,7 @@ ALE_fn <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectC
 	return(ALEdf)
 }
 yhat <- function(X.model, newdata) as.numeric(predict(X.model, newdata))
-ALEfun.J1 <- function (X, X.model, pred.fun, J, K = 40){
+ALEfun.J1 <- function (X, X.model, pred.fun, J, K = 40, quants=NULL){
     N = dim(X)[1]
     d = dim(X)[2]
     if (class(X[, J]) == "factor") {
@@ -151,8 +152,13 @@ ALEfun.J1 <- function (X, X.model, pred.fun, J, K = 40){
     }
     else if (class(X[, J]) == "numeric" | class(X[, J]) == 
         "integer") {
-        z = c(min(X[, J]), as.numeric(quantile(X[, J], seq(1/K, 
+        if(missing(quants)){
+            z = c(min(X[, J]), as.numeric(quantile(X[, J], seq(1/K, 
             1, length.out = K), type = 1)))
+        }else{
+            z = as.numeric(quantile(X[, J], seq(quants[1],quants[2],length.out=K), type = 1))
+        }
+        
         z = unique(z)
         K = length(z) - 1
         fJ = numeric(K)

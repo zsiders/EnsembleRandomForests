@@ -9,7 +9,8 @@ ALE_fn(
   var,
   save = TRUE,
   out.folder = NULL,
-  cores = parallel::detectCores() - 4
+  cores = parallel::detectCores() - 4,
+  quants = c(0.05, 0.95)
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ ALE_fn(
 \item{out.folder}{A path to the folder to write out too. If NULL then a folder is generated in the working directory}
 
 \item{cores}{An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.}
+
+\item{quants}{Either a NULL or two numeric values specifying the lower and upper quantile cutoffs to evaluate the ALE for continuous covariates over.}
 }
 \value{
 A list that contains the ALEs for each variable, ordered by the mean variable importance

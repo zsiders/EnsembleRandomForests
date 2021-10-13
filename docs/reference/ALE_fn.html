@@ -134,7 +134,8 @@
   <span class='va'>var</span>,
   save <span class='op'>=</span> <span class='cn'>TRUE</span>,
   out.folder <span class='op'>=</span> <span class='cn'>NULL</span>,
-  cores <span class='op'>=</span> <span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>4</span>
+  cores <span class='op'>=</span> <span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>4</span>,
+  quants <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.05</span>, <span class='fl'>0.95</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -160,6 +161,10 @@
       <th>cores</th>
       <td><p>An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.</p></td>
     </tr>
+    <tr>
+      <th>quants</th>
+      <td><p>Either a NULL or two numeric values specifying the lower and upper quantile cutoffs to evaluate the ALE for continuous covariates over.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -172,20 +177,20 @@
 </div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'>
 <span class='va'>ALEdf</span> <span class='op'>&lt;-</span> <span class='fu'>ALE_fn</span><span class='op'>(</span><span class='va'>ens_rf_ex</span>, save<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>No name of response variable, making one</span></div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>ALEdf</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;            x        f.1        f.2        f.3       f.4       f.5        f.6
-#&gt; 1 -0.4019663 0.01106723 0.08168001 0.05837769 0.2347805 0.1594853 0.01819074
-#&gt; 2 -0.2914307 0.18106723 0.28668001 0.15337769 0.2947805 0.2594853 0.24819074
-#&gt; 3 -0.2597696 0.20606723 0.29668001 0.16337769 0.2947805 0.2694853 0.23819074
-#&gt; 4 -0.2390396 0.19106723 0.22668001 0.16337769 0.2497805 0.2294853 0.18819074
-#&gt; 5 -0.2236097 0.17614186 0.17692876 0.11860157 0.2298800 0.1946594 0.17326536
-#&gt; 6 -0.2065132 0.13114186 0.12192876 0.10860157 0.1748800 0.1646594 0.15826536
-#&gt;          f.7        f.8         f.9      f.10
-#&gt; 1 0.06689137 0.07701978 -0.17721352 0.1354136
-#&gt; 2 0.16189137 0.28201978  0.13278648 0.2304136
-#&gt; 3 0.16189137 0.29701978  0.13778648 0.2354136
-#&gt; 4 0.12689137 0.27201978  0.11278648 0.2154136
-#&gt; 5 0.12689137 0.22724366  0.10781136 0.1955131
-#&gt; 6 0.11189137 0.20724366  0.09781136 0.1505131</div><div class='input'>
+</div><div class='output co'>#&gt;            x        f.1        f.2        f.3        f.4        f.5        f.6
+#&gt; 1 -0.4666760 -0.2452388 -0.1944444 -0.2880555 -0.2333040 -0.2556382 -0.1872206
+#&gt; 2 -0.4373463 -0.2344280 -0.1944444 -0.2772447 -0.2333040 -0.2502328 -0.1764098
+#&gt; 3 -0.4166505 -0.2398628 -0.1944444 -0.2663751 -0.2224344 -0.2502328 -0.1764098
+#&gt; 4 -0.3927165 -0.2398628 -0.1944444 -0.2663751 -0.2278398 -0.2502328 -0.1764098
+#&gt; 5 -0.3739436 -0.2398628 -0.1999389 -0.2608806 -0.2223453 -0.2447383 -0.1654208
+#&gt; 6 -0.3507144 -0.2024297 -0.1892437 -0.2020571 -0.1956074 -0.1752196 -0.1333352
+#&gt;          f.7        f.8        f.9       f.10
+#&gt; 1 -0.3018567 -0.2431375 -0.2099151 -0.1549398
+#&gt; 2 -0.2964513 -0.2107051 -0.2099151 -0.1495343
+#&gt; 3 -0.2964513 -0.2052703 -0.2153499 -0.1440996
+#&gt; 4 -0.2856405 -0.2052703 -0.2153499 -0.1495050
+#&gt; 5 -0.2636625 -0.1997758 -0.2208444 -0.1385160
+#&gt; 6 -0.2315769 -0.1890806 -0.1834113 -0.1171256</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
