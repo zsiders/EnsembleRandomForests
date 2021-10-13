@@ -38,7 +38,6 @@ plot_ALE <- function(ALE, name, cex.axis=1, cex.lab=1){
 	     cex.axis = cex.axis, 
 	     cex.lab = cex.lab)
 		axis(1, at=1:nrow(ALE), labels=ALE[,1], cex.axis=cex.axis)
-		abline(h=0, lty=3)
 		segments(x0 = 1:nrow(ALE),
 		         x1 = 1:nrow(ALE), 
 		        y0 = quant[,1],
@@ -46,6 +45,7 @@ plot_ALE <- function(ALE, name, cex.axis=1, cex.lab=1){
 		        col = "gray30",
 		        lwd=3)
 		points(1:nrow(ALE),quant[,2], pch=16, cex=2)
+		abline(h=0, lty=3)
 	}else{
 		x.range <- range(ALE[,1])
 		y.range <- range(unlist(ALE[,2:ncol(ALE)]))
@@ -59,13 +59,11 @@ plot_ALE <- function(ALE, name, cex.axis=1, cex.lab=1){
 	     ylab="", 
 	     cex.axis = cex.axis, 
 	     cex.lab = cex.lab)
-		abline(h=0, lty=3)
 		polygon(x = c(ALE[,1], rev(ALE[,1])), 
 		        y = c(quant[,1], rev(quant[,3])), 
 		        border = NA, 
 		        col = "gray80")
-
-
 		lines(ALE[,1], quant[,2], lwd=3)
+		abline(h=0, lty=3)
 	}
 }
