@@ -22,9 +22,16 @@ erf_impt <- function(fit, var.names, pal){
 	nvars <- nrow(var.imp)
 	max.v <- max(var.imp[,1:3])
 	var.imp.o <- var.imp[var.imp$ord,][nvars:1,]
+	rand.i <- which(var.names[var.imp$ord][nvars:1]=='random')
 
 	par(mar=c(4,max(nchar(var.names))/1.5,1,1))
-	plot(seq(0, max.v, length.out=nvars), seq(1,nvars), type='n', xlab="Mean Decrease in Accuracy", ylab="", bty='l', xaxt='n', yaxt='n', ylim=c(0,nvars+1))
+	plot(seq(0, max.v, length.out=nvars), 
+	     seq(1,nvars), 
+	     type='n', 
+	     xlab="Mean Decrease in Accuracy", 
+	     ylab="", bty='l', 
+	     xaxt='n', yaxt='n', 
+	     ylim=c(0,nvars+1))
 	axis(2, seq(1,nvars), parse(text=var.names[var.imp$ord][nvars:1]), las=1)
 	
 	axis(1, pretty(c(0,max.v)))
@@ -34,7 +41,7 @@ erf_impt <- function(fit, var.names, pal){
 		                   var.imp.o$mu[i], 
 		                   var.imp.o$sd[i]),
 					to.y = c(0,0.8)+i,
-					probs=c(0.1,0.5,0.9),adj=3,
+					probs=c(0.5,0.1,0.9,0.25,0.75),adj=3,
 					from=0)
 		
 		med_seq <- seq(min(var.imp.o[,2]),
@@ -42,23 +49,32 @@ erf_impt <- function(fit, var.names, pal){
 		               length.out=100)
 		med_id <- which.min(abs(med_seq - var.imp.o[i,2]))
 
-		greys <- colorRampPalette(c('white','grey50','black'))
+		greys <- colorRampPalette(rev(c('white','grey50','black')))
 		if(missing(pal)){
 			pal <- colorRampPalette(c('#fcde9c', '#faa476', '#f0746e', '#e34f6f', '#dc3977', '#b9257a', '#7c1d6f'))
 		}
+		if(i==rand.i){
+			cols <-'gray50'
+		}else if(i < rand.i){
+			cols <- "gray95"
+		}else{
+			cols <- pal(100)[med_id]
+		}
 		polygon(x=c(d$d$x.q, rev(d$d$x.q)), 
 		        y=c(rep(i,length(d$d$y.q)), rev(d$d$y.q)), 
-		        col=pal(100)[med_id], border=FALSE)
+		        col=cols, border=FALSE)
 		
-		segments(x0=d$d$q[1,1], 
+		segments(x0=d$d$q[2,1], 
 		         y0=i, 
 		         x1=d$d$q[3,1], 
 		         y1=i, lty=3)
-		segments(x0=d$d$q[2,1], 
+
+		segments(x0=d$d$q[1,1], 
 		         y0=i, 
-		         x1=d$d$q[2,1], 
-		         y1=d$d$q[2,2],
+		         x1=d$d$q[1,1], 
+		         y1=d$d$q[1,2],
 		         lty=1, col=greys(100)[med_id])
+
 		lines(d$d$x, d$d$y, lwd=2, col='black')
 	}
 	legend("bottomright", 
@@ -67,7 +83,8 @@ erf_impt <- function(fit, var.names, pal){
 	       col=c('black',pal(5)[3],'black'), 
 	       lty=c(3, NA, NA), 
 	       lwd=c(3, NA, NA), 
-	       pt.cex=c(NA,2,1), 
+	       pt.cex=c(NA,2,1),
+	       inset=c(0,0), 
 	       bty='n', seg.len = 1.1)
 }
 den.sc <- function(x,to.x,to.y,from,ret.x=FALSE,probs,...){
@@ -109,8 +126,8 @@ den.sc <- function(x,to.x,to.y,from,ret.x=FALSE,probs,...){
 			q <- quantile(x,probs)
 			q.id <- sapply(q, function(x)which.min(abs(dx-x)))
 			d$q <- cbind(d$x[q.id],d$y[q.id])
-			d$x.q <- d$x[q.id[1]:q.id[3]]
-			d$y.q <- d$y[q.id[1]:q.id[3]]
+			d$x.q <- d$x[q.id[4]:q.id[5]]
+			d$y.q <- d$y[q.id[4]:q.id[5]]
 		}
 		if(ret.x){
 			return(list(d=d,x=dx))
