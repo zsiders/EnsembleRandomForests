@@ -118,11 +118,11 @@
 <span class="co">#&gt; 2   0  2.7156166 0.9379419 -0.1202814  0.26103341 -0.2298234 0.14750795</span>
 <span class="co">#&gt; 3   0  0.5609232 0.6366661  0.1242205  0.09052045 -0.3070963 0.14493653</span>
 <span class="co">#&gt; 4   0  0.2723824 0.5676777 -0.1248126 -0.29583389  0.6282519 0.06067430</span>
-<span class="co">#&gt;         cov5     random</span>
-<span class="co">#&gt; 1 -0.1553770  0.8258689</span>
-<span class="co">#&gt; 2  0.3248217  1.2349592</span>
-<span class="co">#&gt; 3  0.0230301 -0.1946809</span>
-<span class="co">#&gt; 4 -0.2524068  1.0491646</span></code></pre></div>
+<span class="co">#&gt;         cov5      random</span>
+<span class="co">#&gt; 1 -0.1553770  0.07927659</span>
+<span class="co">#&gt; 2  0.3248217 -2.36097770</span>
+<span class="co">#&gt; 3  0.0230301  0.71463988</span>
+<span class="co">#&gt; 4 -0.2524068 -0.39674934</span></code></pre></div>
 <p>As we can see above, the main purpose of <code>erf_data_prep</code> is to reorganize the data.frame so that the variable of interest is in the first column. Additionally, a random variable is included to provide a cutoff for variable importance downstream. The <em>header</em> argument allows you to tack on additional columns that you want to include in the model prediction data.frame. This is a useful way to add a column of unique IDs for matching predictions and observations should they get scrambled. It is unwise to include all columns in the <em>header</em> argument; tacking any extraneous columns to the ERF output is less wasteful of computational resources. The most <strong>impactful</strong> argument in <code>erf_data_prep</code> is the <em>duplicate</em> argument. This logical flag, when TRUE, copies the covariates for any row that has more than one presence in it. For example, say we have a fishery set a longline with each set equaling an observation (or row) in our data.frame. We are likely to expect that on the 1000’s of hooks on this longline that we could catch more than two of the species of interest. The <em>duplicate</em> argument handles this instance by copying the multiple presences on an observation. This effectively upweights covariate space where the species occurs multiple times. Alternatively, setting <em>duplicate</em> to FALSE can allow a user to model the probability of observing at least one of the dependent variable of interest. Note, this is different than the probability of presence when the observation unit can generate multiple presences per unit effort. Back in our longline example, if we used each individual hook as an observation (or row) then we could expect to only have one presence per hook and setting duplicate to TRUE or FALSE would have no impact on our resulting ERF data.frame.</p>
 <p>Next, let’s see what <code>erf_formula_prep</code> does.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -131,7 +131,7 @@
                              <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">erf_form</span><span class="op">)</span>
 <span class="co">#&gt; obs ~ cov1 + cov2 + cov3 + cov4 + cov5 + random</span>
-<span class="co">#&gt; &lt;environment: 0x7fea81b2c780&gt;</span></code></pre></div>
+<span class="co">#&gt; &lt;environment: 0x7fb0a11f47b8&gt;</span></code></pre></div>
 <p>This function is incredibly simple and mostly called internally to <code>ens_random_forests</code>. It simple sets the dependent variable and the covariates up for use in the resulting <code>randomForests</code> call.</p>
 </div>
 <div id="erf-balancing" class="section level3">
@@ -183,16 +183,16 @@
 <code class="sourceCode R"><span class="va">rf_ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rf_ens_fn.html">rf_ens_fn</a></span><span class="op">(</span><span class="va">erf_data</span>, <span class="va">erf_form</span>, <span class="va">max_split</span>, ntree<span class="op">=</span><span class="fl">50</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">rf_ex</span><span class="op">$</span><span class="va">preds</span><span class="op">)</span>
 <span class="co">#&gt;    P.0  P.1 PRES  type</span>
-<span class="co">#&gt; 1 0.66 0.34    0 train</span>
-<span class="co">#&gt; 2 0.36 0.64    0 train</span>
-<span class="co">#&gt; 3 0.48 0.52    0 train</span>
-<span class="co">#&gt; 4 0.74 0.26    0  test</span>
-<span class="co">#&gt; 5 0.38 0.62    0 train</span>
-<span class="co">#&gt; 6 1.00 0.00    0 train</span>
+<span class="co">#&gt; 1 0.74 0.26    0 train</span>
+<span class="co">#&gt; 2 0.48 0.52    0 train</span>
+<span class="co">#&gt; 3 0.50 0.50    0 train</span>
+<span class="co">#&gt; 4 0.80 0.20    0  test</span>
+<span class="co">#&gt; 5 0.46 0.54    0 train</span>
+<span class="co">#&gt; 6 0.98 0.02    0 train</span>
 <span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_train</span><span class="op">$</span><span class="va">auc</span> <span class="co">#training AUC</span>
-<span class="co">#&gt; [1] 0.9766037</span>
+<span class="co">#&gt; [1] 0.9669243</span>
 <span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_test</span><span class="op">$</span><span class="va">auc</span> <span class="co">#test AUC</span>
-<span class="co">#&gt; [1] 0.7450155</span>
+<span class="co">#&gt; [1] 0.8284114</span>
 <span class="op">(</span><span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_train</span><span class="op">$</span><span class="va">auc</span> <span class="op">&gt;</span> <span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_test</span><span class="op">$</span><span class="va">auc</span><span class="op">)</span>
 <span class="co">#&gt; [1] TRUE</span></code></pre></div>
 </div>

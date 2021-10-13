@@ -9,8 +9,7 @@ ALE_fn(
   var,
   save = TRUE,
   out.folder = NULL,
-  cores = parallel::detectCores() - 4,
-  quants = c(0.05, 0.95)
+  cores = parallel::detectCores() - 4
 )
 }
 \arguments{

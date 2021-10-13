@@ -19,15 +19,15 @@
 #' 
 #' plot_ALE(ALEdf[1])
 #' 
-plot_ALE <- function(ALE, name, cex.axis=1, cex.lab=1){
+plot_ALE <- function(ALE, name, cex.axis=1, cex.lab=1, quantiles=c(0.025,0.975)){
 	if(missing(name) & length(ALE)==1) name <- names(ALE)
 	if(length(ALE)==1) ALE <- ALE[[1]]
 	if(class(ALE[,1])=='character'){
-		ALE[,2:ncol(ALE)] <- sapply(ALE[,2:ncol(ALE)],as.numeric)
-		y.range <- range(unlist(ALE[,2:ncol(ALE)]))
+		ALE[,2:ncol(ALE)] <- sapply(ALE[,3:ncol(ALE)],as.numeric)
+		y.range <- range(unlist(ALE[,3:ncol(ALE)]))
 		x.seq <- c(0,nrow(ALE)+1)
 		x.range <- range(x.seq)
-		quant <- t(apply(ALE[,2:ncol(ALE)], 1, quantile, probs=c(0.1, 0.5, 0.9)))
+		quant <- t(apply(ALE[,3:ncol(ALE)], 1, quantile, probs=c(0.1, 0.5, 0.9)))
 		plot(1:nrow(ALE), quant[,2], 
 	     type='n', 
 	     xlim= range(pretty(x.range)), 
@@ -47,10 +47,17 @@ plot_ALE <- function(ALE, name, cex.axis=1, cex.lab=1){
 		points(1:nrow(ALE),quant[,2], pch=16, cex=2)
 		abline(h=0, lty=3)
 	}else{
-		x.range <- range(ALE[,1])
-		y.range <- range(unlist(ALE[,2:ncol(ALE)]))
-		quant <- t(apply(ALE[,2:ncol(ALE)], 1, quantile, probs=c(0.1, 0.5, 0.9)))
-		plot(ALE[,1], quant[,2], 
+		if(length(unique(ALE[,2]))<5){
+			keep <- rep(TRUE,nrow(ALE))
+		}else{
+			keep <- ALE[,2]>quantiles[1] & ALE[,2]<quantiles[2]
+		}
+		
+		x.range <- range(ALE[keep,1])
+		y.range <- range(unlist(ALE[keep,3:ncol(ALE)]))
+		quant <- t(apply(ALE[keep,3:ncol(ALE)], 1, quantile, probs=c(0.1, 0.5, 0.9)))
+
+		plot(ALE[keep,1], quant[,2], 
 	     type='n', 
 	     xlim= range(pretty(x.range)), 
 	     ylim = range(pretty(range(y.range))), 
@@ -58,12 +65,13 @@ plot_ALE <- function(ALE, name, cex.axis=1, cex.lab=1){
 	     xlab=parse(text=name), 
 	     ylab="", 
 	     cex.axis = cex.axis, 
-	     cex.lab = cex.lab)
-		polygon(x = c(ALE[,1], rev(ALE[,1])), 
+	     cex.lab = cex.lab,
+	     xaxs='i', yaxs='i')
+		polygon(x = c(ALE[keep,1], rev(ALE[keep,1])), 
 		        y = c(quant[,1], rev(quant[,3])), 
 		        border = NA, 
 		        col = "gray80")
-		lines(ALE[,1], quant[,2], lwd=3)
+		lines(ALE[keep,1], quant[,2], lwd=3)
 		abline(h=0, lty=3)
 	}
 }

@@ -4,7 +4,7 @@
 \alias{plot_ALE}
 \title{Plots Accumulated Local Effects for ERF}
 \usage{
-plot_ALE(ALE, name, cex.axis = 1, cex.lab = 1)
+plot_ALE(ALE, name, cex.axis = 1, cex.lab = 1, quantiles = c(0.025, 0.975))
 }
 \arguments{
 \item{ALE}{an ALE object for a given variable}

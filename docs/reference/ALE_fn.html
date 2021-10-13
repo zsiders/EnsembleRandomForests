@@ -134,8 +134,7 @@
   <span class='va'>var</span>,
   save <span class='op'>=</span> <span class='cn'>TRUE</span>,
   out.folder <span class='op'>=</span> <span class='cn'>NULL</span>,
-  cores <span class='op'>=</span> <span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>4</span>,
-  quants <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.05</span>, <span class='fl'>0.95</span><span class='op'>)</span>
+  cores <span class='op'>=</span> <span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>4</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -177,20 +176,20 @@
 </div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'>
 <span class='va'>ALEdf</span> <span class='op'>&lt;-</span> <span class='fu'>ALE_fn</span><span class='op'>(</span><span class='va'>ens_rf_ex</span>, save<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>No name of response variable, making one</span></div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>ALEdf</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;            x        f.1        f.2        f.3        f.4        f.5        f.6
-#&gt; 1 -0.4666760 -0.2548075 -0.1909206 -0.2933620 -0.2368003 -0.2522744 -0.1954343
-#&gt; 2 -0.4373463 -0.2439967 -0.1909206 -0.2771458 -0.2368003 -0.2468690 -0.1846235
-#&gt; 3 -0.4166505 -0.2494315 -0.1909206 -0.2662762 -0.2259307 -0.2414342 -0.1846235
-#&gt; 4 -0.3927165 -0.2494315 -0.1909206 -0.2662762 -0.2313361 -0.2414342 -0.1846235
-#&gt; 5 -0.3739436 -0.2494315 -0.1964151 -0.2607817 -0.2203471 -0.2359397 -0.1681400
-#&gt; 6 -0.3507144 -0.2119983 -0.1803724 -0.2019582 -0.1936092 -0.1664210 -0.1360544
-#&gt;          f.7        f.8        f.9       f.10
-#&gt; 1 -0.3042009 -0.2451369 -0.2080759 -0.1514560
-#&gt; 2 -0.2987955 -0.2127045 -0.2080759 -0.1460505
-#&gt; 3 -0.2987955 -0.2072697 -0.2135107 -0.1406158
-#&gt; 4 -0.2933901 -0.2072697 -0.2135107 -0.1460212
-#&gt; 5 -0.2714121 -0.2017752 -0.2190052 -0.1350322
-#&gt; 6 -0.2393265 -0.1910800 -0.1815721 -0.1136418</div><div class='input'>
+</div><div class='output co'>#&gt;            x      q        f.1       f.2         f.3        f.4         f.5
+#&gt; 1 -0.6321187 0.0002 -0.1132969 -0.194794 -0.05669226 -0.1199111 -0.05245886
+#&gt; 2 -0.5269505 0.0200 -0.2282969 -0.194794 -0.20169226 -0.2099111 -0.21245886
+#&gt; 3 -0.4847148 0.0401 -0.2282969 -0.194794 -0.20169226 -0.2099111 -0.21245886
+#&gt; 4 -0.4507819 0.0601 -0.2182969 -0.189794 -0.21169226 -0.1999111 -0.21245886
+#&gt; 5 -0.4220293 0.0801 -0.2082969 -0.179794 -0.20169226 -0.1899111 -0.20745886
+#&gt; 6 -0.3994806 0.1001 -0.2082969 -0.179794 -0.21669226 -0.1949111 -0.21745886
+#&gt;           f.6        f.7         f.8        f.9        f.10
+#&gt; 1 -0.09006715 -0.1189179 -0.06004658 -0.1336966 -0.06691663
+#&gt; 2 -0.16006715 -0.2639179 -0.20504658 -0.2186966 -0.19691663
+#&gt; 3 -0.16006715 -0.2639179 -0.20007145 -0.2186966 -0.19691663
+#&gt; 4 -0.16506715 -0.2539179 -0.19507145 -0.1986966 -0.18191663
+#&gt; 5 -0.16006715 -0.2489179 -0.17007145 -0.1936966 -0.16191663
+#&gt; 6 -0.16506715 -0.2539179 -0.17007145 -0.2136966 -0.17691663</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -20,7 +20,7 @@
 #' ALEdf <- ALE_fn(ens_rf_ex, save=FALSE)
 #' head(ALEdf[[1]])
 #' 
-ALE_fn <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectCores()-4, quants=c(0.05,0.95)){
+ALE_fn <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectCores()-4){
 	if(missing(fit)) stop("Supply fit object")
 	if(missing(var)){
         message("No name of response variable, making one")
@@ -65,11 +65,11 @@ ALE_fn <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectC
 	registerDoParallel(cl)
 
 	ALEdf <- foreach(i = 2:ncol(data.df), .packages=c('randomForest'), .export=c("ALEfun.J1","yhat")) %dopar% {
-		ex <- lapply(model, function(x) {ALEfun.J1(data.df, x$mod, yhat, J = i, K=50, quants=quants)})
+		ex <- lapply(model, function(x) {ALEfun.J1(data.df, x$mod, yhat, J = i, K=50)})
 
-		df <- as.data.frame(cbind(ex[[1]]$x.values, sapply(ex,function(x) {x$f.values})))
-		names(df)[1] <- "x"
-		names(df)[2:ncol(df)] <- paste0("f.",1:length(ex))
+		df <- as.data.frame(cbind(ex[[1]]$x.values, ex[[1]]$quantile, sapply(ex,function(x) {x$f.values})))
+		names(df)[1:2] <- c('x','q')
+		names(df)[3:ncol(df)] <- paste0("f.",1:length(ex))
 		return(df)
 	}
 	stopCluster(cl)
@@ -86,7 +86,7 @@ ALE_fn <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectC
 	return(ALEdf)
 }
 yhat <- function(X.model, newdata) as.numeric(predict(X.model, newdata))
-ALEfun.J1 <- function (X, X.model, pred.fun, J, K = 40, quants=NULL){
+ALEfun.J1 <- function (X, X.model, pred.fun, J, K = 40){
     N = dim(X)[1]
     d = dim(X)[2]
     if (class(X[, J]) == "factor") {
@@ -152,12 +152,12 @@ ALEfun.J1 <- function (X, X.model, pred.fun, J, K = 40, quants=NULL){
     }
     else if (class(X[, J]) == "numeric" | class(X[, J]) == 
         "integer") {
-        if(missing(quants)){
-            z = c(min(X[, J]), as.numeric(quantile(X[, J], seq(1/K, 
-            1, length.out = K), type = 1)))
-        }else{
-            z = as.numeric(quantile(X[, J], seq(quants[1],quants[2],length.out=K), type = 1))
-        }
+        z = c(min(X[, J]), 
+              as.numeric(quantile(X[, J],
+                                  seq(1/K, 1, length.out = K), 
+                                  type = 1)))
+        f <- ecdf(X[, J])
+        q <- f(z)
         
         z = unique(z)
         K = length(z) - 1
@@ -176,5 +176,5 @@ ALEfun.J1 <- function (X, X.model, pred.fun, J, K = 40, quants=NULL){
         fJ = fJ - sum((fJ[1:K] + fJ[2:(K + 1)])/2 * b1)/sum(b1)
         x <- z
     }
-    list(K = K, x.values = x, f.values = fJ)
+    list(K = K, x.values = x, quantile=q, f.values = fJ)
 }
