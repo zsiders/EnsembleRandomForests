@@ -23,6 +23,10 @@ navbar:
       menu:
       - text: Getting started with ERF
         href: articles/basic-workflow.html
+      - text: Evaluating model performance
+        href: articles/model-perf.html
+      - text: Internal operations
+        href: articles/helper-fn.html
 
 reference:
 - title: Main functions
