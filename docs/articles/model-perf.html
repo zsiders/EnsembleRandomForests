@@ -103,18 +103,31 @@
 <span class="co">#&gt; Loading required package: doParallel</span>
 <span class="co">#&gt; Loading required package: foreach</span>
 <span class="co">#&gt; Loading required package: iterators</span>
-<span class="co">#&gt; Loading required package: parallel</span></code></pre></div>
-<div id="check-model-performance" class="section level3">
-<h3 class="hasAnchor">
-<a href="#check-model-performance" class="anchor"></a>Check model performance:</h3>
-<p>We can check model performance using the <code>rocr_ens</code> function. This calculates a battery of performance metrics based on the Receiver Operator Characteristic curve from the <code>ROCR</code> package. This function works on any set of predictions (ranging from (0,1)) and any set of observations (as a <code>factor</code>). We can test this on our simulated data.</p>
+<span class="co">#&gt; Loading required package: parallel</span>
+<span class="co"># run an ERF on the provided dataset</span>
+<span class="va">ens_rf_ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ens_random_forests.html">ens_random_forests</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span>, var<span class="op">=</span><span class="st">"obs"</span>,
+                                covariates<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"cov"</span>,
+                                                <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span><span class="op">)</span>,
+                                                value<span class="op">=</span><span class="cn">T</span><span class="op">)</span>,
+                                save<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">#&gt; rounding n.forests to the nearest one</span></code></pre></div>
+<div id="background" class="section level2">
+<h2 class="hasAnchor">
+<a href="#background" class="anchor"></a>Background</h2>
+<p>Internally, the ERF algorithm uses the <code>ROCR</code> package to calculate model performance. We can see how this occurs internally using the <code>rocr_ens</code> function on the provided dataset <code>simData</code>. The <code>rocr_ens</code> function calculates a battery of performance metrics based on the Receiver Operator Characteristic curve calculated from the <code>ROCR</code> package functions <code>prediction</code> and <code>performance</code> functions. The <code>prediction</code> function works on any set of predictions (ranging from (0,1)) and any set of observations (as a <code>factor</code>) and, likewise, the <code>rocr_ens</code> is a wrapper to do it in one step.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># the rocr_ens function takes the predictions (or true probability in this case)</span>
 <span class="co"># as the first argument. The true observations as a factor class are the</span>
 <span class="co"># second argument. </span>
 <span class="va">roc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span>,<span class="fu"><a href="../reference/rocr_ens.html">rocr_ens</a></span><span class="op">(</span><span class="va">prob</span>, <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">obs</span>,levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
-<span class="co"># We can visualize the resulting Receiver Operator Characteristic curve</span>
+<span class="co"># We can see all the performance metrics returned from the rocr_ens function</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/names.html">names</a></span><span class="op">(</span><span class="va">roc</span><span class="op">)</span>
+<span class="co">#&gt;  [1] "tpr"  "tnr"  "auc"  "phi"  "acc"  "err"  "fpr"  "sens" "spec" "tss" </span>
+<span class="co">#&gt; [11] "rmse"</span></code></pre></div>
+<p>With the exception of the the area-under-the ROC curve (AUC), the true skill statistic (TSS), and the root mean squared error (RMSE) metrics, all others are calculated over a range of threshold values that split the continuous probability of presence predictions into binary (0,1) predictions. By comparing the true positive rate (TPR) or sensitivity to the false positive rate (FPR) or 1-specificity, we can visualize the ROC curve.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># We can visualize the resulting Receiver Operator Characteristic curve</span>
 <span class="co"># and add some of the threshold-free performance metrics (AUC, TSS, RMSE)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">roc</span><span class="op">$</span><span class="va">fpr</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">roc</span><span class="op">$</span><span class="va">tpr</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,
@@ -124,13 +137,364 @@
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.2</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">'AUC = '</span>, <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">round</a></span><span class="op">(</span><span class="va">roc</span><span class="op">$</span><span class="va">auc</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">1.2</span>, adj<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.125</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">'TSS = '</span>, <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">round</a></span><span class="op">(</span><span class="va">roc</span><span class="op">$</span><span class="va">tss</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">1.2</span>, adj<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/text.html">text</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.0525</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">'RMSE = '</span>, <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">round</a></span><span class="op">(</span><span class="va">roc</span><span class="op">$</span><span class="va">rmse</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>, cex<span class="op">=</span><span class="fl">1.2</span>, adj<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="model-perf_files/figure-html/sim_data_roc-1.png" width="384" style="display: block; margin: auto;"></p>
+<p><img src="model-perf_files/figure-html/sim_data_r-1.png" width="384" style="display: block; margin: auto;"></p>
+</div>
+<div id="internal-performance-metrics" class="section level2">
+<h2 class="hasAnchor">
+<a href="#internal-performance-metrics" class="anchor"></a>Internal performance metrics</h2>
+<p>The ERF algorithm produces a set of ensemble, mean training set, and mean test set performance metrics in addition to the performance for the training and test sets for each Random Forests in the ensemble.</p>
+<p>We can view the ensemble performance for the three key metrics evaluated in <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/">Siders et al. 2020</a>: AUC, TSS, and RMSE. Generally, we want an AUC &gt; 0.5, TSS close to 1, and a low RMSE for a high performing model.</p>
+<div id="ensemble-threshold-free-performance" class="section level3">
+<h3 class="hasAnchor">
+<a href="#ensemble-threshold-free-performance" class="anchor"></a>Ensemble threshold-free performance</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># view the threshold-free ensemble performance metrics</span>
+<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="st">'auc'</span>,<span class="st">'rmse'</span>,<span class="st">'tss'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
+<span class="co">#&gt;       auc      rmse       tss </span>
+<span class="co">#&gt; 0.9761416 0.3800712 0.8400834</span></code></pre></div>
+</div>
+<div id="training-and-test-threshold-free-performance" class="section level3">
+<h3 class="hasAnchor">
+<a href="#training-and-test-threshold-free-performance" class="anchor"></a>Training and test threshold-free performance</h3>
+<p>We can also view these same metrics for mean across training and test sets.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># view the mean training threshold-free performance metrics for each RF</span>
+<span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.tr.perf</span>
+<span class="co">#&gt;     trAUC    trRMSE     trTSS </span>
+<span class="co">#&gt; 0.9842536 0.3804833 0.8680091</span>
+<span class="co"># view the mean test threshold-free performance metrics for each RF</span>
+<span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.te.perf</span>
+<span class="co">#&gt;     teAUC    teRMSE     teTSS </span>
+<span class="co">#&gt; 0.7938203 0.3912868 0.5490996</span></code></pre></div>
+</div>
+<div id="receiver-operator-characteristic-curve" class="section level3">
+<h3 class="hasAnchor">
+<a href="#receiver-operator-characteristic-curve" class="anchor"></a>Receiver Operator Characteristic Curve</h3>
+<p>We can also plot some of the threshold-dependent performance metrics. First, we can plot the ROC curve for the ensemble predictions.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># We can visualize the resulting Receiver Operator Characteristic curve</span>
+<span class="co"># and add some of the threshold-free performance metrics (AUC, TSS, RMSE)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">$</span><span class="va">fpr</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, 
+     <span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">$</span><span class="va">tpr</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,
+     xlab <span class="op">=</span> <span class="st">"False Positive Rate (1-Specificity)"</span>,
+     ylab <span class="op">=</span> <span class="st">"True Positive Rate (Sensitivity)"</span>,
+     type <span class="op">=</span> <span class="st">'l'</span>, lwd<span class="op">=</span><span class="fl">3</span>, las<span class="op">=</span><span class="fl">1</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>a<span class="op">=</span><span class="fl">0</span>,b<span class="op">=</span><span class="fl">1</span>,lty<span class="op">=</span><span class="fl">3</span><span class="op">)</span></code></pre></div>
+<p><img src="model-perf_files/figure-html/ens_roc-1.png" width="384" style="display: block; margin: auto;"></p>
+<p>We can see that the model does very well from the ROC curve as the solid line is well above the dotted line indicating the expected performance from random chance.</p>
+<p>We can also view the training and test performance of every Random Forests within the ensemble.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># We can visualize the resulting Receiver Operator Characteristic curve</span>
+<span class="co"># and add some of the threshold-free performance metrics (AUC, TSS, RMSE)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#training FPR and TPR</span>
+<span class="va">fpr.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">roc_train</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">fpr</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+<span class="va">tpr.tr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">roc_train</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">tpr</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+<span class="co">#test FPR and TPR</span>
+<span class="va">fpr.te</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">roc_test</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">fpr</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+<span class="va">tpr.te</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">roc_test</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">$</span><span class="va">tpr</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+
+<span class="co">#plot</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html">plot</a></span><span class="op">(</span><span class="va">fpr.tr</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">tpr.tr</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>,
+     xlab <span class="op">=</span> <span class="st">"False Positive Rate (1-Specificity)"</span>,
+     ylab <span class="op">=</span> <span class="st">"True Positive Rate (Sensitivity)"</span>,
+     type <span class="op">=</span> <span class="st">'l'</span>, lwd<span class="op">=</span><span class="fl">3</span>, las<span class="op">=</span><span class="fl">1</span>, col<span class="op">=</span><span class="st">'gray90'</span><span class="op">)</span>
+<span class="co">#each training ROC curve</span>
+<span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">fpr.tr</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">fpr.tr</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>,<span class="va">tpr.tr</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, col<span class="op">=</span><span class="st">'gray90'</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="co">#each test ROC curve</span>
+<span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">fpr.te</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">fpr.te</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>,<span class="va">tpr.te</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, col<span class="op">=</span><span class="st">'gray40'</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>a<span class="op">=</span><span class="fl">0</span>,b<span class="op">=</span><span class="fl">1</span>,lty<span class="op">=</span><span class="fl">3</span><span class="op">)</span></code></pre></div>
+<p><img src="model-perf_files/figure-html/rf_roc-1.png" width="384" style="display: block; margin: auto;"></p>
+<p>We can see above that the training set performance is higher than the test set performance. This is a common feature of machine learning algorithms. <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/">Siders et al. 2020</a> discusses the comparison between the ensemble performance and the test performance. Classification performance metrics are an area with considerable discourse that is beyond the purview of this vignette.</p>
+</div>
+</div>
+<div id="thresholds" class="section level2">
+<h2 class="hasAnchor">
+<a href="#thresholds" class="anchor"></a>Thresholds</h2>
+<p>Thresholds are a common way to classify the continuous probability of presence predictions (bounded between 0 and 1) to binary predictions. There is some debate on the “best” threshold performance metric. See <a href="https://onlinelibrary.wiley.com/doi/pdf/10.1111/jbi.12058">Liu et al. 2013</a> for a discussion of some of the commonly used thresholds in presence-only modeling that is relevant to ERF.</p>
+<p>Below, we calculate the maximum sensitivity and specificity threshold. It is generally in the top set of thresholds when various thresholds are compared. It is by no means the only one we could calculate.</p>
+<div id="ensemble-threshold-dependent-performance" class="section level3">
+<h3 class="hasAnchor">
+<a href="#ensemble-threshold-dependent-performance" class="anchor"></a>Ensemble threshold-dependent performance</h3>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Get the index of the threshold (cutoff) value that gives </span>
+<span class="co"># the maximum sum of sensitivity and specificity (MSS)</span>
+<span class="va">thres.id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/which.minmax.html">which.max</a></span><span class="op">(</span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">$</span><span class="va">sens</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> 
+                         <span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">$</span><span class="va">spec</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span>
+<span class="co"># Get the threshold value</span>
+<span class="va">thres</span> <span class="op">&lt;-</span> <span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">$</span><span class="va">sens</span><span class="op">@</span><span class="va">x.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="va">thres.id</span><span class="op">]</span>
+
+<span class="co"># Besides AUC, TSS, and RMSE, all other performance values were threshold-</span>
+<span class="co"># dependent of of class 'performance'. We can apply our MSS threshold to each</span>
+<span class="co"># of these and get performance metrics value at that threshold. We can also</span>
+<span class="co"># return the AUC, TSS, RMSE with the ifelse statement.</span>
+<span class="va">perf.val</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span>, 
+                    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">==</span><span class="st">'performance'</span>,
+                                       <span class="va">x</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="va">thres.id</span><span class="op">]</span>,
+                                       <span class="va">x</span><span class="op">)</span><span class="op">)</span>
+<span class="va">perf.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">round</a></span><span class="op">(</span><span class="va">perf.val</span>,<span class="fl">3</span><span class="op">)</span>,
+                      Name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="st">'True Positive Rate'</span>,
+                               <span class="st">'True Negative Rate'</span>,
+                               <span class="st">'Area Under the Curve'</span>,
+                               <span class="st">'Correlation Coefficient'</span>,
+                               <span class="st">'Accuracy'</span>,
+                               <span class="st">'Error'</span>,
+                               <span class="st">'False Positive Rate'</span>,
+                               <span class="st">'Sensitivity'</span>,
+                               <span class="st">'Specificity'</span>,
+                               <span class="st">'True Skill Statistic'</span>,
+                               <span class="st">'Root Mean Squared Error'</span><span class="op">)</span>,
+                      lower.bnd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="op">-</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+                      upper.bnd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,
+                      perfect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">perf.df</span>, caption <span class="op">=</span> <span class="st">"Ensemble Performance"</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<caption>Ensemble Performance</caption>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">Metric</th>
+<th align="left">Name</th>
+<th align="right">lower.bnd</th>
+<th align="right">upper.bnd</th>
+<th align="right">perfect</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">tpr</td>
+<td align="right">0.884</td>
+<td align="left">True Positive Rate</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">tnr</td>
+<td align="right">0.956</td>
+<td align="left">True Negative Rate</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">auc</td>
+<td align="right">0.976</td>
+<td align="left">Area Under the Curve</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">phi</td>
+<td align="right">0.475</td>
+<td align="left">Correlation Coefficient</td>
+<td align="right">-1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">acc</td>
+<td align="right">0.955</td>
+<td align="left">Accuracy</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">err</td>
+<td align="right">0.045</td>
+<td align="left">Error</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">fpr</td>
+<td align="right">0.044</td>
+<td align="left">False Positive Rate</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">sens</td>
+<td align="right">0.884</td>
+<td align="left">Sensitivity</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">spec</td>
+<td align="right">0.956</td>
+<td align="left">Specificity</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">tss</td>
+<td align="right">0.840</td>
+<td align="left">True Skill Statistic</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">rmse</td>
+<td align="right">0.380</td>
+<td align="left">Root Mean Squared Error</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="test-threshold-dependent-performance" class="section level3">
+<h3 class="hasAnchor">
+<a href="#test-threshold-dependent-performance" class="anchor"></a>Test threshold-dependent performance</h3>
+<p>We can also perform the same procedure on the test performance by calculating a threshold for each test set for each Random Forests in the ensemble and calculating the performance. We can then take the mean across the test sets to get the mean test performance for a suite of metrics.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Same procedure as above but on each test set</span>
+<span class="va">test.perf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">roc_test</span>, 
+                    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/which.minmax.html">which.max</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">sens</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> 
+                                                   <span class="va">x</span><span class="op">$</span><span class="va">spec</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span>;  
+                    <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">x</span>, <span class="kw">function</span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">==</span><span class="st">'performance'</span>,
+                                                 <span class="va">y</span><span class="op">@</span><span class="va">y.values</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="va">id</span><span class="op">]</span>,
+                                                 <span class="va">y</span><span class="op">)</span><span class="op">)</span>
+                    <span class="op">}</span><span class="op">)</span>
+<span class="co"># Average test performance</span>
+<span class="va">test.perf.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>Metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span><span class="op">(</span><span class="va">test.perf</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span>,
+                      Name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="st">'True Positive Rate'</span>,
+                               <span class="st">'True Negative Rate'</span>,
+                               <span class="st">'Area Under the Curve'</span>,
+                               <span class="st">'Correlation Coefficient'</span>,
+                               <span class="st">'Accuracy'</span>,
+                               <span class="st">'Error'</span>,
+                               <span class="st">'False Positive Rate'</span>,
+                               <span class="st">'Sensitivity'</span>,
+                               <span class="st">'Specificity'</span>,
+                               <span class="st">'True Skill Statistic'</span>,
+                               <span class="st">'Root Mean Squared Error'</span><span class="op">)</span>,
+                      lower.bnd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="op">-</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,
+                      upper.bnd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,
+                      perfect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">test.perf.df</span>, caption <span class="op">=</span> <span class="st">"Mean Test Performance"</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<caption>Mean Test Performance</caption>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">Metric</th>
+<th align="left">Name</th>
+<th align="right">lower.bnd</th>
+<th align="right">upper.bnd</th>
+<th align="right">perfect</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">tpr</td>
+<td align="right">0.847</td>
+<td align="left">True Positive Rate</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">tnr</td>
+<td align="right">0.702</td>
+<td align="left">True Negative Rate</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">auc</td>
+<td align="right">0.794</td>
+<td align="left">Area Under the Curve</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">phi</td>
+<td align="right">0.165</td>
+<td align="left">Correlation Coefficient</td>
+<td align="right">-1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">acc</td>
+<td align="right">0.704</td>
+<td align="left">Accuracy</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">err</td>
+<td align="right">0.296</td>
+<td align="left">Error</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">fpr</td>
+<td align="right">0.298</td>
+<td align="left">False Positive Rate</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">sens</td>
+<td align="right">0.847</td>
+<td align="left">Sensitivity</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">spec</td>
+<td align="right">0.702</td>
+<td align="left">Specificity</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">tss</td>
+<td align="right">0.549</td>
+<td align="left">True Skill Statistic</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">rmse</td>
+<td align="right">0.391</td>
+<td align="left">Root Mean Squared Error</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 

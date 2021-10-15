@@ -210,7 +210,21 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A fitted ERF model as a list object. Contains the model data, the fitted RF models, the ensemble predictions, the ensemble model performance, the mean training/test performance, the ROC training/test performance for each RF, the individual RF predictions, and, if importance=TRUE, the variable importance</p>
+    <p>A list containing the fitted ERF model and associated output.</p><ul>
+<li><p><strong>data</strong>: the exact dataset used to fit each Random Forests within the ensemble. At the minimum, it will contain <code>var</code>, <code>covariates</code>, and <code>header</code> if provided. If <code>duplicate</code>==<code>TRUE</code>, then it will also contain the duplicated presence records.</p></li>
+<li><p><strong>model</strong>: the returned fitted individual Random Forests in the ensemble</p></li>
+<li><p><strong>ens.pred</strong>: the ensemble model predictions. This is generally the prediction set to use.</p></li>
+<li><p><strong>ens.perf</strong>: the ensemble model performance metrics including ROC curve.</p></li>
+<li><p><strong>mu.tr.perf</strong>: the mean training set performance across all Random Forests for the AUC, TSS, and RMSE metrics. These are generally useless.</p></li>
+<li><p><strong>mu.te.perf</strong>: the mean test set performance across all Random Forests for the AUC, TSS, and RMSE metrics. These can be informative.</p></li>
+<li><p><strong>roc_train</strong>: the training performance metrics for each Random Forests in the ensemble</p></li>
+<li><p><strong>roc_test</strong>: the test performance metrics for each Random Forests in the ensemble</p></li>
+<li><p><strong>pred</strong>: a list with two objects:</p><ul>
+<li><p><strong>p</strong>: predictions from each Random Forests in the ensemble to the dataset</p></li>
+<li><p><strong>resid</strong>: residuals between the observed presence/absences and the predictions from each Random Forests in the ensemble to the dataset</p></li>
+</ul></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>#run an ERF with 10 RFs and </span>

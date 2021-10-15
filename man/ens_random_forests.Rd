@@ -48,7 +48,22 @@ ens_random_forests(
 \item{var.q}{The quantiles for the distribution of the variable importance; only exectuted if importance=TRUE}
 }
 \value{
-A fitted ERF model as a list object. Contains the model data, the fitted RF models, the ensemble predictions, the ensemble model performance, the mean training/test performance, the ROC training/test performance for each RF, the individual RF predictions, and, if importance=TRUE, the variable importance
+A list containing the fitted ERF model and associated output.
+\itemize{
+\item \strong{data}: the exact dataset used to fit each Random Forests within the ensemble. At the minimum, it will contain \code{var}, \code{covariates}, and \code{header} if provided. If \code{duplicate}==\code{TRUE}, then it will also contain the duplicated presence records.
+\item \strong{model}: the returned fitted individual Random Forests in the ensemble
+\item \strong{ens.pred}: the ensemble model predictions. This is generally the prediction set to use.
+\item \strong{ens.perf}: the ensemble model performance metrics including ROC curve.
+\item \strong{mu.tr.perf}: the mean training set performance across all Random Forests for the AUC, TSS, and RMSE metrics. These are generally useless.
+\item \strong{mu.te.perf}: the mean test set performance across all Random Forests for the AUC, TSS, and RMSE metrics. These can be informative.
+\item \strong{roc_train}: the training performance metrics for each Random Forests in the ensemble
+\item \strong{roc_test}: the test performance metrics for each Random Forests in the ensemble
+\item \strong{pred}: a list with two objects:
+\itemize{
+\item \strong{p}: predictions from each Random Forests in the ensemble to the dataset
+\item \strong{resid}: residuals between the observed presence/absences and the predictions from each Random Forests in the ensemble to the dataset
+}
+}
 }
 \description{
 Execute Ensemble Random Forests model on a given dataset

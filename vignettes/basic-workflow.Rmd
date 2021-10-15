@@ -76,12 +76,42 @@ knitr::kable(table(newdata$samples$obs), col.names=c('Obs','Freq'))
 ```
 
 ## Running an Ensemble Random Forests model
-Now that we have covered the background, let's run an ERF. This is simple using `ens_random_forests`. 
+Now that we have covered the datasets, let's run an ERF. This is simple using `ens_random_forests`. 
 ```{r erf_ex}
 ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs",
-                                covariates=grep("cov",colnames(simData$samples),value=T), 
-                                save=FALSE)
+                                covariates=grep("cov",colnames(simData$samples),value=T),
+                                header = NULL,
+                                save=FALSE,
+                                out.folder=NULL,
+                                duplicate = TRUE,
+                                n.forests = 10L,
+                                importance = TRUE,
+                                ntree = 1000,
+                                mtry = 5,
+                                var.q = c(0.1,0.5,0.9),
+                                cores = parallel::detectCores()-2)
+```
+The arguments to `ens_random_forests` are:
 
++ Data arguments:
+  + `df`: this is the data.frame containing the presences/absences and the covariates
+  + `var`: this is the column name of the presence/absence
+  + `covariates`: these are the column names of the covariates to use. Here, we grabbed anything with "cov" in the column name
+  + `header`: these are additional column names you may wish to append to data.frame produced internally
++ Output arguments:
+  + `save`: this is a logical whether to save the model to the working directory or an optional `out.folder` directory
++ Control arguments:
+  + `duplicate`: a logical flag to control whether to duplicate observations with more than one presence. 
+  + `n.forests`: this controls the number of forests to generate in the ensemble. See the optimization vignette for more information on tuning this parameter.
+  + `importance`: a logical flag to calculate variable importance or not
+  + `ntree`: number of trees in each Random Forests in the ensemble
+  + `mtry`: number of covariates to try at each node in each tree in each Random Forests in the ensemble
+  + `var.q`: quantiles for the distribution of the variable importance; only exectuted if importance=TRUE
+  + `cores`: how many cores to run the model on.
+
+We can look at some of the output produced by the random forests (see `help(ens_random_forests)` for a full list):
+
+```{r view_erf}
 #view the dataset used in the model
 head(ens_rf_ex$data) 
 

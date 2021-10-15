@@ -186,14 +186,63 @@
 <div id="running-an-ensemble-random-forests-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-an-ensemble-random-forests-model" class="anchor"></a>Running an Ensemble Random Forests model</h2>
-<p>Now that we have covered the background, let’s run an ERF. This is simple using <code>ens_random_forests</code>.</p>
+<p>Now that we have covered the datasets, let’s run an ERF. This is simple using <code>ens_random_forests</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ens_rf_ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ens_random_forests.html">ens_random_forests</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span>, var<span class="op">=</span><span class="st">"obs"</span>,
-                                covariates<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"cov"</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span><span class="op">)</span>,value<span class="op">=</span><span class="cn">T</span><span class="op">)</span>, 
-                                save<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; rounding n.forests to the nearest one</span>
-
-<span class="co">#view the dataset used in the model</span>
+                                covariates<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"cov"</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span><span class="op">)</span>,value<span class="op">=</span><span class="cn">T</span><span class="op">)</span>,
+                                header <span class="op">=</span> <span class="cn">NULL</span>,
+                                save<span class="op">=</span><span class="cn">FALSE</span>,
+                                out.folder<span class="op">=</span><span class="cn">NULL</span>,
+                                duplicate <span class="op">=</span> <span class="cn">TRUE</span>,
+                                n.forests <span class="op">=</span> <span class="fl">10L</span>,
+                                importance <span class="op">=</span> <span class="cn">TRUE</span>,
+                                ntree <span class="op">=</span> <span class="fl">1000</span>,
+                                mtry <span class="op">=</span> <span class="fl">5</span>,
+                                var.q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.5</span>,<span class="fl">0.9</span><span class="op">)</span>,
+                                cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span>
+<span class="co">#&gt; rounding n.forests to the nearest one</span></code></pre></div>
+<p>The arguments to <code>ens_random_forests</code> are:</p>
+<ul>
+<li>Data arguments:
+<ul>
+<li>
+<code>df</code>: this is the data.frame containing the presences/absences and the covariates</li>
+<li>
+<code>var</code>: this is the column name of the presence/absence</li>
+<li>
+<code>covariates</code>: these are the column names of the covariates to use. Here, we grabbed anything with “cov” in the column name</li>
+<li>
+<code>header</code>: these are additional column names you may wish to append to data.frame produced internally</li>
+</ul>
+</li>
+<li>Output arguments:
+<ul>
+<li>
+<code>save</code>: this is a logical whether to save the model to the working directory or an optional <code>out.folder</code> directory</li>
+</ul>
+</li>
+<li>Control arguments:
+<ul>
+<li>
+<code>duplicate</code>: a logical flag to control whether to duplicate observations with more than one presence.</li>
+<li>
+<code>n.forests</code>: this controls the number of forests to generate in the ensemble. See the optimization vignette for more information on tuning this parameter.</li>
+<li>
+<code>importance</code>: a logical flag to calculate variable importance or not</li>
+<li>
+<code>ntree</code>: number of trees in each Random Forests in the ensemble</li>
+<li>
+<code>mtry</code>: number of covariates to try at each node in each tree in each Random Forests in the ensemble</li>
+<li>
+<code>var.q</code>: quantiles for the distribution of the variable importance; only exectuted if importance=TRUE</li>
+<li>
+<code>cores</code>: how many cores to run the model on.</li>
+</ul>
+</li>
+</ul>
+<p>We can look at some of the output produced by the random forests (see <code><a href="../reference/ens_random_forests.html">help(ens_random_forests)</a></code> for a full list):</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#view the dataset used in the model</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> 
 <span class="co">#&gt;   obs        cov1        cov2       cov3        cov4        cov5     random</span>
 <span class="co">#&gt; 1   0 -0.07158000 -0.27811766  0.5741324  0.01366734 -0.15537696  1.8355346</span>
@@ -206,28 +255,28 @@
 <span class="co">#view the ensemble model predictions</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.pred</span><span class="op">)</span>
 <span class="co">#&gt;      P.0    P.1 PRES   resid</span>
-<span class="co">#&gt; 1 0.6324 0.3676    0 -0.3676</span>
-<span class="co">#&gt; 2 0.3621 0.6379    0 -0.6379</span>
-<span class="co">#&gt; 3 0.5933 0.4067    0 -0.4067</span>
-<span class="co">#&gt; 4 0.7048 0.2952    0 -0.2952</span>
-<span class="co">#&gt; 5 0.3830 0.6170    0 -0.6170</span>
-<span class="co">#&gt; 6 0.9922 0.0078    0 -0.0078</span>
+<span class="co">#&gt; 1 0.6372 0.3628    0 -0.3628</span>
+<span class="co">#&gt; 2 0.3461 0.6539    0 -0.6539</span>
+<span class="co">#&gt; 3 0.5912 0.4088    0 -0.4088</span>
+<span class="co">#&gt; 4 0.7230 0.2770    0 -0.2770</span>
+<span class="co">#&gt; 5 0.3718 0.6282    0 -0.6282</span>
+<span class="co">#&gt; 6 0.9901 0.0099    0 -0.0099</span>
 
 <span class="co">#view the threshold-free ensemble performance metrics</span>
 <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="st">'auc'</span>,<span class="st">'rmse'</span>,<span class="st">'tss'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;       auc      rmse       tss </span>
-<span class="co">#&gt; 0.9720080 0.3797284 0.8153332</span>
+<span class="co">#&gt; 0.9735593 0.3798617 0.8250095</span>
 
 <span class="co">#view the mean test threshold-free performance metrics for each RF</span>
 <span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.te.perf</span>
 <span class="co">#&gt;     teAUC    teRMSE     teTSS </span>
-<span class="co">#&gt; 0.7852155 0.3916485 0.5426948</span>
+<span class="co">#&gt; 0.7826482 0.3931236 0.5343552</span>
 
 <span class="co">#structure of the individual model predictions</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">pred</span><span class="op">)</span>
 <span class="co">#&gt; List of 2</span>
-<span class="co">#&gt;  $ p    : num [1:10000, 1:10] 0.369 0.653 0.419 0.314 0.645 0.008 0.012 0.731 0.032 0.661 ...</span>
-<span class="co">#&gt;  $ resid: num [1:10000, 1:10] -0.369 -0.653 -0.419 -0.314 -0.645 -0.008 -0.012 -0.731 -0.032 -0.661 ...</span></code></pre></div>
+<span class="co">#&gt;  $ p    : num [1:10000, 1:10] 0.35 0.631 0.406 0.278 0.636 0.014 0.013 0.707 0.023 0.692 ...</span>
+<span class="co">#&gt;  $ resid: num [1:10000, 1:10] -0.35 -0.631 -0.406 -0.278 -0.636 -0.014 -0.013 -0.707 -0.023 -0.692 ...</span></code></pre></div>
 <p>As we can see, the ensemble performs better than the mean test predictions. This is advantage of ERF over other RF modifications for extreme class imbalance. <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/">Siders et al. 2020</a> discusses the various performance of these other modifications if you are curious.</p>
 </div>
   </div>
