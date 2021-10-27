@@ -7,9 +7,14 @@
 #' @param save A logical flag to save the output as an RData object, default is TRUE.
 #' @param out.folder A path to the folder to write out too. If NULL then a folder is generated in the working directory
 #' @param cores An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.
-#' @param quants Either a NULL or two numeric values specifying the lower and upper quantile cutoffs to evaluate the ALE for continuous covariates over.
 #' 
-#' @return A list that contains the ALEs for each variable, ordered by the mean variable importance
+#' @return A list that contains a data.frame for each variable, ordered by the mean variable importance, and a vector of the covariate values (used for rug plot in plot_ALE). The columns in each data.frame are as follows:
+#' \itemize{
+#'      \item \strong{x}: the covariate values that the ALE was calculated for
+#'      \item \strong{class}: the class of the covariate; used by subsequent plot_ALE function
+#'      \item \strong{q}: the quantile of the x value of the covariate
+#'      \item \strong{f.X}: the ALEs evaluated at a given x value
+#' }
 #' 
 #' @export
 #' 
@@ -18,7 +23,7 @@
 #' ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs", covariates=grep("cov", colnames(simData$samples),value=T), save=FALSE, cores=1)
 #' 
 #' ALEdf <- ALE_fn(ens_rf_ex, save=FALSE)
-#' head(ALEdf[[1]])
+#' head(ALEdf[[1]]$df)
 #' 
 ALE_fn <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectCores()-4){
 	if(missing(fit)) stop("Supply fit object")
@@ -67,10 +72,12 @@ ALE_fn <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectC
 	ALEdf <- foreach(i = 2:ncol(data.df), .packages=c('randomForest'), .export=c("ALEfun.J1","yhat")) %dopar% {
 		ex <- lapply(model, function(x) {ALEfun.J1(data.df, x$mod, yhat, J = i, K=50)})
 
-		df <- as.data.frame(cbind(ex[[1]]$x.values, ex[[1]]$quantile, sapply(ex,function(x) {x$f.values})))
-		names(df)[1:2] <- c('x','q')
-		names(df)[3:ncol(df)] <- paste0("f.",1:length(ex))
-		return(df)
+		df <- data.frame(x = ex[[1]]$x.values, 
+                         class = ex[[1]]$class, 
+                         q = as.numeric(ex[[1]]$quantile), 
+                         sapply(ex,function(x) {as.numeric(x$f.values)}))
+		names(df)[4:ncol(df)] <- paste0("f.",1:length(ex))
+		return(list(df=df, X=data.df[,i]))
 	}
 	stopCluster(cl)
 
@@ -149,8 +156,9 @@ ALEfun.J1 <- function (X, X.model, pred.fun, J, K = 40){
         fJ <- c(0, cumsum(Delta))
         fJ = fJ - sum(fJ * x.prob[ind.ord])
         x <- levs.ord
-    }
-    else if (class(X[, J]) == "numeric" | class(X[, J]) == 
+        q <- rep(NA,length(x))
+        class <- rep('factor',length(x))
+    }else if (class(X[, J]) == "numeric" | class(X[, J]) == 
         "integer") {
         z = c(min(X[, J]), 
               as.numeric(quantile(X[, J],
@@ -175,6 +183,7 @@ ALEfun.J1 <- function (X, X.model, pred.fun, J, K = 40){
         b1 <- as.numeric(table(a1))
         fJ = fJ - sum((fJ[1:K] + fJ[2:(K + 1)])/2 * b1)/sum(b1)
         x <- z
+        class <- rep('numeric',length(x))
     }
-    list(K = K, x.values = x, quantile=q, f.values = fJ)
+    list(K = K, x.values = x, class=class, quantile=q, f.values = fJ)
 }

@@ -22,11 +22,15 @@ ALE_fn(
 \item{out.folder}{A path to the folder to write out too. If NULL then a folder is generated in the working directory}
 
 \item{cores}{An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.}
-
-\item{quants}{Either a NULL or two numeric values specifying the lower and upper quantile cutoffs to evaluate the ALE for continuous covariates over.}
 }
 \value{
-A list that contains the ALEs for each variable, ordered by the mean variable importance
+A list that contains a data.frame for each variable, ordered by the mean variable importance, and a vector of the covariate values (used for rug plot in plot_ALE). The columns in each data.frame are as follows:
+\itemize{
+\item \strong{x}: the covariate values that the ALE was calculated for
+\item \strong{class}: the class of the covariate; used by subsequent plot_ALE function
+\item \strong{q}: the quantile of the x value of the covariate
+\item \strong{f.X}: the ALEs evaluated at a given x value
+}
 }
 \description{
 Calculates the Accumulated Local Effects (ALE) from an ERF object
@@ -36,6 +40,6 @@ Calculates the Accumulated Local Effects (ALE) from an ERF object
 ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs", covariates=grep("cov", colnames(simData$samples),value=T), save=FALSE, cores=1)
 
 ALEdf <- ALE_fn(ens_rf_ex, save=FALSE)
-head(ALEdf[[1]])
+head(ALEdf[[1]]$df)
 
 }

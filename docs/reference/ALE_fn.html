@@ -166,36 +166,38 @@
       <th>cores</th>
       <td><p>An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.</p></td>
     </tr>
-    <tr>
-      <th>quants</th>
-      <td><p>Either a NULL or two numeric values specifying the lower and upper quantile cutoffs to evaluate the ALE for continuous covariates over.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list that contains the ALEs for each variable, ordered by the mean variable importance</p>
+    <p>A list that contains a data.frame for each variable, ordered by the mean variable importance, and a vector of the covariate values (used for rug plot in plot_ALE). The columns in each data.frame are as follows:</p><ul>
+<li><p><strong>x</strong>: the covariate values that the ALE was calculated for</p></li>
+<li><p><strong>class</strong>: the class of the covariate; used by subsequent plot_ALE function</p></li>
+<li><p><strong>q</strong>: the quantile of the x value of the covariate</p></li>
+<li><p><strong>f.X</strong>: the ALEs evaluated at a given x value</p></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>#run an ERF with 10 RFs and </span>
 <span class='va'>ens_rf_ex</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ens_random_forests.html'>ens_random_forests</a></span><span class='op'>(</span>df<span class='op'>=</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span>, var<span class='op'>=</span><span class='st'>"obs"</span>, covariates<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"cov"</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span>,value<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>, save<span class='op'>=</span><span class='cn'>FALSE</span>, cores<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'>
 <span class='va'>ALEdf</span> <span class='op'>&lt;-</span> <span class='fu'>ALE_fn</span><span class='op'>(</span><span class='va'>ens_rf_ex</span>, save<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>No name of response variable, making one</span></div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>ALEdf</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;            x      q        f.1        f.2         f.3        f.4         f.5
-#&gt; 1 -0.6321187 0.0002 -0.1173039 -0.1894168 -0.06675786 -0.1132804 -0.06410811
-#&gt; 2 -0.5269505 0.0200 -0.2323039 -0.1894168 -0.21175786 -0.2032804 -0.22410811
-#&gt; 3 -0.4847148 0.0401 -0.2323039 -0.1894168 -0.21175786 -0.2032804 -0.22410811
-#&gt; 4 -0.4507819 0.0601 -0.2223039 -0.1844168 -0.21675786 -0.1932804 -0.22410811
-#&gt; 5 -0.4220293 0.0801 -0.2123039 -0.1744168 -0.20675786 -0.1832804 -0.21910811
-#&gt; 6 -0.3994806 0.1001 -0.2123039 -0.1744168 -0.22175786 -0.1932804 -0.22910811
-#&gt;           f.6        f.7         f.8        f.9        f.10
-#&gt; 1 -0.09349539 -0.1200039 -0.06166265 -0.1365616 -0.07011191
-#&gt; 2 -0.16349539 -0.2650039 -0.20666265 -0.2215616 -0.20011191
-#&gt; 3 -0.16349539 -0.2650039 -0.20168753 -0.2215616 -0.20011191
-#&gt; 4 -0.16849539 -0.2550039 -0.19668753 -0.2015616 -0.18511191
-#&gt; 5 -0.16349539 -0.2500039 -0.17168753 -0.1965616 -0.16511191
-#&gt; 6 -0.16849539 -0.2500039 -0.17168753 -0.2165616 -0.18011191</div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>No name of response variable, making one</span></div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>ALEdf</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>$</span><span class='va'>df</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;            x   class      q        f.1        f.2         f.3        f.4
+#&gt; 1 -0.6321187 numeric 0.0002 -0.1226546 -0.1790335 -0.06127724 -0.1165853
+#&gt; 2 -0.5269505 numeric 0.0200 -0.2376546 -0.1790335 -0.20627724 -0.2065853
+#&gt; 3 -0.4847148 numeric 0.0401 -0.2376546 -0.1790335 -0.20627724 -0.2065853
+#&gt; 4 -0.4507819 numeric 0.0601 -0.2276546 -0.1740335 -0.21627724 -0.1965853
+#&gt; 5 -0.4220293 numeric 0.0801 -0.2176546 -0.1640335 -0.20627724 -0.1865853
+#&gt; 6 -0.3994806 numeric 0.1001 -0.2176546 -0.1640335 -0.22127724 -0.1915853
+#&gt;           f.5         f.6        f.7         f.8        f.9        f.10
+#&gt; 1 -0.04644132 -0.09909558 -0.1177094 -0.06508035 -0.1345466 -0.07546232
+#&gt; 2 -0.20644132 -0.16909558 -0.2627094 -0.21008035 -0.2195466 -0.20546232
+#&gt; 3 -0.20644132 -0.16909558 -0.2627094 -0.20510522 -0.2195466 -0.20546232
+#&gt; 4 -0.20644132 -0.16909558 -0.2527094 -0.20010522 -0.1995466 -0.19046232
+#&gt; 5 -0.20144132 -0.16409558 -0.2477094 -0.17510522 -0.1945466 -0.17046232
+#&gt; 6 -0.21144132 -0.16909558 -0.2477094 -0.17510522 -0.2145466 -0.18546232</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

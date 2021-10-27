@@ -4,16 +4,45 @@
 \alias{plot_ALE}
 \title{Plots Accumulated Local Effects for ERF}
 \usage{
-plot_ALE(ALE, name, cex.axis = 1, cex.lab = 1, quantiles = c(0.025, 0.975))
+plot_ALE(
+  ALE,
+  xquantiles = c(0.025, 0.975),
+  yquantiles = c(0.1, 0.5, 0.9),
+  name,
+  cex.axis = 1,
+  cex.lab = 1,
+  rug = TRUE,
+  rug.col = "gray50",
+  rug.tick = 0.02,
+  rug.lwd = 0.5,
+  rug.alpha = 0.2,
+  rug.max = 1000
+)
 }
 \arguments{
-\item{ALE}{an ALE object for a given variable}
+\item{ALE}{an ALE object for a given variable; indexed as a list for full functionality}
 
-\item{name}{the name of the variable}
+\item{xquantiles}{lower and upper quantile bounds to limit x values to}
+
+\item{yquantiles}{lower, middle, and upper quantiles to plot the confidence interval around the ALE predictions}
+
+\item{name}{the x-axis label of the variable; self-supplied if indexed as a list}
 
 \item{cex.axis}{the cex of the axis}
 
 \item{cex.lab}{the cex of the labels}
+
+\item{rug}{logical for turning the rug plot on/off (defaults to table values for class=='factor')}
+
+\item{rug.col}{color of rug ticks}
+
+\item{rug.tick}{length of rug ticks}
+
+\item{rug.lwd}{width of rug ticks}
+
+\item{rug.alpha}{transparency of rug ticks}
+
+\item{rug.max}{maximum number of ticks to plot (useful for big data)}
 }
 \value{
 A plot of the ALEs
@@ -25,8 +54,8 @@ Plots the Accumulated Local Effects (ALE) from an ERF object
 #run an ERF with 10 RFs and 
 ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs", covariates=grep("cov", colnames(simData$samples),value=T), save=FALSE, cores=1)
 
-ALEdf <- ALE_fn(ens_rf_ex, save=FALSE)
+ALE_df <- ALE_fn(ens_rf_ex, save=FALSE)
 
-plot_ALE(ALEdf[1])
+plot_ALE(ALE_df[1])
 
 }

@@ -135,18 +135,39 @@
     <p>Plots the Accumulated Local Effects (ALE) from an ERF object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_ALE</span><span class='op'>(</span><span class='va'>ALE</span>, <span class='va'>name</span>, cex.axis <span class='op'>=</span> <span class='fl'>1</span>, cex.lab <span class='op'>=</span> <span class='fl'>1</span>, quantiles <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/RandomFields/man/QMath.html'>c</a></span><span class='op'>(</span><span class='fl'>0.025</span>, <span class='fl'>0.975</span><span class='op'>)</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plot_ALE</span><span class='op'>(</span>
+  <span class='va'>ALE</span>,
+  xquantiles <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/RandomFields/man/QMath.html'>c</a></span><span class='op'>(</span><span class='fl'>0.025</span>, <span class='fl'>0.975</span><span class='op'>)</span>,
+  yquantiles <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/RandomFields/man/QMath.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.5</span>, <span class='fl'>0.9</span><span class='op'>)</span>,
+  <span class='va'>name</span>,
+  cex.axis <span class='op'>=</span> <span class='fl'>1</span>,
+  cex.lab <span class='op'>=</span> <span class='fl'>1</span>,
+  rug <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  rug.col <span class='op'>=</span> <span class='st'>"gray50"</span>,
+  rug.tick <span class='op'>=</span> <span class='fl'>0.02</span>,
+  rug.lwd <span class='op'>=</span> <span class='fl'>0.5</span>,
+  rug.alpha <span class='op'>=</span> <span class='fl'>0.2</span>,
+  rug.max <span class='op'>=</span> <span class='fl'>1000</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>ALE</th>
-      <td><p>an ALE object for a given variable</p></td>
+      <td><p>an ALE object for a given variable; indexed as a list for full functionality</p></td>
+    </tr>
+    <tr>
+      <th>xquantiles</th>
+      <td><p>lower and upper quantile bounds to limit x values to</p></td>
+    </tr>
+    <tr>
+      <th>yquantiles</th>
+      <td><p>lower, middle, and upper quantiles to plot the confidence interval around the ALE predictions</p></td>
     </tr>
     <tr>
       <th>name</th>
-      <td><p>the name of the variable</p></td>
+      <td><p>the x-axis label of the variable; self-supplied if indexed as a list</p></td>
     </tr>
     <tr>
       <th>cex.axis</th>
@@ -155,6 +176,30 @@
     <tr>
       <th>cex.lab</th>
       <td><p>the cex of the labels</p></td>
+    </tr>
+    <tr>
+      <th>rug</th>
+      <td><p>logical for turning the rug plot on/off (defaults to table values for class=='factor')</p></td>
+    </tr>
+    <tr>
+      <th>rug.col</th>
+      <td><p>color of rug ticks</p></td>
+    </tr>
+    <tr>
+      <th>rug.tick</th>
+      <td><p>length of rug ticks</p></td>
+    </tr>
+    <tr>
+      <th>rug.lwd</th>
+      <td><p>width of rug ticks</p></td>
+    </tr>
+    <tr>
+      <th>rug.alpha</th>
+      <td><p>transparency of rug ticks</p></td>
+    </tr>
+    <tr>
+      <th>rug.max</th>
+      <td><p>maximum number of ticks to plot (useful for big data)</p></td>
     </tr>
     </table>
 
@@ -166,9 +211,9 @@
     <pre class="examples"><div class='input'><span class='co'>#run an ERF with 10 RFs and </span>
 <span class='va'>ens_rf_ex</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ens_random_forests.html'>ens_random_forests</a></span><span class='op'>(</span>df<span class='op'>=</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span>, var<span class='op'>=</span><span class='st'>"obs"</span>, covariates<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"cov"</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span>,value<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>, save<span class='op'>=</span><span class='cn'>FALSE</span>, cores<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'>
-<span class='va'>ALEdf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ALE_fn.html'>ALE_fn</a></span><span class='op'>(</span><span class='va'>ens_rf_ex</span>, save<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='va'>ALE_df</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ALE_fn.html'>ALE_fn</a></span><span class='op'>(</span><span class='va'>ens_rf_ex</span>, save<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>No name of response variable, making one</span></div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'>
-<span class='fu'>plot_ALE</span><span class='op'>(</span><span class='va'>ALEdf</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
+<span class='fu'>plot_ALE</span><span class='op'>(</span><span class='va'>ALE_df</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>
 </div><div class='img'><img src='plot_ALE-1.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>

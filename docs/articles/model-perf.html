@@ -151,7 +151,7 @@
 <code class="sourceCode R"><span class="co"># view the threshold-free ensemble performance metrics</span>
 <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="st">'auc'</span>,<span class="st">'rmse'</span>,<span class="st">'tss'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;       auc      rmse       tss </span>
-<span class="co">#&gt; 0.9761416 0.3800712 0.8400834</span></code></pre></div>
+<span class="co">#&gt; 0.9731361 0.3805846 0.8211135</span></code></pre></div>
 </div>
 <div id="training-and-test-threshold-free-performance" class="section level3">
 <h3 class="hasAnchor">
@@ -161,11 +161,11 @@
 <code class="sourceCode R"><span class="co"># view the mean training threshold-free performance metrics for each RF</span>
 <span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.tr.perf</span>
 <span class="co">#&gt;     trAUC    trRMSE     trTSS </span>
-<span class="co">#&gt; 0.9842536 0.3804833 0.8680091</span>
+<span class="co">#&gt; 0.9833983 0.3806902 0.8665634</span>
 <span class="co"># view the mean test threshold-free performance metrics for each RF</span>
 <span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.te.perf</span>
 <span class="co">#&gt;     teAUC    teRMSE     teTSS </span>
-<span class="co">#&gt; 0.7938203 0.3912868 0.5490996</span></code></pre></div>
+<span class="co">#&gt; 0.7766293 0.3940025 0.5193804</span></code></pre></div>
 </div>
 <div id="receiver-operator-characteristic-curve" class="section level3">
 <h3 class="hasAnchor">
@@ -266,7 +266,7 @@
 <tbody>
 <tr class="odd">
 <td align="left">tpr</td>
-<td align="right">0.884</td>
+<td align="right">0.945</td>
 <td align="left">True Positive Rate</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -274,7 +274,7 @@
 </tr>
 <tr class="even">
 <td align="left">tnr</td>
-<td align="right">0.956</td>
+<td align="right">0.876</td>
 <td align="left">True Negative Rate</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -282,7 +282,7 @@
 </tr>
 <tr class="odd">
 <td align="left">auc</td>
-<td align="right">0.976</td>
+<td align="right">0.973</td>
 <td align="left">Area Under the Curve</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -290,7 +290,7 @@
 </tr>
 <tr class="even">
 <td align="left">phi</td>
-<td align="right">0.475</td>
+<td align="right">0.317</td>
 <td align="left">Correlation Coefficient</td>
 <td align="right">-1</td>
 <td align="right">1</td>
@@ -298,7 +298,7 @@
 </tr>
 <tr class="odd">
 <td align="left">acc</td>
-<td align="right">0.955</td>
+<td align="right">0.878</td>
 <td align="left">Accuracy</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -306,7 +306,7 @@
 </tr>
 <tr class="even">
 <td align="left">err</td>
-<td align="right">0.045</td>
+<td align="right">0.122</td>
 <td align="left">Error</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -314,7 +314,7 @@
 </tr>
 <tr class="odd">
 <td align="left">fpr</td>
-<td align="right">0.044</td>
+<td align="right">0.124</td>
 <td align="left">False Positive Rate</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -322,7 +322,7 @@
 </tr>
 <tr class="even">
 <td align="left">sens</td>
-<td align="right">0.884</td>
+<td align="right">0.945</td>
 <td align="left">Sensitivity</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -330,7 +330,7 @@
 </tr>
 <tr class="odd">
 <td align="left">spec</td>
-<td align="right">0.956</td>
+<td align="right">0.876</td>
 <td align="left">Specificity</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -338,7 +338,7 @@
 </tr>
 <tr class="even">
 <td align="left">tss</td>
-<td align="right">0.840</td>
+<td align="right">0.821</td>
 <td align="left">True Skill Statistic</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -346,7 +346,7 @@
 </tr>
 <tr class="odd">
 <td align="left">rmse</td>
-<td align="right">0.380</td>
+<td align="right">0.381</td>
 <td align="left">Root Mean Squared Error</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -398,7 +398,7 @@
 <tbody>
 <tr class="odd">
 <td align="left">tpr</td>
-<td align="right">0.847</td>
+<td align="right">0.895</td>
 <td align="left">True Positive Rate</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -406,7 +406,7 @@
 </tr>
 <tr class="even">
 <td align="left">tnr</td>
-<td align="right">0.702</td>
+<td align="right">0.625</td>
 <td align="left">True Negative Rate</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -414,7 +414,7 @@
 </tr>
 <tr class="odd">
 <td align="left">auc</td>
-<td align="right">0.794</td>
+<td align="right">0.777</td>
 <td align="left">Area Under the Curve</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -422,7 +422,7 @@
 </tr>
 <tr class="even">
 <td align="left">phi</td>
-<td align="right">0.165</td>
+<td align="right">0.150</td>
 <td align="left">Correlation Coefficient</td>
 <td align="right">-1</td>
 <td align="right">1</td>
@@ -430,7 +430,7 @@
 </tr>
 <tr class="odd">
 <td align="left">acc</td>
-<td align="right">0.704</td>
+<td align="right">0.630</td>
 <td align="left">Accuracy</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -438,7 +438,7 @@
 </tr>
 <tr class="even">
 <td align="left">err</td>
-<td align="right">0.296</td>
+<td align="right">0.370</td>
 <td align="left">Error</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -446,7 +446,7 @@
 </tr>
 <tr class="odd">
 <td align="left">fpr</td>
-<td align="right">0.298</td>
+<td align="right">0.375</td>
 <td align="left">False Positive Rate</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -454,7 +454,7 @@
 </tr>
 <tr class="even">
 <td align="left">sens</td>
-<td align="right">0.847</td>
+<td align="right">0.895</td>
 <td align="left">Sensitivity</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -462,7 +462,7 @@
 </tr>
 <tr class="odd">
 <td align="left">spec</td>
-<td align="right">0.702</td>
+<td align="right">0.625</td>
 <td align="left">Specificity</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -470,7 +470,7 @@
 </tr>
 <tr class="even">
 <td align="left">tss</td>
-<td align="right">0.549</td>
+<td align="right">0.519</td>
 <td align="left">True Skill Statistic</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -478,7 +478,7 @@
 </tr>
 <tr class="odd">
 <td align="left">rmse</td>
-<td align="right">0.391</td>
+<td align="right">0.394</td>
 <td align="left">Root Mean Squared Error</td>
 <td align="right">0</td>
 <td align="right">1</td>
