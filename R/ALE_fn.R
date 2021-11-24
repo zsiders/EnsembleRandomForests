@@ -165,9 +165,8 @@ ALEfun.J1 <- function (X, X.model, pred.fun, J, K = 40){
                                   seq(1/K, 1, length.out = K), 
                                   type = 1)))
         f <- ecdf(X[, J])
-        q <- f(z)
-        
         z = unique(z)
+        q <- f(z)
         K = length(z) - 1
         fJ = numeric(K)
         a1 = as.numeric(cut(X[, J], breaks = z, include.lowest = TRUE))
@@ -185,5 +184,7 @@ ALEfun.J1 <- function (X, X.model, pred.fun, J, K = 40){
         x <- z
         class <- rep('numeric',length(x))
     }
-    list(K = K, x.values = x, class=class, quantile=q, f.values = fJ)
+    list(K = K, x.values = x, 
+         class=class, quantile=q, 
+         f.values = fJ)
 }
