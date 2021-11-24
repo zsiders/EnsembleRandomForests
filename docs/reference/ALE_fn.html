@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Accumulated Local Effects for ERF — ALE_fn • EnsembleRandomForests</title>
+<title>Accumulated Local Effects workhorse — ALE_fn • EnsembleRandomForests</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Accumulated Local Effects for ERF — ALE_fn" />
-<meta property="og:description" content="Calculates the Accumulated Local Effects (ALE) from an ERF object" />
+<meta property="og:title" content="Accumulated Local Effects workhorse — ALE_fn" />
+<meta property="og:description" content="Calculates the Accumulated Local Effects (ALE) from a given data.frame, model, predictions, and covariate. This riffs on the ALEPlot function available in the ALEPlot package." />
 
 
 
@@ -126,79 +126,53 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Accumulated Local Effects for ERF</h1>
+    <h1>Accumulated Local Effects workhorse</h1>
     <small class="dont-index">Source: <a href='https://github.com/zsiders/EnsembleRandomForests/blob/master/R/ALE_fn.R'><code>R/ALE_fn.R</code></a></small>
     <div class="hidden name"><code>ALE_fn.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculates the Accumulated Local Effects (ALE) from an ERF object</p>
+    <p>Calculates the Accumulated Local Effects (ALE) from a given data.frame, model, predictions, and covariate. This riffs on the ALEPlot function available in the ALEPlot package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ALE_fn</span><span class='op'>(</span>
-  <span class='va'>fit</span>,
-  <span class='va'>var</span>,
-  save <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  out.folder <span class='op'>=</span> <span class='cn'>NULL</span>,
-  cores <span class='op'>=</span> <span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>4</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ALE_fn</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>X.model</span>, <span class='va'>pred.fun</span>, <span class='va'>J</span>, K <span class='op'>=</span> <span class='fl'>40</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>fit</th>
-      <td><p>The fitted object returned from calling ens_random_forests()</p></td>
+      <th>X</th>
+      <td><p>the data.frame to get the covariate from</p></td>
     </tr>
     <tr>
-      <th>var</th>
-      <td><p>The name of the response variable</p></td>
+      <th>X.model</th>
+      <td><p>the name of the response variable</p></td>
     </tr>
     <tr>
-      <th>save</th>
-      <td><p>A logical flag to save the output as an RData object, default is TRUE.</p></td>
+      <th>pred.fun</th>
+      <td><p>a function to calculate new predictions from the model</p></td>
     </tr>
     <tr>
-      <th>out.folder</th>
-      <td><p>A path to the folder to write out too. If NULL then a folder is generated in the working directory</p></td>
+      <th>J</th>
+      <td><p>the column index of the covariate of interest</p></td>
     </tr>
     <tr>
-      <th>cores</th>
-      <td><p>An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.</p></td>
+      <th>K</th>
+      <td><p>an integer value that determines the number of "windows" or breaks to calculate the model predictions over. More increase computational time but serves smooths the ALE predictions.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list that contains a data.frame for each variable, ordered by the mean variable importance, and a vector of the covariate values (used for rug plot in plot_ALE). The columns in each data.frame are as follows:</p><ul>
-<li><p><strong>x</strong>: the covariate values that the ALE was calculated for</p></li>
-<li><p><strong>class</strong>: the class of the covariate; used by subsequent plot_ALE function</p></li>
-<li><p><strong>q</strong>: the quantile of the x value of the covariate</p></li>
-<li><p><strong>f.X</strong>: the ALEs evaluated at a given x value</p></li>
+    <p>A list that contains:</p><ul>
+<li><p><strong>K</strong>: the number of realized breaks</p></li>
+<li><p><strong>x.values</strong>: the break values trialed</p></li>
+<li><p><strong>class</strong>: the class of the covariate</p></li>
+<li><p><strong>quantile</strong>: the quantile of the breaks</p></li>
+<li><p><strong>fJ</strong>: the ALEs evaluated at a given x value</p></li>
 </ul>
 
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>#run an ERF with 10 RFs and </span>
-<span class='va'>ens_rf_ex</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ens_random_forests.html'>ens_random_forests</a></span><span class='op'>(</span>df<span class='op'>=</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span>, var<span class='op'>=</span><span class='st'>"obs"</span>, covariates<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"cov"</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span>,value<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>, save<span class='op'>=</span><span class='cn'>FALSE</span>, cores<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'>
-<span class='va'>ALEdf</span> <span class='op'>&lt;-</span> <span class='fu'>ALE_fn</span><span class='op'>(</span><span class='va'>ens_rf_ex</span>, save<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>No name of response variable, making one</span></div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>ALEdf</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>$</span><span class='va'>df</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;            x   class      q        f.1        f.2         f.3        f.4
-#&gt; 1 -0.6321187 numeric 0.0002 -0.1205752 -0.1907436 -0.06123634 -0.1142567
-#&gt; 2 -0.5269505 numeric 0.0200 -0.2355752 -0.1907436 -0.20623634 -0.2042567
-#&gt; 3 -0.4847148 numeric 0.0401 -0.2355752 -0.1907436 -0.20623634 -0.2042567
-#&gt; 4 -0.4507819 numeric 0.0601 -0.2255752 -0.1857436 -0.21623634 -0.1942567
-#&gt; 5 -0.4220293 numeric 0.0801 -0.2155752 -0.1757436 -0.20623634 -0.1842567
-#&gt; 6 -0.3994806 numeric 0.1001 -0.2155752 -0.1757436 -0.22123634 -0.1892567
-#&gt;           f.5         f.6        f.7         f.8        f.9        f.10
-#&gt; 1 -0.05695708 -0.09036076 -0.1157673 -0.06256411 -0.1426074 -0.06352336
-#&gt; 2 -0.21695708 -0.16036076 -0.2607673 -0.20756411 -0.2276074 -0.19352336
-#&gt; 3 -0.21695708 -0.16036076 -0.2607673 -0.20258898 -0.2276074 -0.19352336
-#&gt; 4 -0.21695708 -0.16036076 -0.2507673 -0.19758898 -0.2076074 -0.17852336
-#&gt; 5 -0.21195708 -0.15536076 -0.2457673 -0.17258898 -0.2026074 -0.15852336
-#&gt; 6 -0.22195708 -0.16036076 -0.2507673 -0.17258898 -0.2226074 -0.17352336</div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

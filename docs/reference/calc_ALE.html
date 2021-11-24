@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Make a formula for ERF use — erf_formula_prep • EnsembleRandomForests</title>
+<title>Accumulated Local Effects for ERF — calc_ALE • EnsembleRandomForests</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Make a formula for ERF use — erf_formula_prep" />
-<meta property="og:description" content="Takes a column names and makes the RF model formula" />
+<meta property="og:title" content="Accumulated Local Effects for ERF — calc_ALE" />
+<meta property="og:description" content="Calculates the Accumulated Local Effects (ALE) from an ERF object" />
 
 
 
@@ -126,42 +126,65 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Make a formula for ERF use</h1>
-    <small class="dont-index">Source: <a href='https://github.com/zsiders/EnsembleRandomForests/blob/master/R/erf_formula_prep.R'><code>R/erf_formula_prep.R</code></a></small>
-    <div class="hidden name"><code>erf_formula_prep.Rd</code></div>
+    <h1>Accumulated Local Effects for ERF</h1>
+    <small class="dont-index">Source: <a href='https://github.com/zsiders/EnsembleRandomForests/blob/master/R/calc_ALE.R'><code>R/calc_ALE.R</code></a></small>
+    <div class="hidden name"><code>calc_ALE.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Takes a column names and makes the RF model formula</p>
+    <p>Calculates the Accumulated Local Effects (ALE) from an ERF object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>erf_formula_prep</span><span class='op'>(</span><span class='va'>var</span>, <span class='va'>covariates</span>, add.random <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>calc_ALE</span><span class='op'>(</span>
+  <span class='va'>fit</span>,
+  <span class='va'>var</span>,
+  save <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  out.folder <span class='op'>=</span> <span class='cn'>NULL</span>,
+  cores <span class='op'>=</span> <span class='fu'>parallel</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/parallel/detectCores.html'>detectCores</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>4</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>fit</th>
+      <td><p>The fitted object returned from calling ens_random_forests()</p></td>
+    </tr>
+    <tr>
       <th>var</th>
-      <td><p>A character string indicating the column name of the data frame that contains the number of interactions for the ERF to model; column should be a numeric column</p></td>
+      <td><p>The name of the response variable</p></td>
     </tr>
     <tr>
-      <th>covariates</th>
-      <td><p>A character vector indicating the column name(s) of the data frame that contain the covariates</p></td>
+      <th>save</th>
+      <td><p>A logical flag to save the output as an RData object, default is TRUE.</p></td>
     </tr>
     <tr>
-      <th>add.random</th>
-      <td><p>A logical flag for adding a random variable named 'random' to the formula; needed for the ERF models</p></td>
+      <th>out.folder</th>
+      <td><p>A path to the folder to write out too. If NULL then a folder is generated in the working directory</p></td>
+    </tr>
+    <tr>
+      <th>cores</th>
+      <td><p>An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A formula class object</p>
+    <p>A list that contains a data.frame for each variable, ordered by the mean variable importance, and a vector of the covariate values (used for rug plot in plot_ALE). The columns in each data.frame are as follows:</p><ul>
+<li><p><strong>x</strong>: the covariate values that the ALE was calculated for</p></li>
+<li><p><strong>class</strong>: the class of the covariate; used by subsequent plot_ALE function</p></li>
+<li><p><strong>q</strong>: the quantile of the x value of the covariate</p></li>
+<li><p><strong>f.X</strong>: the ALEs evaluated at a given x value</p></li>
+</ul>
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>erf_formula_prep</span><span class='op'>(</span><span class='st'>'death'</span>,<span class='fu'><a href='https://rdrr.io/pkg/RandomFields/man/QMath.html'>c</a></span><span class='op'>(</span><span class='st'>'sarlaac'</span>,<span class='st'>'lightsaber'</span>,<span class='st'>'wookie'</span>,<span class='st'>'stormtrooper'</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; death ~ sarlaac + lightsaber + wookie + stormtrooper + random
-#&gt; &lt;environment: 0x7f9ab3711578&gt;</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='co'>#run an ERF with 10 RFs and </span>
+<span class='va'>ens_rf_ex</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ens_random_forests.html'>ens_random_forests</a></span><span class='op'>(</span>df<span class='op'>=</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span>, var<span class='op'>=</span><span class='st'>"obs"</span>, covariates<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"cov"</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span>,value<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>, save<span class='op'>=</span><span class='cn'>FALSE</span>, cores<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'>
+<span class='va'>ALEdf</span> <span class='op'>&lt;-</span> <span class='fu'>calc_ALE</span><span class='op'>(</span><span class='va'>ens_rf_ex</span>, save<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>No name of response variable, making one</span></div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='output co'>#&gt; <span class='error'>Error in e$fun(obj, substitute(ex), parent.frame(), e$data): unable to find variable "ALEfun.J1"</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>ALEdf</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>$</span><span class='va'>df</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='error'>Error in head(ALEdf[[1]]$df): object 'ALEdf' not found</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

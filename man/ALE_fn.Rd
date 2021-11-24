@@ -2,44 +2,31 @@
 % Please edit documentation in R/ALE_fn.R
 \name{ALE_fn}
 \alias{ALE_fn}
-\title{Accumulated Local Effects for ERF}
+\title{Accumulated Local Effects workhorse}
 \usage{
-ALE_fn(
-  fit,
-  var,
-  save = TRUE,
-  out.folder = NULL,
-  cores = parallel::detectCores() - 4
-)
+ALE_fn(X, X.model, pred.fun, J, K = 40)
 }
 \arguments{
-\item{fit}{The fitted object returned from calling ens_random_forests()}
+\item{X}{the data.frame to get the covariate from}
 
-\item{var}{The name of the response variable}
+\item{X.model}{the name of the response variable}
 
-\item{save}{A logical flag to save the output as an RData object, default is TRUE.}
+\item{pred.fun}{a function to calculate new predictions from the model}
 
-\item{out.folder}{A path to the folder to write out too. If NULL then a folder is generated in the working directory}
+\item{J}{the column index of the covariate of interest}
 
-\item{cores}{An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.}
+\item{K}{an integer value that determines the number of "windows" or breaks to calculate the model predictions over. More increase computational time but serves smooths the ALE predictions.}
 }
 \value{
-A list that contains a data.frame for each variable, ordered by the mean variable importance, and a vector of the covariate values (used for rug plot in plot_ALE). The columns in each data.frame are as follows:
+A list that contains:
 \itemize{
-\item \strong{x}: the covariate values that the ALE was calculated for
-\item \strong{class}: the class of the covariate; used by subsequent plot_ALE function
-\item \strong{q}: the quantile of the x value of the covariate
-\item \strong{f.X}: the ALEs evaluated at a given x value
+\item \strong{K}: the number of realized breaks
+\item \strong{x.values}: the break values trialed
+\item \strong{class}: the class of the covariate
+\item \strong{quantile}: the quantile of the breaks
+\item \strong{fJ}: the ALEs evaluated at a given x value
 }
 }
 \description{
-Calculates the Accumulated Local Effects (ALE) from an ERF object
-}
-\examples{
-#run an ERF with 10 RFs and 
-ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs", covariates=grep("cov", colnames(simData$samples),value=T), save=FALSE, cores=1)
-
-ALEdf <- ALE_fn(ens_rf_ex, save=FALSE)
-head(ALEdf[[1]]$df)
-
+Calculates the Accumulated Local Effects (ALE) from a given data.frame, model, predictions, and covariate. This riffs on the ALEPlot function available in the ALEPlot package.
 }
