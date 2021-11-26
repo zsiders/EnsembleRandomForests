@@ -183,8 +183,21 @@
 <span class='va'>ens_rf_ex</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ens_random_forests.html'>ens_random_forests</a></span><span class='op'>(</span>df<span class='op'>=</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span>, var<span class='op'>=</span><span class='st'>"obs"</span>, covariates<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"cov"</span>, <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>simData</span><span class='op'>$</span><span class='va'>samples</span><span class='op'>)</span>,value<span class='op'>=</span><span class='cn'>T</span><span class='op'>)</span>, save<span class='op'>=</span><span class='cn'>FALSE</span>, cores<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'>
 <span class='va'>ALEdf</span> <span class='op'>&lt;-</span> <span class='fu'>calc_ALE</span><span class='op'>(</span><span class='va'>ens_rf_ex</span>, save<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>No name of response variable, making one</span></div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='output co'>#&gt; <span class='error'>Error in e$fun(obj, substitute(ex), parent.frame(), e$data): unable to find variable "ALEfun.J1"</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>ALEdf</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>$</span><span class='va'>df</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in head(ALEdf[[1]]$df): object 'ALEdf' not found</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>No name of response variable, making one</span></div><div class='output co'>#&gt; <span class='message'>rounding n.forests to the nearest one</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>ALEdf</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>$</span><span class='va'>df</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;            x   class      q        f.1        f.2         f.3        f.4
+#&gt; 1 -0.6321187 numeric 0.0002 -0.1124345 -0.1962214 -0.06231669 -0.1111357
+#&gt; 2 -0.5269505 numeric 0.0200 -0.2274345 -0.1962214 -0.20731669 -0.2011357
+#&gt; 3 -0.4847148 numeric 0.0401 -0.2274345 -0.1962214 -0.20731669 -0.2011357
+#&gt; 4 -0.4507819 numeric 0.0601 -0.2174345 -0.1912214 -0.21731669 -0.1911357
+#&gt; 5 -0.4220293 numeric 0.0801 -0.2074345 -0.1812214 -0.20731669 -0.1811357
+#&gt; 6 -0.3994806 numeric 0.1001 -0.2074345 -0.1812214 -0.22231669 -0.1911357
+#&gt;           f.5         f.6        f.7         f.8       f.9        f.10
+#&gt; 1 -0.04450836 -0.08992608 -0.1069719 -0.06323448 -0.142773 -0.07537429
+#&gt; 2 -0.20450836 -0.15992608 -0.2519719 -0.20823448 -0.227773 -0.20537429
+#&gt; 3 -0.20450836 -0.15992608 -0.2519719 -0.20325935 -0.227773 -0.20537429
+#&gt; 4 -0.20450836 -0.15992608 -0.2419719 -0.19825935 -0.207773 -0.19037429
+#&gt; 5 -0.19950836 -0.15492608 -0.2369719 -0.17825935 -0.202773 -0.17037429
+#&gt; 6 -0.20950836 -0.15992608 -0.2419719 -0.17825935 -0.222773 -0.18537429</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

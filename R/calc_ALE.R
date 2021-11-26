@@ -69,7 +69,7 @@ calc_ALE <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detec
 
 	registerDoParallel(cl)
 
-	ALEdf <- foreach(i = 2:ncol(data.df), .packages=c('randomForest'), .export=c("ALEfun.J1","yhat")) %dopar% {
+	ALEdf <- foreach(i = 2:ncol(data.df), .packages=c('randomForest'), .export=c("ALE_fn","yhat")) %dopar% {
 		ex <- lapply(model, function(x) {ALE_fn(data.df, x$mod, yhat, J = i, K=50)})
 
 		df <- data.frame(x = ex[[1]]$x.values, 

@@ -34,7 +34,7 @@ reference:
   - ens_random_forests
   - data_sim
   - erf_impt
-  - ALE_fn
+  - calc_ALE
   - plot_ALE
 
 
@@ -45,6 +45,7 @@ reference:
   - max_splitter
   - rf_ens_fn
   - rocr_ens
+  - ALE_fn
 
 - title: Example data
   contents:
