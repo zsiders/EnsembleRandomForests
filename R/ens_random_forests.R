@@ -12,6 +12,7 @@
 #' @param ntree The number of decision trees to use in each RF, default is 1000
 #' @param mtry The number of covariates to try at each node split, default is 5
 #' @param var.q The quantiles for the distribution of the variable importance; only exectuted if importance=TRUE
+#' @param mode is either 'bin' for binary or if not, then assumed to be multivariate factor, 'bin' is set by default
 #' 
 #' @return A list containing the fitted ERF model and associated output. 
 #' \itemize{
@@ -48,7 +49,7 @@
 #' #view the threshold-free ensemble performance metrics
 #' unlist(ens_rf_ex$ens.perf[c('auc','rmse','tss')]) 
 #' 
-ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL, duplicate=TRUE, n.forests=10L, importance=TRUE, cores=parallel::detectCores()-2, save=TRUE, ntree=1000, mtry=5, var.q = c(0.1,0.5,0.9)){
+ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL, duplicate=TRUE, n.forests=10L, importance=TRUE, cores=parallel::detectCores()-2, save=TRUE, ntree=1000, mtry=5, var.q = c(0.1,0.5,0.9), mode='bin'){
 	#Prep
 		if(missing(df)) stop("Supply a data.frame")
 		if(missing(var)) stop("Supply a variable to model")
@@ -64,9 +65,9 @@ ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL
 		
 		form <- erf_formula_prep(var, covariates) #Prepare the model formula
 		if(!is.null(header)){
-			v <- erf_data_prep(df, var, covariates, header, duplicate=duplicate)
+			v <- erf_data_prep(df, var, covariates, header, duplicate=duplicate, mode=mode)
 		}else{
-			v <- erf_data_prep(df, var, covariates, duplicate=duplicate)
+			v <- erf_data_prep(df, var, covariates, duplicate=duplicate, mode=mode)
 		}
 		
 		max_split <- max_splitter(v)
@@ -88,15 +89,69 @@ ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL
 		}
 		
 	# Get all the output from the ensemble
-		pred_ens_p <- sapply(rf.ens, function(x) {x$preds$P.1}) #NULL line 
-		pred_ens_z <- sapply(rf.ens, function(x) {x$preds$P.0})
-		pred_ens_trAUC <- sapply(rf.ens, function(x) {x$roc_train$auc})
-		pred_ens_teAUC <- sapply(rf.ens, function(x) {x$roc_test$auc})
-		pred_ens_trRMSE <- sapply(rf.ens, function(x) {x$roc_train$rmse})
-		pred_ens_teRMSE <- sapply(rf.ens, function(x) {x$roc_test$rmse})
-		pred_ens_trTSS <- sapply(rf.ens, function(x) {x$roc_train$tss})
-		pred_ens_teTSS <- sapply(rf.ens, function(x) {x$roc_test$tss})
-		pred_ens_resid <- sapply(rf.ens, function(x) {as.numeric(as.character(x$preds$PRES)) - x$preds$P.1})
+		if(mode=='bin'){
+			pred_ens_p <- sapply(rf.ens, function(x) {x$preds$P.1}) #NULL line 
+			pred_ens_z <- sapply(rf.ens, function(x) {x$preds$P.0})
+			pred_ens_resid <- sapply(rf.ens, function(x) {as.numeric(as.character(x$preds$PRES)) - x$preds$P.1})
+			pred_ens_trAUC <- sapply(rf.ens, function(x) {x$roc_train$auc})
+			pred_ens_teAUC <- sapply(rf.ens, function(x) {x$roc_test$auc})
+			pred_ens_trRMSE <- sapply(rf.ens, function(x) {x$roc_train$rmse})
+			pred_ens_teRMSE <- sapply(rf.ens, function(x) {x$roc_test$rmse})
+			pred_ens_trTSS <- sapply(rf.ens, function(x) {x$roc_train$tss})
+			pred_ens_teTSS <- sapply(rf.ens, function(x) {x$roc_test$tss})
+			# Generate ensemble predictions
+				pred_ens <- data.frame("P.0"=rowMeans(pred_ens_z), 
+				                       "P.1"=rowMeans(pred_ens_p))
+				pred_ens$PRES <- v[,var]
+				pred_ens$resid <- as.integer(as.character(v[,1])) - pred_ens[,2]
+			rownames(pred_ens) <- rownames(v)
+			#ROC on ensemble
+				roc_ens <- rocr_ens(pred_ens$P.1, pred_ens$PRES)
+			pack <- list(data = v, 
+	             model = rf.ens, 
+	             ens.pred = pred_ens,
+	             ens.perf = roc_ens,
+	             mu.tr.perf = c(trAUC=mean(pred_ens_trAUC),
+	                             trRMSE=mean(pred_ens_trRMSE),
+	                             trTSS=mean(pred_ens_trTSS)),
+	             mu.te.perf = c(teAUC=mean(pred_ens_teAUC),
+	                             teRMSE=mean(pred_ens_teRMSE),
+	                             teTSS=mean(pred_ens_teTSS)),
+	             roc_train = lapply(rf.ens, function(x)x$roc_train),
+	             roc_test = lapply(rf.ens, function(x)x$roc_test),
+	             pred = list(p = pred_ens_p,
+	                         resid = pred_ens_resid))
+		}else{
+			pred_ens_p <- lapply(1:nlevels(v[,var]), function(y) {sapply(rf.ens, function(x) x$preds[,y])})
+			pred_ens_resid <- lapply(1:nlevels(v[,var]), function(y) {sapply(rf.ens, function(x) (as.integer(x$preds$PRES==levels(v[,var])[y]) - x$preds[,y]))})
+			pred_ens_trAUC <- sapply(rf.ens, function(x) {sapply(x$roc_train, function(y) y$auc)})
+			pred_ens_teAUC <- sapply(rf.ens, function(x) {sapply(x$roc_test, function(y) y$auc)})
+			pred_ens_trRMSE <- sapply(rf.ens, function(x) {sapply(x$roc_train, function(y) y$auc)})
+			pred_ens_teRMSE <- sapply(rf.ens, function(x) {sapply(x$roc_test, function(y) y$rmse)})
+			pred_ens_trTSS <- sapply(rf.ens, function(x) {sapply(x$roc_train, function(y) y$tss)})
+			pred_ens_teTSS <- sapply(rf.ens, function(x) {sapply(x$roc_test, function(y) y$tss)})
+			# Generate ensemble predictions
+				pred_ens <- as.data.frame(sapply(pred_ens_p, rowMeans))
+				colnames(pred_ens) <- paste0('P.',1:nlevels(v[,var]))
+				pred_ens$PRES <- v[,var]
+				rownames(pred_ens) <- rownames(v)	
+			#ROC on ensemble
+				roc_ens <- lapply(1:nlevels(v[,var]),function(x) rocr_ens(pred_ens[,x], as.integer(pred_ens$PRES==levels(v[,var])[x])))
+			pack <- list(data = v, 
+		             model = rf.ens, 
+		             ens.pred = pred_ens,
+		             ens.perf = roc_ens,
+		             mu.tr.perf = c(trAUC=rowMeans(pred_ens_trAUC),
+		                             trRMSE=rowMeans(pred_ens_trRMSE),
+		                             trTSS=rowMeans(pred_ens_trTSS)),
+		             mu.te.perf = c(teAUC=rowMeans(pred_ens_teAUC),
+		                             teRMSE=rowMeans(pred_ens_teRMSE),
+		                             teTSS=rowMeans(pred_ens_teTSS)),
+		             roc_train = lapply(rf.ens, function(x)x$roc_train),
+		             roc_test = lapply(rf.ens, function(x)x$roc_test),
+		             pred = list(p = pred_ens_p,
+		                         resid = pred_ens_resid))
+		}
 	# Get variable importance
 		if(importance){
 			var_ens <- sapply(rf.ens, function(x) {abs(x$mod$importance[,3]/x$mod$importanceSD[,3])})
@@ -106,32 +161,9 @@ ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL
 			var_ens_df$sd <- apply(var_ens, 1, sd)
 			var_ens_df$ord <- order(var_ens_df[,2], decreasing=TRUE)
 		}
-		
-
-	# Generate ensemble predictions
-		pred_ens <- data.frame("P.0"=rowMeans(pred_ens_z), 
-		                       "P.1"=rowMeans(pred_ens_p))
-		pred_ens$PRES <- v[,var]
-		pred_ens$resid <- as.integer(as.character(v[,1])) - pred_ens[,2]
-		rownames(pred_ens) <- rownames(v)
-	#ROC on ensemble
-		roc_ens <- rocr_ens(pred_ens$P.1, pred_ens$PRES)
-
 	# Package up the output
-		pack <- list(data = v, 
-		             model = rf.ens, 
-		             ens.pred = pred_ens,
-		             ens.perf = roc_ens,
-		             mu.tr.perf = c(trAUC=mean(pred_ens_trAUC),
-		                             trRMSE=mean(pred_ens_trRMSE),
-		                             trTSS=mean(pred_ens_trTSS)),
-		             mu.te.perf = c(teAUC=mean(pred_ens_teAUC),
-		                             teRMSE=mean(pred_ens_teRMSE),
-		                             teTSS=mean(pred_ens_teTSS)),
-		             roc_train = lapply(rf.ens, function(x)x$roc_train),
-		             roc_test = lapply(rf.ens, function(x)x$roc_test),
-		             pred = list(p = pred_ens_p,
-		                         resid = pred_ens_resid))
+
+		
 		if(importance){
 			pack$var.imp <- var_ens_df
 			pack$var.imp.raw <- var_ens

@@ -35,7 +35,9 @@ reference:
   - data_sim
   - erf_impt
   - calc_ALE
+  - calc_ALE_multi
   - plot_ALE
+  - plot_ALE_multi
 
 
 - title: Generally internally called

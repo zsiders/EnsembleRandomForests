@@ -23,6 +23,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -35,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">EnsembleRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1</span>
       </span>
     </div>
 
@@ -48,7 +50,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -71,7 +73,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/zsiders/EnsembleRandomForests/">
+  <a href="https://github.com/zsiders/EnsembleRandomForests/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -88,61 +90,68 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="ensemble-random-forests" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#ensemble-random-forests" class="anchor"></a>Ensemble Random Forests</h1></div>
-<div id="r-package-for-ensemble-random-forests" class="section level2">
-<h2 class="hasAnchor">
-<a href="#r-package-for-ensemble-random-forests" class="anchor"></a>R package for Ensemble Random Forests</h2>
-<p>This R package implements Ensemble Random Forests from <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/">Siders et al. (2020)</a>. Ensemble Random Forests is exactly as it sounds, an ensemble model built from multiple Random Forests. The theory is that Random Forests perform exceptionally well as machine learning tools for categorical data when the data is <em>balanced</em>, i.e. that the proportion of data in each category is close to equal. There many instances where a <em>balanced</em> dataset occurs and there have been various methods to help the Random Forests model acheive good performance. The motivating example for developing the Ensemble Random Forests model comes from protected species interactions in fisheries, which by design, are often rare or hyper-rare. In this case, many of the costs of the balancing adjustments to Random Forests to tend outweigh the benefits. Enter Ensemble Random Forests. By using an ensemble of Random Forests, the effects of poorly learning the majority class can be ameliorated to some extent and can facilitate running a Random Forests approach in hyper-rare instances.</p>
+<div class="section level1">
+<div class="page-header"><h1 id="ensemble-random-forests">Ensemble Random Forests<a class="anchor" aria-label="anchor" href="#ensemble-random-forests"></a>
+</h1></div>
+<div class="section level2">
+<h2 id="r-package-for-ensemble-random-forests">R package for Ensemble Random Forests<a class="anchor" aria-label="anchor" href="#r-package-for-ensemble-random-forests"></a>
+</h2>
+<p>This R package implements Ensemble Random Forests from <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/" class="external-link">Siders et al. (2020)</a>. Ensemble Random Forests is exactly as it sounds, an ensemble model built from multiple Random Forests. The theory is that Random Forests perform exceptionally well as machine learning tools for categorical data when the data is <em>balanced</em>, i.e. that the proportion of data in each category is close to equal. There many instances where a <em>balanced</em> dataset occurs and there have been various methods to help the Random Forests model acheive good performance. The motivating example for developing the Ensemble Random Forests model comes from protected species interactions in fisheries, which by design, are often rare or hyper-rare. In this case, many of the costs of the balancing adjustments to Random Forests to tend outweigh the benefits. Enter Ensemble Random Forests. By using an ensemble of Random Forests, the effects of poorly learning the majority class can be ameliorated to some extent and can facilitate running a Random Forests approach in hyper-rare instances.</p>
 </div>
-<div id="support" class="section level2">
-<h2 class="hasAnchor">
-<a href="#support" class="anchor"></a>Support</h2>
-<p>The initial work for this package was funded by the <a href="https://www.wpcouncil.org">Western Pacific Regional Fishery Management Council</a>, the <a href="https://www.fisheries.noaa.gov/about/pacific-islands-fisheries-science-center">National Oceanic and Atmospheric Adminstration Pacific Islands Fisheries Science Center</a>, and the <a href="https://www.fisheries.noaa.gov/about/pacific-islands-regional-office">National Oceanic and Atmospheric Adminstration Pacific Islands Regional Office</a> under Award No: NA15NMF4410008 and NA15NMF4410066. Current development and support is under Award No: NA20NMF4410015.</p>
-<p>Additional simulation code to replicate <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/">Siders et al. (2020)</a> can be found on <a href="https://osf.io/q9wfn/">Open Science Framework</a>.</p>
+<div class="section level2">
+<h2 id="support">Support<a class="anchor" aria-label="anchor" href="#support"></a>
+</h2>
+<p>The initial work for this package was funded by the <a href="https://www.wpcouncil.org" class="external-link">Western Pacific Regional Fishery Management Council</a>, the <a href="https://www.fisheries.noaa.gov/about/pacific-islands-fisheries-science-center" class="external-link">National Oceanic and Atmospheric Adminstration Pacific Islands Fisheries Science Center</a>, and the <a href="https://www.fisheries.noaa.gov/about/pacific-islands-regional-office" class="external-link">National Oceanic and Atmospheric Adminstration Pacific Islands Regional Office</a> under Award No: NA15NMF4410008 and NA15NMF4410066. Current development and support is under Award No: NA20NMF4410015.</p>
+<p>Additional simulation code to replicate <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/" class="external-link">Siders et al. (2020)</a> can be found on <a href="https://osf.io/q9wfn/" class="external-link">Open Science Framework</a>.</p>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/zsiders/EnsembleRandomForests/">https://​github.com/​zsiders/​EnsembleRandomForests/​</a>
-</li>
+<li><a href="https://github.com/zsiders/EnsembleRandomForests/" class="external-link">Browse source code</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
 <li><small>GPL (&gt;= 3)</small></li>
 </ul>
 </div>
+
+
 <div class="citation">
-<h2>Citation</h2>
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html">Citing EnsembleRandomForests</a></li>
+<li><a href="authors.html#citation">Citing EnsembleRandomForests</a></li>
 </ul>
 </div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Zachary Siders <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-0798-9515" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Zachary Siders <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-0798-9515" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
+
+
 
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Zachary Siders.</p>
+  <p></p>
+<p>Developed by Zachary Siders.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -150,6 +159,8 @@
 
   
 
+
+  
 
   </body>
 </html>

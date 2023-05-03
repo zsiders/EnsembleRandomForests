@@ -17,7 +17,8 @@ ens_random_forests(
   save = TRUE,
   ntree = 1000,
   mtry = 5,
-  var.q = c(0.1, 0.5, 0.9)
+  var.q = c(0.1, 0.5, 0.9),
+  mode = "bin"
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ ens_random_forests(
 \item{mtry}{The number of covariates to try at each node split, default is 5}
 
 \item{var.q}{The quantiles for the distribution of the variable importance; only exectuted if importance=TRUE}
+
+\item{mode}{is either 'bin' for binary or if not, then assumed to be multivariate factor, 'bin' is set by default}
 }
 \value{
 A list containing the fitted ERF model and associated output.

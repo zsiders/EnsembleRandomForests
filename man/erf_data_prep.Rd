@@ -9,7 +9,8 @@ erf_data_prep(
   var = NULL,
   covariates = NULL,
   header = NULL,
-  duplicate = TRUE
+  duplicate = TRUE,
+  mode = "bin"
 )
 }
 \arguments{

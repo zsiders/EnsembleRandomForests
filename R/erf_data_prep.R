@@ -16,7 +16,7 @@
 #' data <- erf_data_prep(df = simData$samples, var = 'obs', covariates = grep('cov', colnames(simData$samples), value=TRUE), header = c('prob.raw','prob'))
 #' head(data)
 #' 
-erf_data_prep <- function(df=NULL, var=NULL, covariates=NULL, header=NULL, duplicate=TRUE){
+erf_data_prep <- function(df=NULL, var=NULL, covariates=NULL, header=NULL, duplicate=TRUE, mode='bin'){
 	if(is.null(df)) stop("Need to supply data.frame")
 	if(is.null(var)) stop("Need to supply variable column")
 	if(is.null(covariates)) stop("Need to supply covariate columns")
@@ -38,7 +38,11 @@ erf_data_prep <- function(df=NULL, var=NULL, covariates=NULL, header=NULL, dupli
 			v <- rbind(v, dup.rows)
 		}
 	# Convert interactions to factor
-		v[,var] <- factor(as.integer(v[,var]>0), levels=c(0,1))
+		if(mode=='bin'){
+			v[,var] <- factor(as.integer(v[,var]>0), levels=c(0,1))
+		}else if(mode=='multi'){
+			if(!is(v[,var],'factor')) v[,var] <- factor(v[,var])
+		}
 	# Add a random variable
 		v$random <- rnorm(nrow(v), 0, 1)
 	return(v)
