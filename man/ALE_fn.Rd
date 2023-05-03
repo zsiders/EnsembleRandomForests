@@ -4,7 +4,7 @@
 \alias{ALE_fn}
 \title{Accumulated Local Effects workhorse}
 \usage{
-ALE_fn(X, X.model, pred.fun, J, K = 40)
+ALE_fn(X, X.model, pred.fun, J, K = 40, type = "response", multi = FALSE)
 }
 \arguments{
 \item{X}{the data.frame to get the covariate from}
@@ -16,6 +16,10 @@ ALE_fn(X, X.model, pred.fun, J, K = 40)
 \item{J}{the column index of the covariate of interest}
 
 \item{K}{an integer value that determines the number of "windows" or breaks to calculate the model predictions over. More increase computational time but serves smooths the ALE predictions.}
+
+\item{type}{is either (response) or (prob) from predict.randomForest; if (prob) then n sets of predictions are returned for the n levels in var- if "response" then the factorized predicted response values are returned}
+
+\item{multi}{is a logical for either multivariate factor as the response variable (TRUE) or not (FALSE- the default)}
 }
 \value{
 A list that contains:

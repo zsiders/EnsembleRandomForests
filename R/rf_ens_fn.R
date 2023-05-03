@@ -40,14 +40,27 @@ rf_ens_fn <- function(v, form, max_split, ntree=100, mtry=5, importance=TRUE){
 	ncovar <- length(strsplit(gsub("[[:punct:]]+\\s","",as.character(form)[3]),"\\s")[[1]])
 	if(mtry >= ncovar) mtry <- ncovar-1 #permutation
 	#first bagging
-	zero_sub_ens <- sample(1:nrow(v[v[,var]=="0",]),
-	                       floor(0.9*nrow(v[v[,var]=="0",])))
-	one_sub_ens <- sample(1:nrow(v[v[,var]!="0",]),
-	                      floor(0.9*nrow(v[v[,var]!="0",])))
+	# if(mode=='bin'){
+	# 	zero_sub_ens <- sample(1:nrow(v[v[,var]=="0",]),
+	#                        floor(0.9*nrow(v[v[,var]=="0",])))
+	# 	one_sub_ens <- sample(1:nrow(v[v[,var]!="0",]),
+	# 	                      floor(0.9*nrow(v[v[,var]!="0",])))
 
-	#build a train and test set
-	train_ens <- rbind(v[v[,var]=="0",][zero_sub_ens,], v[v[,var]=="1",][one_sub_ens,])
-	test_ens <- rbind(v[v[,var]=="0",][-zero_sub_ens,], v[v[,var]=="1",][-one_sub_ens,])
+	# 	#build a train and test set
+	# 	train_ens <- rbind(v[v[,var]=="0",][zero_sub_ens,], v[v[,var]=="1",][one_sub_ens,])
+	# 	test_ens <- rbind(v[v[,var]=="0",][-zero_sub_ens,], v[v[,var]=="1",][-one_sub_ens,])
+	# }else{
+
+		sub_ens <- do.call('c',sapply(levels(v[,var]),
+		                  function(x){
+		                  	n <- nrow(v[v[,var]==x,]);
+		                  sample(v$rf.ID[v[,var]==x],
+	                       floor(0.9*n))
+		                  }))
+		train_ens <- v[v$rf.ID %in% sub_ens,]
+		test_ens <- v[!v$rf.ID %in% sub_ens,]
+	# }
+	
 
 	#run the RandomForests
 	#second bagging internal in RF
@@ -56,7 +69,8 @@ rf_ens_fn <- function(v, form, max_split, ntree=100, mtry=5, importance=TRUE){
 	                    ntree=ntree, 
 	                    mtry=mtry, 
 	                    importance=TRUE, 
-	                    sampsize=c(max_split,max_split))
+	                    sampsize=rep(max_split,
+	                                 nlevels(v[,var])))
 
 	#predictions
 	preds <- as.data.frame(predict(mod, 
@@ -66,10 +80,16 @@ rf_ens_fn <- function(v, form, max_split, ntree=100, mtry=5, importance=TRUE){
 	preds$PRES <- v[,var]
 	preds$type <- 'train'
 	preds$rf.ID <- 1:nrow(v)
-	preds$type[preds$rf.ID %in%test_ens$rf.ID] <- 'test'
+	preds$type[preds$rf.ID %in% test_ens$rf.ID] <- 'test'
 	preds <- preds[,-grep('rf.ID',colnames(preds))]
-	roc_train <- rocr_ens(preds[preds$type=='train',2], preds$PRES[preds$type=='train'])
-	roc_test <- rocr_ens(preds[preds$type=='test',2], preds$PRES[preds$type=='test'])
+	if(nlevels(v[,var])==2){
+		roc_train <- rocr_ens(preds[preds$type=='train',2], preds$PRES[preds$type=='train'])
+		roc_test <- rocr_ens(preds[preds$type=='test',2], preds$PRES[preds$type=='test'])
+	}else{
+		roc_train <- lapply(1:nlevels(v[,var]),function(x) rocr_ens(preds[preds$type=='train',x], as.integer(preds$PRES[preds$type=='train']==levels(v[,var])[x])))
+		roc_test <- lapply(1:nlevels(v[,var]),function(x) rocr_ens(preds[preds$type=='test',x], as.integer(preds$PRES[preds$type=='test']==levels(v[,var])[x])))
+	}
+	
 
 	pack <- list(mod = mod, 
 	             preds = preds, 

@@ -52,7 +52,7 @@ data_sim <- function(ncell=100, ncov=5, prob_missing=0.95, unif.bnd=c(10,30), ma
 	# 	cov.mat[lower.tri(cov.mat)] <- t(cov.mat)[lower.tri(cov.mat)] #make covariance matrix symmetric
 	# #Draw Beta coefficients
 	# 	betas <- MASS::mvrnorm(1, rep(-1,ncov), Matrix::nearPD(cov.mat)$mat)
-		betas <- rnorm(5,-1,5)
+		betas <- rnorm(ncov,-1,5)
 	#Calculate probabilities
 		loc_xy$prob.raw <- rowSums(sapply(1:ncov, function(x) {loc_xy[,x+2]*betas[x]}))
 		loc_xy$prob <- inv_logit(loc_xy$prob.raw)

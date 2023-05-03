@@ -1,12 +1,12 @@
 pandoc: 2.10.1
-pkgdown: 1.6.1
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   basic-workflow: basic-workflow.html
   helper-fn: helper-fn.html
   model-perf: model-perf.html
-last_built: 2021-11-24T20:44Z
+last_built: 2023-05-03T19:32Z
 urls:
-  reference: https://zsiders.github.io/EnsembleRandomForests//reference
-  article: https://zsiders.github.io/EnsembleRandomForests//articles
+  reference: https://zsiders.github.io/EnsembleRandomForests/reference
+  article: https://zsiders.github.io/EnsembleRandomForests/articles
 

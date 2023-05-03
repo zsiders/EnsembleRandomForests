@@ -1,51 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//index.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/404.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/ALE_fn.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/calc_ALE.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/data_sim.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/articles/basic-workflow.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/ens_random_forests.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/articles/helper-fn.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/erf_data_prep.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/erf_formula_prep.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/articles/model-perf.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/erf_impt.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/authors.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/max_splitter.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/index.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/plot_ALE.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/ALE.fn.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/rf_ens_fn.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/ALE_fn.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/rocr_ens.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/calc_ALE.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//reference/simData.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/calc_ALE_multi.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//articles/basic-workflow.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/data_sim.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//articles/helper-fn.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/ens_random_forests.html</loc>
   </url>
   <url>
-    <loc>https://zsiders.github.io/EnsembleRandomForests//articles/model-perf.html</loc>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/erf.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/erf_data_prep.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/erf_formula_prep.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/erf_impt.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/max_splitter.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/min_splitter.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/plot.ALE.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/plot_ALE.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/plot_ALE_multi.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/rf_ens_fn.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/rocr_ens.html</loc>
+  </url>
+  <url>
+    <loc>https://zsiders.github.io/EnsembleRandomForests/reference/simData.html</loc>
   </url>
 </urlset>

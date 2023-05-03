@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EnsembleRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1</span>
       </span>
     </div>
 
@@ -44,7 +46,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -67,7 +69,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/zsiders/EnsembleRandomForests/">
+  <a href="https://github.com/zsiders/EnsembleRandomForests/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -82,89 +84,89 @@
 
       
 
-      </header><script src="basic-workflow_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getting started with ERF</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/zsiders/EnsembleRandomForests/blob/master/vignettes/basic-workflow.Rmd"><code>vignettes/basic-workflow.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/zsiders/EnsembleRandomForests/blob/HEAD/vignettes/basic-workflow.Rmd" class="external-link"><code>vignettes/basic-workflow.Rmd</code></a></small>
       <div class="hidden name"><code>basic-workflow.Rmd</code></div>
 
     </div>
 
     
     
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p>Running ERFs on a given dataset is easy. The function <code><a href="../reference/ens_random_forests.html">ens_random_forests()</a></code> will take a given dataset in R <code>data.frame</code> format, amend it for modeling using <code><a href="../reference/erf_data_prep.html">erf_data_prep()</a></code> and <code><a href="../reference/erf_formula_prep.html">erf_formula_prep()</a></code>, run each RF in the ensemble using <code><a href="../reference/rf_ens_fn.html">rf_ens_fn()</a></code>, and return a fitted ERF object. This object can then be passed to various output functions: <code>erf_plotter()</code> and … to visualize and summarize.</p>
 <p>First, we must load the R library.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/zsiders/EnsembleRandomForests/">EnsembleRandomForests</a></span><span class="op">)</span>
-<span class="co">#&gt; Loading required package: randomForest</span>
-<span class="co">#&gt; randomForest 4.6-14</span>
-<span class="co">#&gt; Type rfNews() to see new features/changes/bug fixes.</span>
-<span class="co">#&gt; Loading required package: doParallel</span>
-<span class="co">#&gt; Loading required package: foreach</span>
-<span class="co">#&gt; Loading required package: iterators</span>
-<span class="co">#&gt; Loading required package: parallel</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/zsiders/EnsembleRandomForests/" class="external-link">EnsembleRandomForests</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: randomForest</span></span>
+<span><span class="co">#&gt; randomForest 4.7-1.1</span></span>
+<span><span class="co">#&gt; Type rfNews() to see new features/changes/bug fixes.</span></span>
+<span><span class="co">#&gt; Loading required package: doParallel</span></span>
+<span><span class="co">#&gt; Loading required package: foreach</span></span>
+<span><span class="co">#&gt; Loading required package: iterators</span></span>
+<span><span class="co">#&gt; Loading required package: parallel</span></span></code></pre></div>
 </div>
-<div id="datasets" class="section level2">
-<h2 class="hasAnchor">
-<a href="#datasets" class="anchor"></a>Datasets</h2>
-<div id="using-the-provided-simulated-dataset" class="section level3">
-<h3 class="hasAnchor">
-<a href="#using-the-provided-simulated-dataset" class="anchor"></a>Using the provided simulated dataset</h3>
+<div class="section level2">
+<h2 id="datasets">Datasets<a class="anchor" aria-label="anchor" href="#datasets"></a>
+</h2>
+<div class="section level3">
+<h3 id="using-the-provided-simulated-dataset">Using the provided simulated dataset<a class="anchor" aria-label="anchor" href="#using-the-provided-simulated-dataset"></a>
+</h3>
 <p>The provided dataset is a <code>list</code> object that contains a <code>data.frame</code> of the sampled locations, the beta coefficients of the logistic model used to predict the probability of occurrence, and a <code>raster</code> <code>brick</code> object containing the gridded covariates, log-odds of occurrence, and probabilities of occurrence.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># We can also visualize the covariates</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.5</span>,<span class="fl">2</span>,<span class="fl">0.5</span><span class="op">)</span>, oma<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/layout.html">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">0</span><span class="op">)</span>,<span class="fl">2</span>,<span class="fl">6</span>,byrow<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-<span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/cellStats.html">cellStats</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">grid</span><span class="op">[[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">]</span>,<span class="st">'range'</span><span class="op">)</span><span class="op">)</span>
-<span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">{</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/raster/man/image.html">image</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">grid</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, col<span class="op">=</span><span class="fu">inferno</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, zlim <span class="op">=</span> <span class="va">r</span>, 
-        xaxt<span class="op">=</span><span class="st">'n'</span>, yaxt<span class="op">=</span><span class="st">'n'</span>, xlab<span class="op">=</span><span class="st">""</span>, ylab<span class="op">=</span><span class="st">""</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">'Covariate '</span>, <span class="va">i</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># We can also visualize the covariates</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.5</span>,<span class="fl">2</span>,<span class="fl">0.5</span><span class="op">)</span>, oma<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/layout.html" class="external-link">layout</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">0</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">0</span><span class="op">)</span>,<span class="fl">2</span>,<span class="fl">6</span>,byrow<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/cellStats.html" class="external-link">cellStats</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">grid</span><span class="op">[[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">]</span>,<span class="st">'range'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">grid</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, col<span class="op">=</span><span class="fu">inferno</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, zlim <span class="op">=</span> <span class="va">r</span>, </span>
+<span>        xaxt<span class="op">=</span><span class="st">'n'</span>, yaxt<span class="op">=</span><span class="st">'n'</span>, xlab<span class="op">=</span><span class="st">""</span>, ylab<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/title.html" class="external-link">title</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'Covariate '</span>, <span class="va">i</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p><img src="basic-workflow_files/figure-html/sim_data_cov-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>We can also see the beta coefficients that produced the probability of presence using the model below: <span class="math display">\[\begin{equation}
   log\left[\frac{\hat{P}_{obs=1}}{1-\hat{P}_{obs=1}}\right] = \alpha + \beta_1X_1 + ... +\beta_nX_n
 \end{equation}\]</span></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">round</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">betas</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] -8.683 -2.642 -2.400  7.535  2.148</span>
-
-<span class="co"># We can visualize the log-odds and the probability of presence</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.5</span>,<span class="fl">2</span>,<span class="fl">0.5</span><span class="op">)</span>, oma<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>, mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/image.html">image</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">grid</span><span class="op">[[</span><span class="fl">6</span><span class="op">]</span><span class="op">]</span>, col<span class="op">=</span><span class="fu">inferno</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, xaxt<span class="op">=</span><span class="st">'n'</span>, yaxt<span class="op">=</span><span class="st">'n'</span>, xlab<span class="op">=</span><span class="st">""</span>, ylab<span class="op">=</span><span class="st">""</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span><span class="st">"Log-odds"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/image.html">image</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">grid</span><span class="op">[[</span><span class="fl">7</span><span class="op">]</span><span class="op">]</span>, col<span class="op">=</span><span class="fu">viridis</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, xaxt<span class="op">=</span><span class="st">'n'</span>, yaxt<span class="op">=</span><span class="st">'n'</span>, xlab<span class="op">=</span><span class="st">""</span>, ylab<span class="op">=</span><span class="st">""</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/with.html">with</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span><span class="op">[</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">obs</span><span class="op">==</span><span class="fl">1</span>,<span class="op">]</span>,
-     <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">y</span>,pch<span class="op">=</span><span class="fl">16</span>,col<span class="op">=</span><span class="st">'white'</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/title.html">title</a></span><span class="op">(</span><span class="st">"Probability of Presence"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">betas</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] -8.683 -2.642 -2.400  7.535  2.148</span></span>
+<span></span>
+<span><span class="co"># We can visualize the log-odds and the probability of presence</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.5</span>,<span class="fl">2</span>,<span class="fl">0.5</span><span class="op">)</span>, oma<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>, mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">grid</span><span class="op">[[</span><span class="fl">6</span><span class="op">]</span><span class="op">]</span>, col<span class="op">=</span><span class="fu">inferno</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, xaxt<span class="op">=</span><span class="st">'n'</span>, yaxt<span class="op">=</span><span class="st">'n'</span>, xlab<span class="op">=</span><span class="st">""</span>, ylab<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/title.html" class="external-link">title</a></span><span class="op">(</span><span class="st">"Log-odds"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/image.html" class="external-link">image</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">grid</span><span class="op">[[</span><span class="fl">7</span><span class="op">]</span><span class="op">]</span>, col<span class="op">=</span><span class="fu">viridis</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, xaxt<span class="op">=</span><span class="st">'n'</span>, yaxt<span class="op">=</span><span class="st">'n'</span>, xlab<span class="op">=</span><span class="st">""</span>, ylab<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span><span class="op">[</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">obs</span><span class="op">==</span><span class="fl">1</span>,<span class="op">]</span>,</span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">y</span>,pch<span class="op">=</span><span class="fl">16</span>,col<span class="op">=</span><span class="st">'white'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/title.html" class="external-link">title</a></span><span class="op">(</span><span class="st">"Probability of Presence"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="basic-workflow_files/figure-html/sim_data_prob-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
-<div id="or-make-your-own-example-dataset" class="section level3">
-<h3 class="hasAnchor">
-<a href="#or-make-your-own-example-dataset" class="anchor"></a>Or make your own example dataset</h3>
+<div class="section level3">
+<h3 id="or-make-your-own-example-dataset">Or make your own example dataset<a class="anchor" aria-label="anchor" href="#or-make-your-own-example-dataset"></a>
+</h3>
 <p>Just run <code><a href="../reference/data_sim.html">data_sim()</a></code> and a new dataset with the default parameters will be generated. The examples in <code><a href="../reference/data_sim.html">data_sim()</a></code> provide a few code snippets to quickly visualize the simulated dataset.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">888</span><span class="op">)</span>
-<span class="va">newdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data_sim.html">data_sim</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; New output format of RFsimulate: S4 object of class 'RFsp';</span>
-<span class="co">#&gt; for a bare, but faster array format use 'RFoptions(spConform=FALSE)'.</span>
-
-<span class="co"># We can view the resulting sampled locations</span>
-<span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">newdata</span><span class="op">$</span><span class="va">samples</span>,<span class="fl">4</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span>
-<span class="co">#&gt;    x  y   cov1   cov2   cov3   cov4   cov5 prob.raw  prob pred obs</span>
-<span class="co">#&gt; 1 63 58  0.216 -0.170 -0.194 -0.276  0.177    2.758 0.940    1   0</span>
-<span class="co">#&gt; 2 48 49 -0.003 -0.041 -0.187 -0.231 -0.061    1.207 0.770    1   0</span>
-<span class="co">#&gt; 3 91 59  0.259 -0.083  0.014 -0.078 -0.306    3.071 0.956    1   0</span>
-<span class="co">#&gt; 4 75 27  0.335 -0.101  0.024  0.419 -0.484    2.854 0.946    1   0</span>
-
-<span class="co"># We can also view how many of each observation class we made</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">newdata</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">obs</span><span class="op">)</span>, col.names<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="st">'Obs'</span>,<span class="st">'Freq'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">888</span><span class="op">)</span></span>
+<span><span class="va">newdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data_sim.html">data_sim</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; New output format of RFsimulate: S4 object of class 'RFsp';</span></span>
+<span><span class="co">#&gt; for a bare, but faster array format use 'RFoptions(spConform=FALSE)'.</span></span>
+<span></span>
+<span><span class="co"># We can view the resulting sampled locations</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">newdata</span><span class="op">$</span><span class="va">samples</span>,<span class="fl">4</span><span class="op">)</span>,<span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    x  y   cov1   cov2   cov3   cov4   cov5 prob.raw  prob pred obs</span></span>
+<span><span class="co">#&gt; 1 63 58  0.216 -0.170 -0.194 -0.276  0.177    2.758 0.940    1   0</span></span>
+<span><span class="co">#&gt; 2 48 49 -0.003 -0.041 -0.187 -0.231 -0.061    1.207 0.770    1   0</span></span>
+<span><span class="co">#&gt; 3 91 59  0.259 -0.083  0.014 -0.078 -0.306    3.071 0.956    1   0</span></span>
+<span><span class="co">#&gt; 4 75 27  0.335 -0.101  0.024  0.419 -0.484    2.854 0.946    1   0</span></span>
+<span></span>
+<span><span class="co"># We can also view how many of each observation class we made</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">newdata</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">obs</span><span class="op">)</span>, col.names<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Obs'</span>,<span class="st">'Freq'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">Obs</th>
@@ -183,24 +185,24 @@
 </table>
 </div>
 </div>
-<div id="running-an-ensemble-random-forests-model" class="section level2">
-<h2 class="hasAnchor">
-<a href="#running-an-ensemble-random-forests-model" class="anchor"></a>Running an Ensemble Random Forests model</h2>
+<div class="section level2">
+<h2 id="running-an-ensemble-random-forests-model">Running an Ensemble Random Forests model<a class="anchor" aria-label="anchor" href="#running-an-ensemble-random-forests-model"></a>
+</h2>
 <p>Now that we have covered the datasets, let’s run an ERF. This is simple using <code>ens_random_forests</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ens_rf_ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ens_random_forests.html">ens_random_forests</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span>, var<span class="op">=</span><span class="st">"obs"</span>,
-                                covariates<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span><span class="op">(</span><span class="st">"cov"</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span><span class="op">)</span>,value<span class="op">=</span><span class="cn">T</span><span class="op">)</span>,
-                                header <span class="op">=</span> <span class="cn">NULL</span>,
-                                save<span class="op">=</span><span class="cn">FALSE</span>,
-                                out.folder<span class="op">=</span><span class="cn">NULL</span>,
-                                duplicate <span class="op">=</span> <span class="cn">TRUE</span>,
-                                n.forests <span class="op">=</span> <span class="fl">10L</span>,
-                                importance <span class="op">=</span> <span class="cn">TRUE</span>,
-                                ntree <span class="op">=</span> <span class="fl">1000</span>,
-                                mtry <span class="op">=</span> <span class="fl">5</span>,
-                                var.q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.5</span>,<span class="fl">0.9</span><span class="op">)</span>,
-                                cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span>
-<span class="co">#&gt; rounding n.forests to the nearest one</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ens_rf_ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ens_random_forests.html">ens_random_forests</a></span><span class="op">(</span>df<span class="op">=</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span>, var<span class="op">=</span><span class="st">"obs"</span>,</span>
+<span>                                covariates<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"cov"</span>,<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">simData</span><span class="op">$</span><span class="va">samples</span><span class="op">)</span>,value<span class="op">=</span><span class="cn">T</span><span class="op">)</span>,</span>
+<span>                                header <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                                save<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>                                out.folder<span class="op">=</span><span class="cn">NULL</span>,</span>
+<span>                                duplicate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                                n.forests <span class="op">=</span> <span class="fl">10L</span>,</span>
+<span>                                importance <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                                ntree <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>                                mtry <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                                var.q <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>,<span class="fl">0.5</span>,<span class="fl">0.9</span><span class="op">)</span>,</span>
+<span>                                cores <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span><span class="op">-</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; rounding n.forests to the nearest one</span></span></code></pre></div>
 <p>The arguments to <code>ens_random_forests</code> are:</p>
 <ul>
 <li>Data arguments:
@@ -242,42 +244,42 @@
 </ul>
 <p>We can look at some of the output produced by the random forests (see <code><a href="../reference/ens_random_forests.html">help(ens_random_forests)</a></code> for a full list):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#view the dataset used in the model</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> 
-<span class="co">#&gt;   obs        cov1        cov2       cov3        cov4        cov5     random</span>
-<span class="co">#&gt; 1   0 -0.07158000 -0.27811766  0.5741324  0.01366734 -0.15537696  1.8355346</span>
-<span class="co">#&gt; 2   0 -0.12028137  0.26103341 -0.2298234  0.14750795  0.32482174  0.8144604</span>
-<span class="co">#&gt; 3   0  0.12422049  0.09052045 -0.3070963  0.14493653  0.02303010  2.0175587</span>
-<span class="co">#&gt; 4   0 -0.12481261 -0.29583389  0.6282519  0.06067430 -0.25240678 -0.5237513</span>
-<span class="co">#&gt; 5   0  0.01361460 -0.04989738  0.1600218  0.42189437  0.13166581 -0.5992387</span>
-<span class="co">#&gt; 6   0  0.01842766  0.18300638 -0.3421439 -0.33128857  0.07998399  1.3717405</span>
-
-<span class="co">#view the ensemble model predictions</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.pred</span><span class="op">)</span>
-<span class="co">#&gt;      P.0    P.1 PRES   resid</span>
-<span class="co">#&gt; 1 0.6436 0.3564    0 -0.3564</span>
-<span class="co">#&gt; 2 0.3601 0.6399    0 -0.6399</span>
-<span class="co">#&gt; 3 0.6109 0.3891    0 -0.3891</span>
-<span class="co">#&gt; 4 0.7178 0.2822    0 -0.2822</span>
-<span class="co">#&gt; 5 0.3632 0.6368    0 -0.6368</span>
-<span class="co">#&gt; 6 0.9900 0.0100    0 -0.0100</span>
-
-<span class="co">#view the threshold-free ensemble performance metrics</span>
-<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/RandomFields/man/QMath.html">c</a></span><span class="op">(</span><span class="st">'auc'</span>,<span class="st">'rmse'</span>,<span class="st">'tss'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt;       auc      rmse       tss </span>
-<span class="co">#&gt; 0.9724953 0.3796731 0.8307633</span>
-
-<span class="co">#view the mean test threshold-free performance metrics for each RF</span>
-<span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.te.perf</span>
-<span class="co">#&gt;     teAUC    teRMSE     teTSS </span>
-<span class="co">#&gt; 0.7869198 0.3914749 0.5309519</span>
-
-<span class="co">#structure of the individual model predictions</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">pred</span><span class="op">)</span>
-<span class="co">#&gt; List of 2</span>
-<span class="co">#&gt;  $ p    : num [1:10000, 1:10] 0.334 0.624 0.363 0.27 0.651 0.005 0.014 0.646 0.03 0.672 ...</span>
-<span class="co">#&gt;  $ resid: num [1:10000, 1:10] -0.334 -0.624 -0.363 -0.27 -0.651 -0.005 -0.014 -0.646 -0.03 -0.672 ...</span></code></pre></div>
-<p>As we can see, the ensemble performs better than the mean test predictions. This is advantage of ERF over other RF modifications for extreme class imbalance. <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/">Siders et al. 2020</a> discusses the various performance of these other modifications if you are curious.</p>
+<code class="sourceCode R"><span><span class="co">#view the dataset used in the model</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> </span>
+<span><span class="co">#&gt;   obs        cov1        cov2       cov3        cov4        cov5     random</span></span>
+<span><span class="co">#&gt; 1   0 -0.07158000 -0.27811766  0.5741324  0.01366734 -0.15537696  1.8355346</span></span>
+<span><span class="co">#&gt; 2   0 -0.12028137  0.26103341 -0.2298234  0.14750795  0.32482174  0.8144604</span></span>
+<span><span class="co">#&gt; 3   0  0.12422049  0.09052045 -0.3070963  0.14493653  0.02303010  2.0175587</span></span>
+<span><span class="co">#&gt; 4   0 -0.12481261 -0.29583389  0.6282519  0.06067430 -0.25240678 -0.5237513</span></span>
+<span><span class="co">#&gt; 5   0  0.01361460 -0.04989738  0.1600218  0.42189437  0.13166581 -0.5992387</span></span>
+<span><span class="co">#&gt; 6   0  0.01842766  0.18300638 -0.3421439 -0.33128857  0.07998399  1.3717405</span></span>
+<span></span>
+<span><span class="co">#view the ensemble model predictions</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.pred</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      P.0    P.1 PRES   resid</span></span>
+<span><span class="co">#&gt; 1 0.6354 0.3646    0 -0.3646</span></span>
+<span><span class="co">#&gt; 2 0.3649 0.6351    0 -0.6351</span></span>
+<span><span class="co">#&gt; 3 0.6095 0.3905    0 -0.3905</span></span>
+<span><span class="co">#&gt; 4 0.7231 0.2769    0 -0.2769</span></span>
+<span><span class="co">#&gt; 5 0.3557 0.6443    0 -0.6443</span></span>
+<span><span class="co">#&gt; 6 0.9922 0.0078    0 -0.0078</span></span>
+<span></span>
+<span><span class="co">#view the threshold-free ensemble performance metrics</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'auc'</span>,<span class="st">'rmse'</span>,<span class="st">'tss'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       auc      rmse       tss </span></span>
+<span><span class="co">#&gt; 0.9736665 0.3793929 0.8186693</span></span>
+<span></span>
+<span><span class="co">#view the mean test threshold-free performance metrics for each RF</span></span>
+<span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.te.perf</span></span>
+<span><span class="co">#&gt;     teAUC    teRMSE     teTSS </span></span>
+<span><span class="co">#&gt; 0.7934934 0.3891053 0.5455193</span></span>
+<span></span>
+<span><span class="co">#structure of the individual model predictions</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">pred</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 2</span></span>
+<span><span class="co">#&gt;  $ p    : num [1:10000, 1:10] 0.408 0.645 0.438 0.281 0.624 0.007 0.016 0.661 0.037 0.658 ...</span></span>
+<span><span class="co">#&gt;  $ resid: num [1:10000, 1:10] -0.408 -0.645 -0.438 -0.281 -0.624 -0.007 -0.016 -0.661 -0.037 -0.658 ...</span></span></code></pre></div>
+<p>As we can see, the ensemble performs better than the mean test predictions. This is advantage of ERF over other RF modifications for extreme class imbalance. <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/" class="external-link">Siders et al. 2020</a> discusses the various performance of these other modifications if you are curious.</p>
 </div>
   </div>
 
@@ -292,11 +294,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Zachary Siders.</p>
+  <p></p>
+<p>Developed by Zachary Siders.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -304,6 +308,8 @@
 
   
 
+
+  
 
   </body>
 </html>
