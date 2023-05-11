@@ -16,6 +16,7 @@
 #' @param rug.max maximum number of ticks to plot (useful for big data)
 #' @param poly.colp is a vector of colors equal to n levels in response metric
 #' @param poly.alpha is a transparency value between 0 and 1 for the confidence interval polygon from the ERF predictions
+#' @param level.names names of the multivariate levels
 #' 
 #' @return A plot of the ALEs
 #' 

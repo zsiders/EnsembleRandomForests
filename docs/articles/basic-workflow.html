@@ -257,28 +257,28 @@
 <span><span class="co">#view the ensemble model predictions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.pred</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      P.0    P.1 PRES   resid</span></span>
-<span><span class="co">#&gt; 1 0.6420 0.3580    0 -0.3580</span></span>
-<span><span class="co">#&gt; 2 0.3423 0.6577    0 -0.6577</span></span>
-<span><span class="co">#&gt; 3 0.5886 0.4114    0 -0.4114</span></span>
-<span><span class="co">#&gt; 4 0.7362 0.2638    0 -0.2638</span></span>
-<span><span class="co">#&gt; 5 0.3735 0.6265    0 -0.6265</span></span>
-<span><span class="co">#&gt; 6 0.9903 0.0097    0 -0.0097</span></span>
+<span><span class="co">#&gt; 1 0.6306 0.3694    0 -0.3694</span></span>
+<span><span class="co">#&gt; 2 0.3637 0.6363    0 -0.6363</span></span>
+<span><span class="co">#&gt; 3 0.5992 0.4008    0 -0.4008</span></span>
+<span><span class="co">#&gt; 4 0.7281 0.2719    0 -0.2719</span></span>
+<span><span class="co">#&gt; 5 0.3651 0.6349    0 -0.6349</span></span>
+<span><span class="co">#&gt; 6 0.9917 0.0083    0 -0.0083</span></span>
 <span></span>
 <span><span class="co">#view the threshold-free ensemble performance metrics</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'auc'</span>,<span class="st">'rmse'</span>,<span class="st">'tss'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       auc      rmse       tss </span></span>
-<span><span class="co">#&gt; 0.9701953 0.3789048 0.8113107</span></span>
+<span><span class="co">#&gt; 0.9715348 0.3793789 0.8221325</span></span>
 <span></span>
 <span><span class="co">#view the mean test threshold-free performance metrics for each RF</span></span>
 <span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.te.perf</span></span>
 <span><span class="co">#&gt;     teAUC    teRMSE     teTSS </span></span>
-<span><span class="co">#&gt; 0.7761657 0.3889176 0.5249812</span></span>
+<span><span class="co">#&gt; 0.7760157 0.3898378 0.5031300</span></span>
 <span></span>
 <span><span class="co">#structure of the individual model predictions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">pred</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
-<span><span class="co">#&gt;  $ p    : num [1:10000, 1:10] 0.387 0.629 0.383 0.273 0.632 0.011 0.007 0.705 0.04 0.741 ...</span></span>
-<span><span class="co">#&gt;  $ resid: num [1:10000, 1:10] -0.387 -0.629 -0.383 -0.273 -0.632 -0.011 -0.007 -0.705 -0.04 -0.741 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ p    : num [1:10000, 1:10] 0.378 0.617 0.455 0.307 0.656 0.011 0.007 0.623 0.024 0.684 ...</span></span>
+<span><span class="co">#&gt;  $ resid: num [1:10000, 1:10] -0.378 -0.617 -0.455 -0.307 -0.656 -0.011 -0.007 -0.623 -0.024 -0.684 ...</span></span></code></pre></div>
 <p>As we can see, the ensemble performs better than the mean test predictions. This is advantage of ERF over other RF modifications for extreme class imbalance. <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/" class="external-link">Siders et al. 2020</a> discusses the various performance of these other modifications if you are curious.</p>
 </div>
   </div>

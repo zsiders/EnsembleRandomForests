@@ -50,6 +50,8 @@ plot_ALE_multi(
 \item{poly.colp}{is a vector of colors equal to n levels in response metric}
 
 \item{poly.alpha}{is a transparency value between 0 and 1 for the confidence interval polygon from the ERF predictions}
+
+\item{level.names}{names of the multivariate levels}
 }
 \value{
 A plot of the ALEs
