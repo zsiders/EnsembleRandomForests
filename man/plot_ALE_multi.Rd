@@ -19,7 +19,7 @@ plot_ALE_multi(
   rug.max = 1000,
   poly.colp = c("#fcde9c", "#e34f6f", "#7c1d6f"),
   poly.alpha = 0.5,
-  level.names = NULL
+  level.names
 )
 }
 \arguments{

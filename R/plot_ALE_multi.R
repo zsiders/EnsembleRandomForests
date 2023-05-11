@@ -53,7 +53,7 @@
 #' 
 #' plot_ALE_multi(ALE_df[1])
 #' 
-plot_ALE_multi <- function(ALE, xquantiles=c(0.025,0.975), yquantiles = c(0.1, 0.5, 0.9), name, cex.axis=1, cex.lab=1, rug=TRUE, rug.col='gray50', rug.tick = 0.02, rug.lwd=0.5, rug.alpha=0.2, rug.max=1000, poly.colp = c("#fcde9c","#e34f6f","#7c1d6f"),poly.alpha=0.5, level.names=NULL){
+plot_ALE_multi <- function(ALE, xquantiles=c(0.025,0.975), yquantiles = c(0.1, 0.5, 0.9), name, cex.axis=1, cex.lab=1, rug=TRUE, rug.col='gray50', rug.tick = 0.02, rug.lwd=0.5, rug.alpha=0.2, rug.max=1000, poly.colp = c("#fcde9c","#e34f6f","#7c1d6f"),poly.alpha=0.5, level.names){
 	if(missing(name) & length(ALE)==1) name <- names(ALE)
 	if(length(ALE)==1){
 		ALEdf <- ALE[[1]]$df
@@ -63,7 +63,7 @@ plot_ALE_multi <- function(ALE, xquantiles=c(0.025,0.975), yquantiles = c(0.1, 0
 	}else{
 		stop('ALE must have structure list(df=..., X=...)')
 	}
-	if(is.null(level.names)) level.names <- as.character(seq(1:length(ALEdf)))
+	if(missing(level.names)) level.names <- as.character(seq(1:length(ALEdf)))
 	if(ALEdf[[1]]$class[1]=='factor'){
 		ALEdf <- lapply(ALEdf, function(X){X[,4:ncol(X)] <- sapply(X[,4:ncol(X)],as.numeric); return(X)})
 		y.range <- range(unlist(lapply(ALEdf,function(X)X[,4:ncol(X)])))

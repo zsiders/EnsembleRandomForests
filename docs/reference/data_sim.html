@@ -130,24 +130,24 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> New output format of RFsimulate: S4 object of class 'RFsp';</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> for a bare, but faster array format use 'RFoptions(spConform=FALSE)'.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">samples</span><span class="op">)</span> <span class="co">#view the data.frame output</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    x  y        cov1        cov2        cov3        cov4        cov5    prob.raw</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 26  6 -0.13972959  0.06244831 -0.34440050  0.17157699 -0.21307401  5.31296604</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 55 66 -0.35222177  0.13165371 -0.21224236  0.19083681  0.34482503 -0.07514895</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 87 47  0.07487136 -0.11683823  0.26170811 -0.27066246 -0.05456861 -2.25814182</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 63 17 -0.05902722  0.08265719 -0.26992301  0.01986348 -0.04817000  1.40354474</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 52 87 -0.10295658 -0.02533640  0.08759057 -0.07007789  0.17893581 -1.99190618</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 65 69 -0.12232186  0.09608891 -0.01872354  0.17001090  0.24771096 -1.03965741</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         prob pred obs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.99509687    1   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.48122160    1   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.09464948    0   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.80274578    0   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.12005534    0   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.26121610    0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    x  y        cov1       cov2        cov3        cov4        cov5   prob.raw</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 79 57 -0.24416104  0.1339181 -0.44225516 -0.08436598  0.26745945 -5.2659201</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 95 44 -0.07459927  0.1241728  0.09549102 -0.10755587 -0.01500933  0.4295523</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 47 56 -0.39286474  0.2011556  0.02602454 -0.02696115  0.27353828 -3.2609257</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 64 58 -0.03958104  0.2751188 -0.14846624 -0.10814653  0.23817351 -3.0279164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 12 79  0.21754659 -0.1052367 -0.28826910  0.10568161 -0.34259524  0.4907066</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 37 72 -0.05706988 -0.1276499 -0.14294009  0.17962853 -0.18546759 -0.4921598</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          prob pred obs</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.005138102    0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.605766752    1   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.036936266    0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.046180518    0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.620272871    0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.379384916    0   0</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">obs</span><span class="op">)</span> <span class="co">#frequency of presence/absence</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    0    1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9786  214 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9811  189 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#make a color palette</span></span></span>
 <span class="r-in"><span><span class="va">colr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html" class="external-link">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'dodgerblue4'</span>,<span class="st">'dodgerblue2'</span>,<span class="st">'ivory'</span>,<span class="st">'firebrick2'</span>,<span class="st">'firebrick4'</span><span class="op">)</span><span class="op">)</span></span></span>
