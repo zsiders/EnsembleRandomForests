@@ -103,6 +103,10 @@
 <dt>cores</dt>
 <dd><p>An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.</p></dd>
 
+
+<dt>type</dt>
+<dd><p>is either 'response' or 'prob' from predict.randomForest; if 'prob' then n sets of predictions are returned for the n levels in var; if "response" then the factorized predicted response values are returned</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -124,7 +128,20 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> No name of response variable, making one</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> rounding n.forests to the nearest one</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ALEdf</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">df</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ALEdf[[1]]$df:</span> $ operator is invalid for atomic vectors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            x   class      q         f.1         f.2         f.3         f.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -0.6321187 numeric 0.0002 -0.05522704 -0.03985723 -0.04544425 -0.04830754</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 -0.5269505 numeric 0.0200 -0.24022704 -0.14985723 -0.28044425 -0.21830754</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 -0.4847148 numeric 0.0401 -0.24022704 -0.14985723 -0.28044425 -0.21830754</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -0.4507819 numeric 0.0601 -0.20522704 -0.14485723 -0.26044425 -0.21330754</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 -0.4220293 numeric 0.0801 -0.20522704 -0.14485723 -0.23544425 -0.19830754</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.3994806 numeric 0.1001 -0.20522704 -0.16485723 -0.23544425 -0.20830754</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          f.5          f.6         f.7        f.8        f.9       f.10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -0.1458869 -0.009334641 -0.09548925 -0.1560946 -0.1793921 -0.1175272</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 -0.3108869 -0.169334641 -0.22548925 -0.1810946 -0.2343921 -0.2425272</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 -0.3108869 -0.169334641 -0.22548925 -0.1810946 -0.2343921 -0.2425272</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -0.3158869 -0.169334641 -0.20548925 -0.1610946 -0.2343921 -0.2325272</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 -0.2908869 -0.169334641 -0.19548925 -0.1460946 -0.2193921 -0.2025272</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 -0.2958869 -0.174334641 -0.19548925 -0.1460946 -0.2243921 -0.2025272</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -7,6 +7,7 @@
 #' @param save A logical flag to save the output as an RData object, default is TRUE.
 #' @param out.folder A path to the folder to write out too. If NULL then a folder is generated in the working directory
 #' @param cores An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.
+#' @param type is either 'response' or 'prob' from predict.randomForest; if 'prob' then n sets of predictions are returned for the n levels in var; if "response" then the factorized predicted response values are returned
 #' 
 #' @return A list that contains a data.frame for each variable, ordered by the mean variable importance, and a vector of the covariate values (used for rug plot in plot_ALE). The columns in each data.frame are as follows:
 #' \itemize{
@@ -72,20 +73,12 @@ calc_ALE <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detec
 	ALEdf <- foreach(i = 2:ncol(data.df), .packages=c('randomForest'), .export=c("ALE_fn","yhat")) %dopar% {
 		ex <- lapply(model, function(x) {ALE_fn(data.df, x$mod, yhat, J = i, K=50, type=type)})
 
-		if(type=='prob'){
-			df <- lapply(1:ncol(ex[[1]]$f.values),function(ii){
-				df <- data.frame(x = ex[[1]]$x.values, 
-                         class = ex[[1]]$class, 
-                         q = as.numeric(ex[[1]]$quantile), 
-                         sapply(ex,function(x) {as.numeric(x$f.values[,ii])}));
-				names(df)[4:ncol(df)] <- paste0("f.",1:length(ex)); return(df)})
-		}else{
-			df <- data.frame(x = ex[[1]]$x.values, 
+		df <- data.frame(x = ex[[1]]$x.values, 
                          class = ex[[1]]$class, 
                          q = as.numeric(ex[[1]]$quantile), 
                          sapply(ex,function(x) {as.numeric(x$f.values)}))
-			names(df)[4:ncol(df)] <- paste0("f.",1:length(ex))
-		}
+		names(df)[4:ncol(df)] <- paste0("f.",1:length(ex))
+		return(list(df=df, X=data.df[,i]))
 	}
 	stopCluster(cl)
 

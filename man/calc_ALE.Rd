@@ -23,6 +23,8 @@ calc_ALE(
 \item{out.folder}{A path to the folder to write out too. If NULL then a folder is generated in the working directory}
 
 \item{cores}{An integer value that either indicates the number of cores to use for parallel processing or a negative value to indicate the number of cores to leave free. Default is to leave two cores free.}
+
+\item{type}{is either 'response' or 'prob' from predict.randomForest; if 'prob' then n sets of predictions are returned for the n levels in var; if "response" then the factorized predicted response values are returned}
 }
 \value{
 A list that contains a data.frame for each variable, ordered by the mean variable importance, and a vector of the covariate values (used for rug plot in plot_ALE). The columns in each data.frame are as follows:
