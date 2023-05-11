@@ -63,7 +63,7 @@ plot_ALE_multi <- function(ALE, xquantiles=c(0.025,0.975), yquantiles = c(0.1, 0
 	}else{
 		stop('ALE must have structure list(df=..., X=...)')
 	}
-	if(is.null(level.names)) level.names <- seq(1:length(ALEdf))
+	if(is.null(level.names)) level.names <- as.character(seq(1:length(ALEdf)))
 	if(ALEdf[[1]]$class[1]=='factor'){
 		ALEdf <- lapply(ALEdf, function(X){X[,4:ncol(X)] <- sapply(X[,4:ncol(X)],as.numeric); return(X)})
 		y.range <- range(unlist(lapply(ALEdf,function(X)X[,4:ncol(X)])))
@@ -104,7 +104,7 @@ plot_ALE_multi <- function(ALE, xquantiles=c(0.025,0.975), yquantiles = c(0.1, 0
 		
 	}else{
 		ALEdfx <- as.numeric(ALEdf[[1]]$x)
-		if(length(unique(ALEdf$q))<5){
+		if(length(unique(ALEdf[[1]]$q))<5){
 			keep <- rep(TRUE,nrow(ALEdf[[1]]))
 		}else{
 			keep <- ALEdf[[1]]$q>xquantiles[1] & ALEdf[[1]]$q<xquantiles[2]

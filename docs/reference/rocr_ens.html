@@ -98,7 +98,7 @@
 <span class="r-in"><span><span class="va">samples</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rocr</span> <span class="op">&lt;-</span> <span class="fu">rocr_ens</span><span class="op">(</span><span class="va">predictions</span>, <span class="va">samples</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rocr</span><span class="op">$</span><span class="va">auc</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.595038</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4867788</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">rocr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 11</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ tpr :Formal class 'performance' [package "ROCR"] with 6 slots</span>
@@ -106,76 +106,76 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.name      : chr "True positive rate"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.name  : chr "none"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.882 0.847 0.826 0.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.87 0.829 0.826 0.817 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 0 0.0196 0.0196 0.0196 0.0392 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 0 0 0 0.0208 0.0417 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.values: list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ tnr :Formal class 'performance' [package "ROCR"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.name      : chr "Cutoff"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.name      : chr "True negative rate"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.name  : chr "none"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.882 0.847 0.826 0.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.87 0.829 0.826 0.817 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 1 1 0.98 0.959 0.959 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 1 0.981 0.962 0.962 0.962 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.values: list()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ auc : num 0.595</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ auc : num 0.487</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ phi :Formal class 'performance' [package "ROCR"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.name      : chr "Cutoff"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.name      : chr "Phi correlation coefficient"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.name  : chr "none"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.882 0.847 0.826 0.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.87 0.829 0.826 0.817 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] NaN 0.09851 -0.00286 -0.06215 -0.00408 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] NaN -0.09656 -0.13725 -0.05163 0.00817 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.values: list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ acc :Formal class 'performance' [package "ROCR"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.name      : chr "Cutoff"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.name      : chr "Accuracy"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.name  : chr "none"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.882 0.847 0.826 0.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.87 0.829 0.826 0.817 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 0.49 0.5 0.49 0.48 0.49 0.48 0.49 0.48 0.49 0.5 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 0.52 0.51 0.5 0.51 0.52 0.53 0.52 0.53 0.54 0.53 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.values: list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ err :Formal class 'performance' [package "ROCR"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.name      : chr "Cutoff"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.name      : chr "Error Rate"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.name  : chr "none"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.882 0.847 0.826 0.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.87 0.829 0.826 0.817 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 0.51 0.5 0.51 0.52 0.51 0.52 0.51 0.52 0.51 0.5 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 0.48 0.49 0.5 0.49 0.48 0.47 0.48 0.47 0.46 0.47 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.values: list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ fpr :Formal class 'performance' [package "ROCR"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.name      : chr "Cutoff"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.name      : chr "False positive rate"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.name  : chr "none"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.882 0.847 0.826 0.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.87 0.829 0.826 0.817 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 0 0 0.0204 0.0408 0.0408 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 0 0.0192 0.0385 0.0385 0.0385 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.values: list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ sens:Formal class 'performance' [package "ROCR"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.name      : chr "Cutoff"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.name      : chr "Sensitivity"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.name  : chr "none"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.882 0.847 0.826 0.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.87 0.829 0.826 0.817 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 0 0.0196 0.0196 0.0196 0.0392 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 0 0 0 0.0208 0.0417 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.values: list()</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ spec:Formal class 'performance' [package "ROCR"] with 6 slots</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.name      : chr "Cutoff"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.name      : chr "Specificity"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.name  : chr "none"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ x.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.882 0.847 0.826 0.8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] Inf 0.87 0.829 0.826 0.817 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ y.values    :List of 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 1 1 0.98 0.959 0.959 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .. .. ..$ : num [1:101] 1 0.981 0.962 0.962 0.962 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .. ..@ alpha.values: list()</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ tss : num 0.214</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ rmse: num 0.502</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ tss : num 0.139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ rmse: num 0.526</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
