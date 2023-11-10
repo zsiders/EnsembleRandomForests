@@ -1,6 +1,6 @@
 Package: EnsembleRandomForests
 Title: Ensemble Random Forests
-Version: 1.1
+Version: 1.2
 Authors@R: 
     person(given = "Zachary",
            family = "Siders",
