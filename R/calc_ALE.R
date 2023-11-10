@@ -26,7 +26,7 @@
 #' ALEdf <- calc_ALE(ens_rf_ex, save=FALSE)
 #' head(ALEdf[[1]]$df)
 #' 
-calc_ALE <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectCores()-4, type='response'){
+calc_ALE <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detectCores()-4, type='response', K=50){
 	if(missing(fit)) stop("Supply fit object")
 	if(missing(var)){
         message("No name of response variable, making one")
@@ -71,7 +71,7 @@ calc_ALE <- function(fit, var, save=TRUE, out.folder=NULL, cores=parallel::detec
 	registerDoParallel(cl)
 
 	ALEdf <- foreach(i = 2:ncol(data.df), .packages=c('randomForest'), .export=c("ALE_fn","yhat")) %dopar% {
-		ex <- lapply(model, function(x) {ALE_fn(data.df, x$mod, yhat, J = i, K=50, type=type)})
+		ex <- lapply(model, function(x) {ALE_fn(data.df, x$mod, yhat, J = i, K=K, type=type)})
 
 		df <- data.frame(x = ex[[1]]$x.values, 
                          class = ex[[1]]$class, 

@@ -32,7 +32,6 @@ reference:
 - title: Main functions
   contents:
   - ens_random_forests
-  - data_sim
   - erf_impt
   - calc_ALE
   - calc_ALE_multi

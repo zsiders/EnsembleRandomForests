@@ -62,18 +62,6 @@ with(simData$samples[simData$samples$obs==1,],
 title("Probability of Presence")
 ```
 
-### Or make your own example dataset
-Just run `data_sim()` and a new dataset with the default parameters will be generated. The examples in `data_sim()` provide a few code snippets to quickly visualize the simulated dataset. 
-```{r sim_new_data}
-set.seed(888)
-newdata <- data_sim()
-
-# We can view the resulting sampled locations
-round(head(newdata$samples,4),3)
-
-# We can also view how many of each observation class we made
-knitr::kable(table(newdata$samples$obs), col.names=c('Obs','Freq'))
-```
 
 ## Running an Ensemble Random Forests model
 Now that we have covered the datasets, let's run an ERF. This is simple using `ens_random_forests`. 

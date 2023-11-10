@@ -2,34 +2,33 @@ Package: EnsembleRandomForests
 Title: Ensemble Random Forests
 Version: 1.2
 Authors@R: 
-    person(given = "Zachary",
-           family = "Siders",
-           role = c("aut", "cre"),
-           email = "zachary.siders@gmail.com",
+    person("Zachary", "Siders", , "zachary.siders@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0798-9515"))
-Description: This package implements Ensemble Random Forests from Siders et al.
-    (2020) "Ensemble Random Forests as a tool for modeling rare occurrences" in
-    Endangered Species Research. Functions are provided to execute the ERF model on
-    a dataset, adjust model parameters, as well as summarize and visualize model
-    performance and predictions.
-URL: https://github.com/zsiders/EnsembleRandomForests/, https://zsiders.github.io/EnsembleRandomForests/
+Description: This package implements Ensemble Random Forests from Siders
+    et al.  (2020) "Ensemble Random Forests as a tool for modeling rare
+    occurrences" in Endangered Species Research. Functions are provided to
+    execute the ERF model on a dataset, adjust model parameters, as well
+    as summarize and visualize model performance and predictions.
 License: GPL (>= 3)
+URL: https://github.com/zsiders/EnsembleRandomForests/,
+    https://zsiders.github.io/EnsembleRandomForests/
+Depends: 
+    doParallel,
+    R (>= 2.10),
+    randomForest
+Imports: 
+    MASS,
+    Matrix,
+    raster,
+    ROCR
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: 
+    knitr
+Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
-Imports: MASS,
-    Matrix,
-    RandomFields,
-    raster,
-    ROCR
-Depends: 
-    R (>= 2.10),
-    randomForest,
-    doParallel
-Suggests: 
-    rmarkdown,
-    knitr,
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
-VignetteBuilder: knitr

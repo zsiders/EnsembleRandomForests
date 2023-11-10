@@ -10,7 +10,8 @@ calc_ALE(
   save = TRUE,
   out.folder = NULL,
   cores = parallel::detectCores() - 4,
-  type = "response"
+  type = "response",
+  K = 50
 )
 }
 \arguments{
