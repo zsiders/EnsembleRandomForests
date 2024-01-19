@@ -9,6 +9,7 @@ erf_data_prep(
   var = NULL,
   covariates = NULL,
   header = NULL,
+  weights = NULL,
   duplicate = TRUE,
   mode = "bin"
 )
@@ -21,6 +22,8 @@ erf_data_prep(
 \item{covariates}{A character vector indicating the column name(s) of the data frame that contain the covariates}
 
 \item{header}{A character vector indicating the column name(s) of the data frame that contain the additional columns you wish appended to the output}
+
+\item{weights}{a vector equal in length to nrow(df) of weights, NULL by default}
 
 \item{duplicate}{A logical flag that indicates whether to duplicate observations with more than one interaction. Default is TRUE to duplicate all records that interacted with more than one individual (i.e. a fishing set that caught two of the same species)}
 }

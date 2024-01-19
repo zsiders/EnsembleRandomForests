@@ -54,99 +54,123 @@
 #' 
 #' plot_ALE_multi(ALE_df[1])
 #' 
-plot_ALE_multi <- function(ALE, xquantiles=c(0.025,0.975), yquantiles = c(0.1, 0.5, 0.9), name, cex.axis=1, cex.lab=1, rug=TRUE, rug.col='gray50', rug.tick = 0.02, rug.lwd=0.5, rug.alpha=0.2, rug.max=1000, poly.colp = c("#fcde9c","#e34f6f","#7c1d6f"),poly.alpha=0.5, level.names){
-	if(missing(name) & length(ALE)==1) name <- names(ALE)
-	if(length(ALE)==1){
-		ALEdf <- ALE[[1]]$df
-		if(is.null(ALE[[1]]$X)){
-			rug = FALSE
-		}else { X <- ALE[[1]]$X }
-	}else{
-		stop('ALE must have structure list(df=..., X=...)')
-	}
-	if(missing(level.names)) level.names <- as.character(seq(1:length(ALEdf)))
-	if(ALEdf[[1]]$class[1]=='factor'){
-		ALEdf <- lapply(ALEdf, function(X){X[,4:ncol(X)] <- sapply(X[,4:ncol(X)],as.numeric); return(X)})
-		y.range <- range(unlist(lapply(ALEdf,function(X)X[,4:ncol(X)])))
-		x.tick <- 1:nrow(ALEdf[[1]])
-		x.seq <- c(0,nrow(ALEdf[[1]])+1)
-		x.range <- range(x.seq)
-		quant <- lapply(ALEdf, function(X) t(apply(X[,4:ncol(X)], 1, quantile, probs=yquantiles)))
-		plot(x.tick, quant[[1]][,2], 
-	     type='n', 
-	     xlim= range(pretty(x.range)), 
-	     ylim = range(pretty(range(y.range))), 
-	     las=1, xaxt='n',
-	     xlab=parse(text=name), 
-	     ylab="", 
-	     cex.axis = cex.axis, 
-	     cex.lab = cex.lab)
-		axis(1, at=x.tick, 
-		     labels=ALEdf[[1]][,1], cex.axis=cex.axis)
-		x.adj <- (x.tick - median(x.tick)) * 0.1
-		for(i in 1:length(quant)){
-			segments(x0 = x.tick+x.adj[i],
-		         x1 = x.tick+x.adj[i], 
-		        y0 = quant[[i]][,1],
-		        y1=quant[[i]][,3], 
-		        col = poly.colp[i],
-		        lwd=3)
-			points(x.tick+x.adj[i],quant[[i]][,2], 
-			       pch=16, cex=2, col=poly.colp[i])
-		}
-		
-		
-		abline(h=0, lty=3)
-		if(rug){
-			tab <- table(X)
-			text(x.tick,par('usr')[3],tab,
-			     font=3,adj=c(0.5,-0.1),col=rug.col)
-		}
-		
-	}else{
-		ALEdfx <- as.numeric(ALEdf[[1]]$x)
-		if(length(unique(ALEdf[[1]]$q))<5){
-			keep <- rep(TRUE,nrow(ALEdf[[1]]))
-		}else{
-			keep <- ALEdf[[1]]$q>xquantiles[1] & ALEdf[[1]]$q<xquantiles[2]
-		}
-		
-		x.range <- ax.range(ALEdfx[keep],ntry=2,rug=FALSE)
-		y.range <- ax.range(unlist(lapply(ALEdf,function(X)X[keep,4:ncol(X)])),
-		                    ntry=2,rug=rug)
-		quant <- lapply(ALEdf, function(X) t(apply(X[keep,4:ncol(X)], 1, quantile, probs=yquantiles)))
-
-		plot(ALEdfx[keep], quant[[1]][,2], 
-	     type ='n', 
-	     xlim = x.range$range, 
-	     ylim = y.range$range, 
-	     las = 1, 
-	     xlab = parse(text=name), 
-	     ylab = "", 
-	     cex.axis = cex.axis, 
-	     cex.lab = cex.lab,
-	     xaxs = 'i', yaxs = 'i',
-	     xaxt = 'n', yaxt = 'n')
-		axis(1, at=x.range$pretty)
-		axis(2, at=y.range$pretty, las=1)
-		for(i in 1:length(quant)){
-			polygon(x = c(ALEdfx[keep], rev(ALEdfx[keep])), 
-		        y = c(quant[[i]][,1], rev(quant[[i]][,3])), 
-		        border = poly.colp[i], 
-		        col = col2rgbA(poly.colp[i],poly.alpha))
-			lines(ALEdfx[keep], quant[[i]][,2], lwd=3,
-			      col = poly.colp[i])
-		}
-		abline(h=0, lty=3)
-		if(rug){
-			Xrug <- X[sample.int(length(X),rug.max)]
-			Axis(side = 1, at = Xrug, labels = FALSE, 
-			     lwd = 0, lwd.ticks = rug.lwd, 
-			     col.ticks = col2rgbA(rug.col,rug.alpha), 
-			     tck = rug.tick)
-		}
-	}
+plot_ALE_multi <- function (ALE, xquantiles = c(0.025, 0.975), yquantiles = c(0.1, 
+    0.5, 0.9), name, cex.axis = 1, cex.lab = 1, rug = TRUE, rug.col = "gray50", xaxs = TRUE, gap.axis = NA,
+    rug.tick = 0.02, rug.lwd = 0.5, rug.alpha = 0.2, rug.max = 1000, 
+    poly.colp = c("#fcde9c", "#e34f6f", "#7c1d6f"), poly.alpha = 0.5, 
+    level.names) 
+{
+    if (missing(name) & length(ALE) == 1) 
+        name <- names(ALE)
+    if (length(ALE) == 1) {
+        ALEdf <- ALE[[1]]$df
+        if (is.null(ALE[[1]]$X)) {
+            rug = FALSE
+        }
+        else {
+            X <- ALE[[1]]$X
+        }
+    }
+    else {
+        stop("ALE must have structure list(df=..., X=...)")
+    }
+    if (missing(level.names)){
+        level.names <- as.character(seq(1:length(ALEdf)))
+        labels <- FALSE
+    }else{
+        labels <- TRUE
+    }
+    if(length(poly.colp) < length(level.names) & !is.function(poly.colp)){
+        if(length(level.names) <= 11){
+            colc <- c('#5F4690','#1D6996','#38A6A5','#0F8554','#73AF48','#EDAD08','#E17C05','#CC503E','#94346E','#6F4070','#666666')
+            poly.colp <- colc[1:length(level.names)]
+        }else{
+            colc <- colorRampPalette(c('#fcde9c','#faa476','#f0746e','#e34f6f','#dc3977','#b9257a','#7c1d6f'))
+            poly.colp <- colc(length(level.names))
+        }
+    }else if(length(poly.colp) < length(level.names) & is.function(poly.colp)){
+        poly.colp <- poly.colp(length(level.names))
+    }
+    if (ALEdf[[1]]$class[1] == "factor") {
+        ALEdf <- lapply(ALEdf, function(X) {
+            X[, 4:ncol(X)] <- sapply(X[, 4:ncol(X)], as.numeric)
+            return(X)
+        })
+        ALEdf <- lapply(ALEdf, function(df){
+            df[match(df$x,levels(X)),]
+        })
+        if(labels){
+            if(length(level.names)==nrow(ALEdf[[1]])){
+                labels <- level.names
+            }
+        }else{
+            labels <- ALEdf[[1]][,1]
+        }
+        y.range <- range(unlist(lapply(ALEdf, function(X) X[, 
+            4:ncol(X)])))
+        x.tick <- 1:nrow(ALEdf[[1]])
+        x.seq <- c(0, nrow(ALEdf[[1]]) + 1)
+        x.range <- range(x.seq)
+        quant <- lapply(ALEdf, function(X) t(apply(X[, 4:ncol(X)], 
+            1, quantile, probs = yquantiles)))
+        plot(x.tick, quant[[1]][, 2], type = "n", 
+             xlim = range(pretty(x.range)), 
+            ylim = range(pretty(range(y.range))), las = 1, xaxt = "n", 
+            xlab = parse(text = name), ylab = "", cex.axis = cex.axis, 
+            cex.lab = cex.lab)
+        if(xaxs) axis(1, at = x.tick, labels = labels, cex.axis = cex.axis, gap.axis = gap.axis)
+        x.r <- (x.tick - median(x.tick)) * 0.33
+        x.adj <- seq(-0.33,0.33, length.out = length(quant))
+        for (i in 1:length(quant)) {
+            segments(x0 = x.tick + x.adj[i], x1 = x.tick + x.adj[i], 
+                y0 = quant[[i]][, 1], y1 = quant[[i]][, 3], col = poly.colp[i], 
+                lwd = 3)
+            points(x.tick + x.adj[i], quant[[i]][, 2], pch = 16, 
+                cex = 2, col = poly.colp[i])
+        }
+        abline(h = 0, lty = 3)
+        if (rug) {
+            tab <- table(X)
+            text(x.tick, par("usr")[3], tab, font = 3, adj = c(0.5, 
+                -0.5), col = rug.col)
+        }
+    }
+    else {
+        ALEdfx <- as.numeric(ALEdf[[1]]$x)
+        if (length(unique(ALEdf[[1]]$q)) < 5) {
+            keep <- rep(TRUE, nrow(ALEdf[[1]]))
+        }
+        else {
+            keep <- ALEdf[[1]]$q > xquantiles[1] & ALEdf[[1]]$q < 
+                xquantiles[2]
+        }
+        x.range <- ax.range(ALEdfx[keep], ntry = 2, rug = FALSE)
+        y.range <- ax.range(unlist(lapply(ALEdf, function(X) X[keep, 
+            4:ncol(X)])), ntry = 2, rug = rug)
+        quant <- lapply(ALEdf, function(X) t(apply(X[keep, 4:ncol(X)], 
+            1, quantile, probs = yquantiles)))
+        plot(ALEdfx[keep], quant[[1]][, 2], type = "n", xlim = x.range$range, 
+            ylim = y.range$range, las = 1, xlab = parse(text = name), 
+            ylab = "", cex.axis = cex.axis, cex.lab = cex.lab, 
+            xaxs = "i", yaxs = "i", xaxt = "n", yaxt = "n")
+        if(xaxs) axis(1, at = x.range$pretty, gap.axis = gap.axis)
+        axis(2, at = y.range$pretty, las = 1)
+        for (i in 1:length(quant)) {
+            polygon(x = c(ALEdfx[keep], rev(ALEdfx[keep])), y = c(quant[[i]][, 
+                1], rev(quant[[i]][, 3])), border = poly.colp[i], 
+                col = col2rgbA(poly.colp[i], poly.alpha))
+            lines(ALEdfx[keep], quant[[i]][, 2], lwd = 3, col = poly.colp[i])
+        }
+        abline(h = 0, lty = 3)
+        if (rug) {
+            Xrug <- X[sample.int(length(X), rug.max)]
+            Axis(side = 1, at = Xrug, labels = FALSE, lwd = 0, 
+                lwd.ticks = rug.lwd, col.ticks = col2rgbA(rug.col, 
+                  rug.alpha), tck = rug.tick)
+        }
+    }
 }
+
 ax.range <- function(val,tol=0.05,ntry=1,rug=TRUE){
 	vr <- range(val)
 	vr.tol <- c(vr[1]-abs(diff(vr))*tol,

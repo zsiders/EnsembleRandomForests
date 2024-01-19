@@ -18,7 +18,8 @@ ens_random_forests(
   ntree = 1000,
   mtry = 5,
   var.q = c(0.1, 0.5, 0.9),
-  mode = "bin"
+  mode = "bin",
+  weights = NULL
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ ens_random_forests(
 \item{var.q}{The quantiles for the distribution of the variable importance; only exectuted if importance=TRUE}
 
 \item{mode}{is either 'bin' for binary or if not, then assumed to be multivariate factor, 'bin' is set by default}
+
+\item{weights}{a vector equal in length to nrow(df) of weights, NULL by default}
 }
 \value{
 A list containing the fitted ERF model and associated output.

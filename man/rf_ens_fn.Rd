@@ -4,7 +4,15 @@
 \alias{rf_ens_fn}
 \title{Random Forest model with additional bagging}
 \usage{
-rf_ens_fn(v, form, max_split, ntree = 100, mtry = 5, importance = TRUE)
+rf_ens_fn(
+  v,
+  form,
+  max_split,
+  weights = FALSE,
+  ntree = 100,
+  mtry = 5,
+  importance = TRUE
+)
 }
 \arguments{
 \item{v}{A data frame object created by \code{erf_data_prep()} or internally in \code{ens_random_forests()}}
@@ -12,6 +20,8 @@ rf_ens_fn(v, form, max_split, ntree = 100, mtry = 5, importance = TRUE)
 \item{form}{A formula class object specifying the RF model formulation (created by \code{erf_formula_prep()} or internal in \code{ens_random_forests()})}
 
 \item{max_split}{The maximum number of samples in the RF bagging procedure (created internally by \code{ens_random_forests()})}
+
+\item{weights}{logical to include weights}
 
 \item{ntree}{The number of decision trees to use in each RF, default is 100}
 

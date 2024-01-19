@@ -18,7 +18,7 @@ A data.frame with a new first column of var as a binary factor (duplicated if du
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EnsembleRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
       </span>
     </div>
 
@@ -79,6 +79,7 @@ A data.frame with a new first column of var as a binary factor (duplicated if du
 <span>  var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  covariates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  header <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  duplicate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  mode <span class="op">=</span> <span class="st">"bin"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -102,6 +103,10 @@ A data.frame with a new first column of var as a binary factor (duplicated if du
 <dd><p>A character vector indicating the column name(s) of the data frame that contain the additional columns you wish appended to the output</p></dd>
 
 
+<dt>weights</dt>
+<dd><p>a vector equal in length to nrow(df) of weights, NULL by default</p></dd>
+
+
 <dt>duplicate</dt>
 <dd><p>A logical flag that indicates whether to duplicate observations with more than one interaction. Default is TRUE to duplicate all records that interacted with more than one individual (i.e. a fishing set that caught two of the same species)</p></dd>
 
@@ -119,12 +124,12 @@ A data.frame with a new first column of var as a binary factor (duplicated if du
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5   0  3.0913999 0.9565366  0.01361460 -0.04989738  0.1600218  0.42189437</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6   0 -2.1467836 0.1046322  0.01842766  0.18300638 -0.3421439 -0.33128857</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          cov5     random</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -0.15537696  0.9798599</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.32482174  0.3545698</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.02303010 -1.7047968</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -0.25240678 -2.4229736</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.13166581 -0.1018885</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.07998399 -0.7865351</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -0.15537696  1.7762151</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.32482174  0.9632902</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.02303010  1.0863345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 -0.25240678  0.4511994</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.13166581 -1.9780771</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.07998399  1.0813307</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

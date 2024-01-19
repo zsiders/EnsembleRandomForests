@@ -5,6 +5,7 @@
 #' @param v A data frame object created by `erf_data_prep()` or internally in `ens_random_forests()`
 #' @param form A formula class object specifying the RF model formulation (created by `erf_formula_prep()` or internal in `ens_random_forests()`)
 #' @param max_split The maximum number of samples in the RF bagging procedure (created internally by `ens_random_forests()`)
+#' @param weights logical to include weights
 #' @param ntree The number of decision trees to use in each RF, default is 100
 #' @param mtry The number of covariates to try at each node split, default is 5
 #' @param importance A logical flag for the randomForest model to calculate the variable importance
@@ -28,7 +29,7 @@
 #' par(mar=c(4,4,1,1))
 #' plot(density(rf_ex$preds[,2],from=0,to=1,adj=2), main="", las=1)
 #' 
-rf_ens_fn <- function(v, form, max_split, ntree=100, mtry=5, importance=TRUE){
+rf_ens_fn <- function(v, form, max_split, weights=FALSE, ntree=100, mtry=5, importance=TRUE){
 	if(missing(v)) stop("Supply a ERF data.frame")
 	if(missing(form)) stop("Supply a model formula")
 	var <- as.character(form)[2]
@@ -64,13 +65,24 @@ rf_ens_fn <- function(v, form, max_split, ntree=100, mtry=5, importance=TRUE){
 
 	#run the RandomForests
 	#second bagging internal in RF
-	mod <- randomForest(form, 
-	                    data=train_ens, 
-	                    ntree=ntree, 
-	                    mtry=mtry, 
-	                    importance=TRUE, 
-	                    sampsize=rep(max_split,
-	                                 nlevels(v[,var])))
+	if(weights){
+		mod <- randomForest(form, 
+		                    data=train_ens, 
+		                    ntree=ntree, 
+		                    mtry=mtry, 
+		                    weight = train_ens$weights,
+		                    importance=TRUE, 
+		                    sampsize=rep(max_split,
+		                                 nlevels(v[,var])))
+	}else{
+		mod <- randomForest(form, 
+		                    data=train_ens, 
+		                    ntree=ntree, 
+		                    mtry=mtry, 
+		                    importance=TRUE, 
+		                    sampsize=rep(max_split,
+		                                 nlevels(v[,var])))
+	}
 
 	#predictions
 	preds <- as.data.frame(predict(mod, 

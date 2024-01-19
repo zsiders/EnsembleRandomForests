@@ -13,6 +13,7 @@
 #' @param mtry The number of covariates to try at each node split, default is 5
 #' @param var.q The quantiles for the distribution of the variable importance; only exectuted if importance=TRUE
 #' @param mode is either 'bin' for binary or if not, then assumed to be multivariate factor, 'bin' is set by default
+#' @param weights a vector equal in length to nrow(df) of weights, NULL by default
 #' 
 #' @return A list containing the fitted ERF model and associated output. 
 #' \itemize{
@@ -49,7 +50,7 @@
 #' #view the threshold-free ensemble performance metrics
 #' unlist(ens_rf_ex$ens.perf[c('auc','rmse','tss')]) 
 #' 
-ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL, duplicate=TRUE, n.forests=10L, importance=TRUE, cores=parallel::detectCores()-2, save=TRUE, ntree=1000, mtry=5, var.q = c(0.1,0.5,0.9), mode='bin'){
+ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL, duplicate=TRUE, n.forests=10L, importance = TRUE, cores=parallel::detectCores()-2, save=TRUE, ntree=1000, mtry=5, var.q = c(0.1,0.5,0.9), mode='bin', weights=NULL){
 	#Prep
 		if(missing(df)) stop("Supply a data.frame")
 		if(missing(var)) stop("Supply a variable to model")
@@ -64,11 +65,25 @@ ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL
 		} 
 		
 		form <- erf_formula_prep(var, covariates) #Prepare the model formula
-		if(!is.null(header)){
-			v <- erf_data_prep(df, var, covariates, header, duplicate=duplicate, mode=mode)
-		}else{
-			v <- erf_data_prep(df, var, covariates, duplicate=duplicate, mode=mode)
-		}
+		# if(!is.null(header)){
+		# 	if(!is.null(weights)){
+		# 		v <- erf_data_prep(df, var, covariates, header, weights, 
+		# 		                   duplicate=duplicate, mode=mode)
+		# 	}else{
+		# 		v <- erf_data_prep(df, var, covariates, header,
+		# 		                   duplicate=duplicate, mode=mode)
+		# 	}
+		# }else{
+		# 	if(!is.null(weights)){
+		# 		v <- erf_data_prep(df, var, covariates, weights, 
+		# 		                   duplicate=duplicate, mode=mode)
+		# 	}else{
+		# 		v <- erf_data_prep(df, var, covariates,
+		# 		                   duplicate=duplicate, mode=mode)
+		# 	}
+		# }
+		v <- erf_data_prep(df, var, covariates, header, weights,
+		                   duplicate=duplicate, mode = mode)
 		
 		max_split <- max_splitter(v)
 	
@@ -79,13 +94,25 @@ ens_random_forests <- function(df, var, covariates, header=NULL, out.folder=NULL
 
 			cl <- makeCluster(UseCores) #make clusters
 			registerDoParallel(cl) #designate cores
-			rf.ens <- foreach(i=1:n.forests, .packages=c('randomForest','ROCR')) %dopar%{
-				rf_ens_fn(v, form, max_split, 
-				          ntree=ntree, mtry=mtry, importance=TRUE)
+			if(!is.null(weights)){
+				rf.ens <- foreach(i=1:n.forests, .packages=c('randomForest','ROCR'), .export = c('rf_ens_fn')) %dopar%{
+					rf_ens_fn(v, form, max_split, weights = TRUE,
+					          ntree=ntree, mtry=mtry, importance=TRUE)
+				}
+			}else{
+				rf.ens <- foreach(i=1:n.forests, .packages=c('randomForest','ROCR'), .export = c('rf_ens_fn')) %dopar%{
+					rf_ens_fn(v, form, max_split, weights = FALSE,
+					          ntree=ntree, mtry=mtry, importance=TRUE)
+				}
 			}
 			stopCluster(cl)
 		}else{
-			rf.ens <- lapply(1:n.forests, function(i) rf_ens_fn(v, form, max_split, ntree=ntree, mtry=mtry, importance=TRUE))
+			if(!is.null(weights)){
+				rf.ens <- lapply(1:n.forests, function(i) rf_ens_fn(v, form, max_split, ntree=ntree, mtry=mtry, importance=TRUE, weights = TRUE))
+			}else{
+				rf.ens <- lapply(1:n.forests, function(i) rf_ens_fn(v, form, max_split, ntree=ntree, mtry=mtry, importance=TRUE))
+			}
+			
 		}
 		
 	# Get all the output from the ensemble

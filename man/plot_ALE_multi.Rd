@@ -13,6 +13,8 @@ plot_ALE_multi(
   cex.lab = 1,
   rug = TRUE,
   rug.col = "gray50",
+  xaxs = TRUE,
+  gap.axis = NA,
   rug.tick = 0.02,
   rug.lwd = 0.5,
   rug.alpha = 0.2,

@@ -33,29 +33,29 @@ ALE_fn <- function (X, X.model, pred.fun, J, K = 40, type='response', multi=FALS
         D.cum <- matrix(0, K, K)
         D <- matrix(0, K, K)
         for (j in setdiff(1:d, J)) {
-            if (is(X[, j],"factor")) {
-              A = table(X[, J], X[, j])
-              A = A/x.count
-              for (i in 1:(K - 1)) {
-                for (k in (i + 1):K) {
-                  D[i, k] = sum(abs(A[i, ] - A[k, ]))/2
-                  D[k, i] = D[i, k]
+            if (is(X[, j], "factor")) {
+                A = table(X[, J], X[, j])
+                A = A/x.count
+                for (i in 1:(K - 1)) {
+                  for (k in (i + 1):K) {
+                    D[i, k] = sum(abs(A[i, ] - A[k, ]))/2
+                    D[k, i] = D[i, k]
+                  }
                 }
-              }
-              D.cum <- D.cum + D
+                D.cum <- D.cum + D
             }
             else {
-              q.x.all <- quantile(X[, j], probs = seq(0, 
-                1, length.out = 100), na.rm = TRUE, names = FALSE)
-              x.ecdf = tapply(X[, j], X[, J], ecdf)
-              for (i in 1:(K - 1)) {
-                for (k in (i + 1):K) {
-                  D[i, k] = max(abs(x.ecdf[[i]](q.x.all) - 
-                    x.ecdf[[k]](q.x.all)))
-                  D[k, i] = D[i, k]
+                q.x.all <- quantile(X[, j], probs = seq(0, 1, 
+                  length.out = 100), na.rm = TRUE, names = FALSE)
+                x.ecdf = tapply(X[, j], X[, J], ecdf)
+                for (i in 1:(K - 1)) {
+                  for (k in (i + 1):K) {
+                    D[i, k] = max(abs(x.ecdf[[i]](q.x.all) - 
+                      x.ecdf[[k]](q.x.all)))
+                    D[k, i] = D[i, k]
+                  }
                 }
-              }
-              D.cum <- D.cum + D
+                D.cum <- D.cum + D
             }
         }
         D1D <- cmdscale(D.cum, k = 1)
@@ -72,68 +72,62 @@ ALE_fn <- function (X, X.model, pred.fun, J, K = 40, type='response', multi=FALS
             1]
         X.neg[row.ind.neg, J] <- levs.ord[x.ord[row.ind.neg] - 
             1]
-        y.hat <- pred.fun(X.model = X.model, 
-                              newdata = X,
-                              type=type)
-        y.hat.plus <- pred.fun(X.model = X.model, 
-                               newdata = X.plus[row.ind.plus,],
-                                type=type)
-        y.hat.neg <- pred.fun(X.model = X.model, 
-                              newdata = X.neg[row.ind.neg,],
-                                type=type)
+        y.hat <- pred.fun(X.model = X.model, newdata = X, type = type)
+        y.hat.plus <- pred.fun(X.model = X.model, newdata = X.plus[row.ind.plus, 
+            ], type = type)
+        y.hat.neg <- pred.fun(X.model = X.model, newdata = X.neg[row.ind.neg, 
+            ], type = type)
         Delta.plus <- y.hat.plus - y.hat[row.ind.plus]
         Delta.neg <- y.hat[row.ind.neg] - y.hat.neg
-        if(!multi){
-            if(type=='prob'){
-                Delta <- as.numeric(tapply(c(Delta.plus[,2], 
-                                         Delta.neg[,2]), 
-                                        c(x.ord[row.ind.plus],
-                                         x.ord[row.ind.neg] - 1), 
-                                        mean))
-            }else{
-                Delta <- as.numeric(tapply(c(Delta.plus, 
-                                         Delta.neg), 
-                                        c(x.ord[row.ind.plus],
-                                         x.ord[row.ind.neg] - 1), 
-                                        mean))
+        if (!multi) {
+            if (type == "prob") {
+                Delta <- as.numeric(tapply(c(Delta.plus[, 2], 
+                  Delta.neg[, 2]), c(x.ord[row.ind.plus], x.ord[row.ind.neg] - 
+                  1), mean))
+            }
+            else {
+                Delta <- as.numeric(tapply(c(Delta.plus, Delta.neg), 
+                  c(x.ord[row.ind.plus], x.ord[row.ind.neg] - 
+                    1), mean))
             }
             fJ <- c(0, cumsum(Delta))
             fJ = fJ - sum(fJ * x.prob[ind.ord])
             x <- levs.ord
-            q <- rep(NA,length(x))
-            class <- rep('factor',length(x))
-        }else{
-            if(type=='prob'){
-                Delta <- sapply(1:ncol(Delta.plus), function(x) as.numeric(tapply(c(Delta.plus[,x], 
-                                     Delta.neg[,x]), 
-                                    c(x.ord[row.ind.plus],
-                                     x.ord[row.ind.neg] - 1), 
-                                    mean)))
-                fJ = apply(Delta,2,function(x)c(0,cumsum(x)))
-                fJ = apply(fJ,2,function(fJ) fJ - sum(fJ * x.prob[ind.ord]))
+            q <- rep(NA, length(x))
+            class <- rep("factor", length(x))
+        }
+        else {
+            if (type == "prob") {
+                Delta <- sapply(1:ncol(Delta.plus), function(x) as.numeric(tapply(c(Delta.plus[, 
+                  x], Delta.neg[, x]), c(x.ord[row.ind.plus], 
+                  x.ord[row.ind.neg] - 1), mean)))
+                if(is.null(nrow(Delta))){
+                    fJ <- rbind(0, cumsum(Delta))
+                    fJ = fJ - sum(fJ * x.prob[ind.ord])
+                }else{
+                    fJ = apply(Delta, 2, function(x) c(0, cumsum(x)))
+                    fJ = apply(fJ, 2, function(x) x - sum(x * 
+                      x.prob[ind.ord]))
+                }                
                 x <- levs.ord
-                q <- rep(NA,length(x))
-                class <- rep('factor',length(x))
-            }else{
-                Delta <- as.numeric(tapply(c(Delta.plus, 
-                                         Delta.neg), 
-                                        c(x.ord[row.ind.plus],
-                                         x.ord[row.ind.neg] - 1), 
-                                        mean))
+                q <- rep(NA, length(x))
+                class <- rep("factor", length(x))
+            }
+            else {
+                Delta <- as.numeric(tapply(rbind(Delta.plus, Delta.neg), 
+                  c(x.ord[row.ind.plus], x.ord[row.ind.neg] - 
+                    1), mean))
                 fJ <- c(0, cumsum(Delta))
                 fJ = fJ - sum(fJ * x.prob[ind.ord])
                 x <- levs.ord
-                q <- rep(NA,length(x))
-                class <- rep('factor',length(x))
+                q <- rep(NA, length(x))
+                class <- rep("factor", length(x))
             }
         }
-        
-    }else if (is(X[, J], "numeric") | is(X[, J], 
-        "integer")) {
-        z = c(min(X[, J]), 
-              as.numeric(quantile(X[, J],
-                                  seq(1/K, 1, length.out = K), 
-                                  type = 1)))
+    }
+    else if (is(X[, J], "numeric") | is(X[, J], "integer")) {
+        z = c(min(X[, J]), as.numeric(quantile(X[, J], seq(1/K, 
+            1, length.out = K), type = 1)))
         f <- ecdf(X[, J])
         z = unique(z)
         q <- f(z)
@@ -144,46 +138,43 @@ ALE_fn <- function (X, X.model, pred.fun, J, K = 40, type='response', multi=FALS
         X2 = X
         X1[, J] = z[a1]
         X2[, J] = z[a1 + 1]
-        y.hat1 = pred.fun(X.model = X.model, 
-                          newdata = X1,
-                          type=type)
-        y.hat2 = pred.fun(X.model = X.model, 
-                          newdata = X2,
-                          type=type)
+        y.hat1 = pred.fun(X.model = X.model, newdata = X1, type = type)
+        y.hat2 = pred.fun(X.model = X.model, newdata = X2, type = type)
         Delta = y.hat2 - y.hat1
-        if(!multi){
-            if(type=='prob'){
-                Delta <- as.numeric(tapply(c(Delta[,2]), 
-                                           a1, mean))
-            }else{
+        if (!multi) {
+            if (type == "prob") {
+                Delta <- as.numeric(tapply(c(Delta[, 2]), a1, 
+                  mean))
+            }
+            else {
                 Delta <- as.numeric(tapply(Delta, a1, mean))
             }
             fJ = c(0, cumsum(Delta))
             b1 <- as.numeric(table(a1))
             fJ = fJ - sum((fJ[1:K] + fJ[2:(K + 1)])/2 * b1)/sum(b1)
             x <- z
-            class <- rep('numeric',length(x))
-        }else{
-            if(type=='prob'){
-                Delta <- sapply(1:ncol(Delta),function(x) as.numeric(tapply(c(Delta[,x]), 
-                                           a1, mean)))
-                fJ = apply(Delta,2,function(x)c(0,cumsum(x)))
+            class <- rep("numeric", length(x))
+        }
+        else {
+            if (type == "prob") {
+                Delta <- sapply(1:ncol(Delta), function(x) as.numeric(tapply(c(Delta[, 
+                  x]), a1, mean)))
+                fJ = apply(Delta, 2, function(x) c(0, cumsum(x)))
                 b1 <- as.numeric(table(a1))
-                fJ = apply(fJ, 2,function(fJ) fJ - sum((fJ[1:K] + fJ[2:(K + 1)])/2 * b1)/sum(b1))
+                fJ = apply(fJ, 2, function(fJ) fJ - sum((fJ[1:K] + 
+                  fJ[2:(K + 1)])/2 * b1)/sum(b1))
                 x <- z
-                class <- rep('numeric',length(x))
-            }else{
+                class <- rep("numeric", length(x))
+            }
+            else {
                 Delta <- as.numeric(tapply(Delta, a1, mean))
                 fJ = c(0, cumsum(Delta))
                 b1 <- as.numeric(table(a1))
                 fJ = fJ - sum((fJ[1:K] + fJ[2:(K + 1)])/2 * b1)/sum(b1)
                 x <- z
-                class <- rep('numeric',length(x))
+                class <- rep("numeric", length(x))
             }
         }
-        
     }
-    list(K = K, x.values = x, 
-         class=class, quantile=q, 
-         f.values = fJ)
+    list(K = K, x.values = x, class = class, quantile = q, f.values = fJ)
 }

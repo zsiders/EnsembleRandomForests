@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EnsembleRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
       </span>
     </div>
 
@@ -127,11 +127,11 @@
 <span><span class="co">#&gt; 2   0  2.7156166 0.9379419 -0.1202814  0.26103341 -0.2298234 0.14750795</span></span>
 <span><span class="co">#&gt; 3   0  0.5609232 0.6366661  0.1242205  0.09052045 -0.3070963 0.14493653</span></span>
 <span><span class="co">#&gt; 4   0  0.2723824 0.5676777 -0.1248126 -0.29583389  0.6282519 0.06067430</span></span>
-<span><span class="co">#&gt;         cov5     random</span></span>
-<span><span class="co">#&gt; 1 -0.1553770 -0.5759688</span></span>
-<span><span class="co">#&gt; 2  0.3248217  1.4418300</span></span>
-<span><span class="co">#&gt; 3  0.0230301 -0.0636616</span></span>
-<span><span class="co">#&gt; 4 -0.2524068 -0.1463385</span></span></code></pre></div>
+<span><span class="co">#&gt;         cov5    random</span></span>
+<span><span class="co">#&gt; 1 -0.1553770 1.0284251</span></span>
+<span><span class="co">#&gt; 2  0.3248217 0.4268783</span></span>
+<span><span class="co">#&gt; 3  0.0230301 0.6618236</span></span>
+<span><span class="co">#&gt; 4 -0.2524068 0.6337390</span></span></code></pre></div>
 <p>As we can see above, the main purpose of <code>erf_data_prep</code> is to reorganize the data.frame so that the variable of interest is in the first column. Additionally, a random variable is included to provide a cutoff for variable importance downstream.</p>
 <p>The <em>header</em> argument allows you to tack on additional columns that you want to include in the model prediction data.frame. This is a useful way to add a column of unique IDs for matching predictions and observations should they get scrambled. It is unwise to include all columns in the <em>header</em> argument; tacking any extraneous columns to the ERF output is less wasteful of computational resources.</p>
 <p>The most <strong>impactful</strong> argument in <code>erf_data_prep</code> is the <em>duplicate</em> argument. This logical flag, when TRUE, copies the covariates for any row that has more than one presence in it. For example, say we have a fishery set a longline with each set equaling an observation (or row) in our data.frame. We are likely to expect that on the 1000’s of hooks on this longline that we could catch more than two of the species of interest. The <em>duplicate</em> argument handles this instance by copying the multiple presences on an observation. This effectively upweights covariate space where the species occurs multiple times.</p>
@@ -148,7 +148,7 @@
 <span>                                               value<span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">erf_form</span><span class="op">)</span></span>
 <span><span class="co">#&gt; obs ~ cov1 + cov2 + cov3 + cov4 + cov5 + random</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x7fb07a118780&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x7fd5b7be1190&gt;</span></span></code></pre></div>
 <p>This function is incredibly simple and mostly called internally to <code>ens_random_forests</code>. It simple sets the dependent variable and the covariates up for use in the resulting <code>randomForests</code> call.</p>
 </div>
 </div>
@@ -201,16 +201,16 @@
 <code class="sourceCode R"><span><span class="va">rf_ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rf_ens_fn.html">rf_ens_fn</a></span><span class="op">(</span><span class="va">erf_data</span>, <span class="va">erf_form</span>, <span class="va">max_split</span>, ntree<span class="op">=</span><span class="fl">50</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">rf_ex</span><span class="op">$</span><span class="va">preds</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    P.0  P.1 PRES  type</span></span>
-<span><span class="co">#&gt; 1 0.72 0.28    0 train</span></span>
-<span><span class="co">#&gt; 2 0.26 0.74    0 train</span></span>
-<span><span class="co">#&gt; 3 0.78 0.22    0 train</span></span>
-<span><span class="co">#&gt; 4 0.80 0.20    0 train</span></span>
-<span><span class="co">#&gt; 5 0.30 0.70    0 train</span></span>
-<span><span class="co">#&gt; 6 0.98 0.02    0 train</span></span>
+<span><span class="co">#&gt; 1 0.76 0.24    0 train</span></span>
+<span><span class="co">#&gt; 2 0.36 0.64    0 train</span></span>
+<span><span class="co">#&gt; 3 0.56 0.44    0 train</span></span>
+<span><span class="co">#&gt; 4 0.78 0.22    0 train</span></span>
+<span><span class="co">#&gt; 5 0.30 0.70    0  test</span></span>
+<span><span class="co">#&gt; 6 0.96 0.04    0 train</span></span>
 <span><span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_train</span><span class="op">$</span><span class="va">auc</span> <span class="co">#training AUC</span></span>
-<span><span class="co">#&gt; [1] 0.9689964</span></span>
+<span><span class="co">#&gt; [1] 0.9686678</span></span>
 <span><span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_test</span><span class="op">$</span><span class="va">auc</span> <span class="co">#test AUC</span></span>
-<span><span class="co">#&gt; [1] 0.7200665</span></span>
+<span><span class="co">#&gt; [1] 0.8061421</span></span>
 <span><span class="op">(</span><span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_train</span><span class="op">$</span><span class="va">auc</span> <span class="op">&gt;</span> <span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_test</span><span class="op">$</span><span class="va">auc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 </div>

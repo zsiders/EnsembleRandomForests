@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EnsembleRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
       </span>
     </div>
 
@@ -72,7 +72,15 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rf_ens_fn</span><span class="op">(</span><span class="va">v</span>, <span class="va">form</span>, <span class="va">max_split</span>, ntree <span class="op">=</span> <span class="fl">100</span>, mtry <span class="op">=</span> <span class="fl">5</span>, importance <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rf_ens_fn</span><span class="op">(</span></span>
+<span>  <span class="va">v</span>,</span>
+<span>  <span class="va">form</span>,</span>
+<span>  <span class="va">max_split</span>,</span>
+<span>  weights <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ntree <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  mtry <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  importance <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -87,6 +95,10 @@
 
 <dt>max_split</dt>
 <dd><p>The maximum number of samples in the RF bagging procedure (created internally by <code><a href="ens_random_forests.html">ens_random_forests()</a></code>)</p></dd>
+
+
+<dt>weights</dt>
+<dd><p>logical to include weights</p></dd>
 
 
 <dt>ntree</dt>
@@ -119,9 +131,9 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#see the training/test auc value</span></span></span>
 <span class="r-in"><span><span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_train</span><span class="op">$</span><span class="va">auc</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9704134</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9760173</span>
 <span class="r-in"><span><span class="va">rf_ex</span><span class="op">$</span><span class="va">roc_test</span><span class="op">$</span><span class="va">auc</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.83696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.801774</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#see the distribution of predictions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>

@@ -7,6 +7,7 @@
 #' @param covariates A character vector indicating the column name(s) of the data frame that contain the covariates
 #' @param header A character vector indicating the column name(s) of the data frame that contain the additional columns you wish appended to the output
 #' @param duplicate A logical flag that indicates whether to duplicate observations with more than one interaction. Default is TRUE to duplicate all records that interacted with more than one individual (i.e. a fishing set that caught two of the same species)
+#' @param weights a vector equal in length to nrow(df) of weights, NULL by default
 #' 
 #' @description A data.frame with a new first column of var as a binary factor (duplicated if duplicate=TRUE), the header and covariates columns, and a random variable column
 #' 
@@ -16,14 +17,22 @@
 #' data <- erf_data_prep(df = simData$samples, var = 'obs', covariates = grep('cov', colnames(simData$samples), value=TRUE), header = c('prob.raw','prob'))
 #' head(data)
 #' 
-erf_data_prep <- function(df=NULL, var=NULL, covariates=NULL, header=NULL, duplicate=TRUE, mode='bin'){
+erf_data_prep <- function(df=NULL, var=NULL, covariates=NULL, header=NULL, weights = NULL, duplicate=TRUE, mode='bin'){
 	if(is.null(df)) stop("Need to supply data.frame")
 	if(is.null(var)) stop("Need to supply variable column")
 	if(is.null(covariates)) stop("Need to supply covariate columns")
 	if(is.null(header)){
-		v <- cbind(df[,var], df[,c(covariates)])
+		if(is.null(weights)){
+			v <- cbind(df[,var], df[,c(covariates)])
+		}else{
+			v <- cbind(df[,var], df[,c(covariates)], weights = weights)
+		}		
 	}else{
-		v <- cbind(df[,var], df[,c(header,covariates)])
+		if(is.null(weights)){
+			v <- cbind(df[,var], df[,c(header,covariates)])
+		}else{
+			v <- cbind(df[,var], df[,c(header,covariates)], weights = weights)
+		}
 	}
 	
 	keep <- apply(v,2,function(x)all(is.na(x)))
