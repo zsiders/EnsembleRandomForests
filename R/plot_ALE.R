@@ -38,6 +38,7 @@ plot_ALE <- function(ALE, xquantiles=c(0.025,0.975), yquantiles = c(0.1, 0.5, 0.
 		stop('ALE must have structure list(df=..., X=...)')
 	}
 	if(ALEdf$class[1]=='factor'){
+		ALEdf <- ALEdf[match(levels(X),ALEdf$x),]
 		ALEdf[,4:ncol(ALEdf)] <- sapply(ALEdf[,4:ncol(ALEdf)],as.numeric)
 		y.range <- range(unlist(ALEdf[,4:ncol(ALEdf)]))
 		x.seq <- c(0,nrow(ALEdf)+1)

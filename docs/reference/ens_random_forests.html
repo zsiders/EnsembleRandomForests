@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EnsembleRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.2</span>
       </span>
     </div>
 
@@ -178,33 +178,33 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># view the dataset used in the model</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> </span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   obs        cov1        cov2       cov3        cov4        cov5     random</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   0 -0.07158000 -0.27811766  0.5741324  0.01366734 -0.15537696 -0.1449963</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   0 -0.12028137  0.26103341 -0.2298234  0.14750795  0.32482174 -0.9190875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   0  0.12422049  0.09052045 -0.3070963  0.14493653  0.02303010  0.8550853</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   0 -0.12481261 -0.29583389  0.6282519  0.06067430 -0.25240678  0.1355611</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   0  0.01361460 -0.04989738  0.1600218  0.42189437  0.13166581  0.8664129</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   0  0.01842766  0.18300638 -0.3421439 -0.33128857  0.07998399 -1.5063425</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   obs        cov1        cov2       cov3        cov4        cov5       random</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   0 -0.07158000 -0.27811766  0.5741324  0.01366734 -0.15537696  0.424261347</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   0 -0.12028137  0.26103341 -0.2298234  0.14750795  0.32482174 -0.393608666</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   0  0.12422049  0.09052045 -0.3070963  0.14493653  0.02303010 -2.041799878</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   0 -0.12481261 -0.29583389  0.6282519  0.06067430 -0.25240678 -1.084153773</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   0  0.01361460 -0.04989738  0.1600218  0.42189437  0.13166581 -0.006175457</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   0  0.01842766  0.18300638 -0.3421439 -0.33128857  0.07998399  0.183826236</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#view the model predictions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.pred</span><span class="op">)</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      P.0    P.1 PRES   resid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6719 0.3281    0 -0.3281</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.3865 0.6135    0 -0.6135</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.6016 0.3984    0 -0.3984</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.7098 0.2902    0 -0.2902</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.3664 0.6336    0 -0.6336</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.9883 0.0117    0 -0.0117</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.7476 0.2524    0 -0.2524</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.3440 0.6560    0 -0.6560</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.5651 0.4349    0 -0.4349</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.6386 0.3614    0 -0.3614</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.3516 0.6484    0 -0.6484</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.9918 0.0082    0 -0.0082</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#view the mean test threshold-free performance metrics</span></span></span>
 <span class="r-in"><span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.te.perf</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     teAUC    teRMSE     teTSS </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.8079108 0.3883970 0.5716208 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.7623754 0.3950332 0.5174349 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#view the threshold-free ensemble performance metrics</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'auc'</span>,<span class="st">'rmse'</span>,<span class="st">'tss'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       auc      rmse       tss </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.9788290 0.3790020 0.8432642 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.9717801 0.3787601 0.8035723 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
