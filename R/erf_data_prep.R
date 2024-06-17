@@ -42,9 +42,11 @@ erf_data_prep <- function(df=NULL, var=NULL, covariates=NULL, header=NULL, weigh
 	colnames(v)[1] <- var #change the name of the first column to the var name
 	# Handle whether to duplicate or not
 		if(duplicate){
-			dup.id <- which(v[,var] > 1)
-			dup.rows <- v[rep.int(dup.id,v[dup.id,var]-1),]
-			v <- rbind(v, dup.rows)
+			if(any(v[,var]>1)){
+				dup.id <- which(v[,var] > 1)
+				dup.rows <- v[rep.int(dup.id,v[dup.id,var]-1),]
+				v <- rbind(v, dup.rows)
+			}
 		}
 	# Convert interactions to factor
 		if(mode=='bin'){

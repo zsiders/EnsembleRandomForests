@@ -22,9 +22,9 @@ erf_impt <- function(fit, var.names, pal){
 	nvars <- nrow(var.imp)
 	max.v <- max(var.imp[,1:3])
 	var.imp.o <- var.imp[var.imp$ord,][nvars:1,]
-	rand.i <- which(var.names[var.imp$ord][nvars:1]=='random')
+	rand.i <- which(rownames(var.imp)[var.imp$ord][nvars:1]=='random')
 
-	par(mar=c(4,max(nchar(var.names))/1.5,1,1))
+	# par(mar=c(4,max(nchar(var.names))/1.5,1,1))
 	plot(seq(0, max.v, length.out=nvars), 
 	     seq(1,nvars), 
 	     type='n', 

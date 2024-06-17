@@ -73,7 +73,8 @@ ALE_fn <- function (X, X.model, pred.fun, J, K = 40, type='response', multi=FALS
         X.neg[row.ind.neg, J] <- levs.ord[x.ord[row.ind.neg] - 
             1]
         y.hat <- pred.fun(X.model = X.model, newdata = X, type = type)
-        y.hat.plus <- pred.fun(X.model = X.model, newdata = X.plus[row.ind.plus, 
+        y.hat.plus <- pred.fun(X.model = X.model,
+                               newdata = X.plus[row.ind.plus, 
             ], type = type)
         y.hat.neg <- pred.fun(X.model = X.model, newdata = X.neg[row.ind.neg, 
             ], type = type)
