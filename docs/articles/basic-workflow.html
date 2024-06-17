@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EnsembleRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.3</span>
       </span>
     </div>
 
@@ -209,39 +209,39 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#view the dataset used in the model</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> </span>
-<span><span class="co">#&gt;   obs        cov1        cov2       cov3        cov4        cov5      random</span></span>
-<span><span class="co">#&gt; 1   0 -0.07158000 -0.27811766  0.5741324  0.01366734 -0.15537696 -0.25322726</span></span>
-<span><span class="co">#&gt; 2   0 -0.12028137  0.26103341 -0.2298234  0.14750795  0.32482174  1.23716643</span></span>
-<span><span class="co">#&gt; 3   0  0.12422049  0.09052045 -0.3070963  0.14493653  0.02303010 -1.36093063</span></span>
-<span><span class="co">#&gt; 4   0 -0.12481261 -0.29583389  0.6282519  0.06067430 -0.25240678 -0.55659958</span></span>
-<span><span class="co">#&gt; 5   0  0.01361460 -0.04989738  0.1600218  0.42189437  0.13166581  0.04157327</span></span>
-<span><span class="co">#&gt; 6   0  0.01842766  0.18300638 -0.3421439 -0.33128857  0.07998399  1.18607934</span></span>
+<span><span class="co">#&gt;   obs        cov1        cov2       cov3        cov4        cov5     random</span></span>
+<span><span class="co">#&gt; 1   0 -0.07158000 -0.27811766  0.5741324  0.01366734 -0.15537696 -1.0026841</span></span>
+<span><span class="co">#&gt; 2   0 -0.12028137  0.26103341 -0.2298234  0.14750795  0.32482174 -1.8195156</span></span>
+<span><span class="co">#&gt; 3   0  0.12422049  0.09052045 -0.3070963  0.14493653  0.02303010  0.1273833</span></span>
+<span><span class="co">#&gt; 4   0 -0.12481261 -0.29583389  0.6282519  0.06067430 -0.25240678  1.0279097</span></span>
+<span><span class="co">#&gt; 5   0  0.01361460 -0.04989738  0.1600218  0.42189437  0.13166581  0.5837804</span></span>
+<span><span class="co">#&gt; 6   0  0.01842766  0.18300638 -0.3421439 -0.33128857  0.07998399 -0.4782256</span></span>
 <span></span>
 <span><span class="co">#view the ensemble model predictions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.pred</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      P.0    P.1 PRES   resid</span></span>
-<span><span class="co">#&gt; 1 0.7119 0.2881    0 -0.2881</span></span>
-<span><span class="co">#&gt; 2 0.3885 0.6115    0 -0.6115</span></span>
-<span><span class="co">#&gt; 3 0.6313 0.3687    0 -0.3687</span></span>
-<span><span class="co">#&gt; 4 0.7186 0.2814    0 -0.2814</span></span>
-<span><span class="co">#&gt; 5 0.3399 0.6601    0 -0.6601</span></span>
-<span><span class="co">#&gt; 6 0.9919 0.0081    0 -0.0081</span></span>
+<span><span class="co">#&gt; 1 0.6912 0.3088    0 -0.3088</span></span>
+<span><span class="co">#&gt; 2 0.3375 0.6625    0 -0.6625</span></span>
+<span><span class="co">#&gt; 3 0.6074 0.3926    0 -0.3926</span></span>
+<span><span class="co">#&gt; 4 0.7640 0.2360    0 -0.2360</span></span>
+<span><span class="co">#&gt; 5 0.3263 0.6737    0 -0.6737</span></span>
+<span><span class="co">#&gt; 6 0.9902 0.0098    0 -0.0098</span></span>
 <span></span>
 <span><span class="co">#view the threshold-free ensemble performance metrics</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">ens.perf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'auc'</span>,<span class="st">'rmse'</span>,<span class="st">'tss'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       auc      rmse       tss </span></span>
-<span><span class="co">#&gt; 0.9710278 0.3792023 0.7962902</span></span>
+<span><span class="co">#&gt; 0.9748109 0.3801623 0.8216233</span></span>
 <span></span>
 <span><span class="co">#view the mean test threshold-free performance metrics for each RF</span></span>
 <span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">mu.te.perf</span></span>
 <span><span class="co">#&gt;     teAUC    teRMSE     teTSS </span></span>
-<span><span class="co">#&gt; 0.7618528 0.3931744 0.5003913</span></span>
+<span><span class="co">#&gt; 0.7915747 0.3847115 0.5625951</span></span>
 <span></span>
 <span><span class="co">#structure of the individual model predictions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">ens_rf_ex</span><span class="op">$</span><span class="va">pred</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 2</span></span>
-<span><span class="co">#&gt;  $ p    : num [1:10000, 1:10] 0.321 0.594 0.367 0.301 0.688 0.001 0.008 0.779 0.118 0.729 ...</span></span>
-<span><span class="co">#&gt;  $ resid: num [1:10000, 1:10] -0.321 -0.594 -0.367 -0.301 -0.688 -0.001 -0.008 -0.779 -0.118 -0.729 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ p    : num [1:10000, 1:10] 0.302 0.654 0.422 0.192 0.685 0.011 0.032 0.692 0.054 0.631 ...</span></span>
+<span><span class="co">#&gt;  $ resid: num [1:10000, 1:10] -0.302 -0.654 -0.422 -0.192 -0.685 -0.011 -0.032 -0.692 -0.054 -0.631 ...</span></span></code></pre></div>
 <p>As we can see, the ensemble performs better than the mean test predictions. This is advantage of ERF over other RF modifications for extreme class imbalance. <a href="https://www.int-res.com/abstracts/esr/v43/p183-197/" class="external-link">Siders et al. 2020</a> discusses the various performance of these other modifications if you are curious.</p>
 </div>
   </div>
@@ -263,7 +263,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
