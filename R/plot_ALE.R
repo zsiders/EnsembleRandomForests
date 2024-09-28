@@ -27,7 +27,7 @@
 #' 
 #' plot_ALE(ALE_df[1])
 #' 
-plot_ALE <- function(ALE, xquantiles=c(0.025,0.975), yquantiles = c(0.1, 0.5, 0.9), name, cex.axis=1, cex.lab=1, rug=TRUE, rug.col='gray50', rug.tick = 0.02, rug.lwd=0.5, rug.alpha=0.2, rug.max=1000){
+plot_ALE <- function(ALE, xquantiles=c(0.025,0.975), yquantiles = c(0.1, 0.5, 0.9), name, cex.axis=1, cex.lab=1, rug=TRUE, rug.col='gray50', rug.tick = 0.02, rug.lwd=0.5, rug.alpha=0.2, rug.max=1000, gap.axis = NA, alt.labels = NULL){
 	if(missing(name) & length(ALE)==1) name <- names(ALE)
 	if(length(ALE)==1){
 		ALEdf <- ALE[[1]]$df
@@ -53,7 +53,14 @@ plot_ALE <- function(ALE, xquantiles=c(0.025,0.975), yquantiles = c(0.1, 0.5, 0.
 	     ylab="", 
 	     cex.axis = cex.axis, 
 	     cex.lab = cex.lab)
-		axis(1, at=1:nrow(ALEdf), labels=ALEdf[,1], cex.axis=cex.axis)
+		if(is.null(alt.labels) | length(alt.labels) != nrow(ALEdf)){
+			labels <- ALEdf[,1]
+		}else{
+			labels <- alt.labels
+		}
+		axis(1, at=1:nrow(ALEdf),
+		     labels=labels, cex.axis=cex.axis,
+		     gap.axis = gap.axis)
 		segments(x0 = 1:nrow(ALEdf),
 		         x1 = 1:nrow(ALEdf), 
 		        y0 = quant[,1],
@@ -101,7 +108,7 @@ plot_ALE <- function(ALE, xquantiles=c(0.025,0.975), yquantiles = c(0.1, 0.5, 0.
 		lines(ALEdf[keep,1], quant[,2], lwd=3)
 		abline(h=0, lty=3)
 		if(rug){
-			Xrug <- X[sample.int(length(X),rug.max)]
+			Xrug <- X[sample.int(length(X),pmin(length(X),rug.max))]
 			Axis(side = 1, at = Xrug, labels = FALSE, 
 			     lwd = 0, lwd.ticks = rug.lwd, 
 			     col.ticks = col2rgbA(rug.col,rug.alpha), 
