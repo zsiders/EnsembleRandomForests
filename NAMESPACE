@@ -3,6 +3,7 @@
 export(ALE_fn)
 export(calc_ALE)
 export(calc_ALE_multi)
+export(calc_ALE_reg)
 export(ens_random_forests)
 export(erf_data_prep)
 export(erf_formula_prep)

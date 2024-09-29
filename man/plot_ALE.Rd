@@ -16,7 +16,9 @@ plot_ALE(
   rug.tick = 0.02,
   rug.lwd = 0.5,
   rug.alpha = 0.2,
-  rug.max = 1000
+  rug.max = 1000,
+  gap.axis = NA,
+  alt.labels = NULL
 )
 }
 \arguments{

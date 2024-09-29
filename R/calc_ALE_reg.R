@@ -18,7 +18,7 @@
 #' }
 #' 
 #' @export
-#' 
+#' @keywords internal
 #' @examples
 #' #run an ERF with 10 RFs and 
 #' ens_rf_ex <- ens_random_forests(df=simData$samples, var="obs", covariates=grep("cov", colnames(simData$samples),value=T), save=FALSE, cores=1)
